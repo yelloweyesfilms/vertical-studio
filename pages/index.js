@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 const s = {
-  page: { minHeight: "100vh", background: "#FAF7F2", color: "#1A1A18", fontFamily: "var(--sans)" },
-  nav: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 40px", borderBottom: "1px solid #E8E4DC", maxWidth: 1100, margin: "0 auto", width: "100%" },
+  page: { minHeight: "100vh", background: "#fff", color: "#1A1A18", fontFamily: "var(--sans)" },
+  nav: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 40px", borderBottom: "1px solid #E8E4DC", maxWidth: 1100, margin: "0 auto", width: "100%", background: "#fff" },
   logo: { fontFamily: "var(--serif)", fontSize: 20, fontWeight: 900, letterSpacing: -0.5 },
   rec: { display: "flex", alignItems: "center", gap: 6 },
   recDot: { width: 8, height: 8, borderRadius: "50%", background: "#E85C3A", animation: "pulse 1.5s infinite" },
   recLabel: { fontSize: 10, fontWeight: 800, color: "#E85C3A", letterSpacing: 2 },
-  hero: { maxWidth: 1100, margin: "0 auto", padding: "80px 40px 60px", textAlign: "center" },
-  tag: { display: "inline-block", background: "#F0EBE3", border: "1px solid #DDD8D0", color: "#6B6B68", padding: "6px 14px", borderRadius: 100, fontSize: 13, fontWeight: 600, marginBottom: 32 },
+  hero: { maxWidth: 1100, margin: "0 auto", padding: "80px 40px 60px", textAlign: "center", background: "#fff" },
+  tag: { display: "inline-block", background: "#FFF0EC", border: "1px solid #FBD5C8", color: "#E85C3A", padding: "6px 14px", borderRadius: 100, fontSize: 13, fontWeight: 600, marginBottom: 32 },
   h1: { fontFamily: "var(--serif)", fontSize: "clamp(40px, 7vw, 80px)", fontWeight: 900, lineHeight: 1.05, letterSpacing: -2, marginBottom: 24 },
   accent: { color: "#E85C3A" },
   sub: { fontSize: "clamp(16px, 2vw, 20px)", color: "#6B6B68", maxWidth: 540, margin: "0 auto 48px", lineHeight: 1.6 },
@@ -18,19 +18,19 @@ const s = {
   btnGhost: { background: "transparent", color: "#6B6B68", border: "1px solid #2a3a2e", padding: "16px 32px", borderRadius: 12, fontSize: 16, fontWeight: 600 },
   phone: { maxWidth: 340, margin: "60px auto 0", background: "#1A1A18", borderRadius: 40, border: "6px solid #DDD8D0", padding: "28px 16px", position: "relative", boxShadow: "0 40px 80px rgba(0,0,0,.5)" },
   phoneNotch: { width: 80, height: 6, background: "#DDD8D0", borderRadius: 10, margin: "0 auto 20px" },
-  features: { maxWidth: 1100, margin: "0 auto", padding: "80px 40px", background: "#FAF7F2" },
+  features: { background: "#1A1A18", padding: "80px 40px" },
   featGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 },
-  featCard: { background: "#fff", border: "1px solid #E8E4DC", borderRadius: 20, padding: 32 },
+  featCard: { background: "#242424", border: "none", borderLeft: "4px solid #E85C3A", borderRadius: 16, padding: 28 },
   featIcon: { fontSize: 32, marginBottom: 16 },
-  featTitle: { fontFamily: "var(--serif)", fontSize: 22, fontWeight: 700, marginBottom: 10, color: "#1A1A18" },
-  featDesc: { color: "#6B6B68", lineHeight: 1.6, fontSize: 15 },
-  pricing: { maxWidth: 480, margin: "0 auto", padding: "60px 40px 80px", textAlign: "center", background: "#FAF7F2" },
+  featTitle: { fontFamily: "var(--serif)", fontSize: 20, fontWeight: 700, marginBottom: 8, color: "#fff" },
+  featDesc: { color: "#888", lineHeight: 1.65, fontSize: 14 },
+  pricing: { maxWidth: 480, margin: "0 auto", padding: "80px 40px", textAlign: "center", background: "#fff" },
   pCard: { background: "#fff", border: "2px solid #E85C3A", borderRadius: 24, padding: 40 },
   price: { fontFamily: "var(--serif)", fontSize: 56, fontWeight: 900, color: "#E85C3A", lineHeight: 1 },
   perMonth: { color: "#6B6B68", fontSize: 15, marginBottom: 32 },
   checkList: { textAlign: "left", marginBottom: 36 },
   checkItem: { display: "flex", alignItems: "center", gap: 12, marginBottom: 12, fontSize: 15 },
-  footer: { borderTop: "1px solid #E8E4DC", padding: "24px 40px", textAlign: "center", color: "#AAA8A4", fontSize: 13 },
+  footer: { background: "#0D0D0D", borderTop: "1px solid #222", padding: "24px 40px", textAlign: "center", color: "#444", fontSize: 13 },
 };
 
 export default function Landing() {
@@ -120,7 +120,7 @@ export default function Landing() {
 
       {/* FEATURES */}
       <div style={s.features}>
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: 36, fontWeight: 900, textAlign: "center", marginBottom: 48 }}>
+        <h2 style={{ fontFamily: "var(--serif)", fontSize: 36, fontWeight: 900, textAlign: "center", marginBottom: 48, color: "#fff" }}>
           Le pipeline créatif complet
         </h2>
         <div style={s.featGrid}>
@@ -136,7 +136,7 @@ export default function Landing() {
 
       {/* PRICING */}
       <div style={s.pricing}>
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: 36, fontWeight: 900, marginBottom: 32 }}>Un seul tarif, tout inclus</h2>
+        <h2 style={{ fontFamily: "var(--serif)", fontSize: 34, fontWeight: 900, marginBottom: 36, color: "#1A1A18" }}>Un seul tarif, tout inclus</h2>
         <div style={s.pCard}>
           <div style={s.price}>9€</div>
           <p style={s.perMonth}>/mois · Sans engagement</p>
@@ -151,7 +151,7 @@ export default function Landing() {
             ].map((item, i) => (
               <div key={i} style={s.checkItem}>
                 <span style={{ color: "#E85C3A", fontSize: 18 }}>✓</span>
-                <span style={{ color: "#1A1A18" }}>{item}</span>
+                <span style={{ color: "#ccc" }}>{item}</span>
               </div>
             ))}
           </div>
