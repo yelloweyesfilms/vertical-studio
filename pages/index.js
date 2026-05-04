@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 
 const s = {
   page: { minHeight: "100vh", background: "#fff", color: "#1A1A18", fontFamily: "var(--sans)" },
-  nav: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 40px", borderBottom: "1px solid #E8E4DC", maxWidth: 1100, margin: "0 auto", width: "100%", background: "#fff" },
-  logo: { fontFamily: "var(--serif)", fontSize: 20, fontWeight: 900, letterSpacing: -0.5 },
+  nav: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: "1px solid #E8E4DC", maxWidth: 1100, margin: "0 auto", width: "100%", background: "#fff" },
+  logo: { fontFamily: "var(--serif)", fontSize: 15, fontWeight: 900, letterSpacing: -0.3, display: "flex", alignItems: "center" },
   rec: { display: "flex", alignItems: "center", gap: 6 },
   recDot: { width: 8, height: 8, borderRadius: "50%", background: "#E85C3A", animation: "pulse 1.5s infinite" },
   recLabel: { fontSize: 10, fontWeight: 800, color: "#E85C3A", letterSpacing: 2 },
