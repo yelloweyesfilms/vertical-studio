@@ -25,7 +25,7 @@ const s = {
   featTitle: { fontFamily: "var(--serif)", fontSize: 20, fontWeight: 700, marginBottom: 8, color: "#fff" },
   featDesc: { color: "#888", lineHeight: 1.65, fontSize: 14 },
   pricing: { maxWidth: 480, margin: "0 auto", padding: "80px 40px", textAlign: "center", background: "#fff" },
-  pCard: { background: "#fff", border: "2px solid #E85C3A", borderRadius: 24, padding: 40 },
+  pCard: { background: "#1A1A18", border: "2px solid #E85C3A", borderRadius: 24, padding: 40 },
   price: { fontFamily: "var(--serif)", fontSize: 56, fontWeight: 900, color: "#E85C3A", lineHeight: 1 },
   perMonth: { color: "#aaa", fontSize: 15, marginBottom: 32 },
   checkList: { textAlign: "left", marginBottom: 36 },
@@ -171,7 +171,7 @@ export default function Landing() {
             placeholder="ton@email.com"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            style={{ width: "100%", padding: "14px 18px", borderRadius: 10, border: "1px solid #2a3a2e", background: "#FAF7F2", color: "#1A1A18", fontSize: 15, marginBottom: 12, outline: "none" }}
+            style={{ width: "100%", padding: "14px 18px", borderRadius: 10, border: "1px solid #2a3a2e", background: "#242424", color: "#fff", fontSize: 15, marginBottom: 12, outline: "none", border: "1px solid #333" }}
           />
           <button style={{ ...s.btnRed, width: "100%", fontSize: 16, padding: 18 }} onClick={startCheckout} disabled={loading}>
             {loading ? "Redirection…" : "Commencer maintenant →"}
