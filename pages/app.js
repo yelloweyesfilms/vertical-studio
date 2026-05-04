@@ -346,6 +346,12 @@ export default function App() {
   useEffect(() => {
     const stored = localStorage.getItem("vs_customer");
     const { session_id } = router.query;
+    // Admin bypass
+    if (stored === "admin_sophieattelann") {
+      setCustomerId("admin_sophieattelann");
+      setChecking(false);
+      return;
+    }
     if (session_id) {
       fetch(`/api/session?session_id=${session_id}`)
         .then(r => r.json())
