@@ -346,7 +346,16 @@ export default function App() {
   useEffect(() => {
     const stored = localStorage.getItem("vs_customer");
     const { session_id } = router.query;
-    // Admin bypass
+    // Admin bypass via URL param
+    const { admin } = router.query;
+    if (admin === "sophie2026") {
+      localStorage.setItem("vs_customer", "admin_sophieattelann");
+      setCustomerId("admin_sophieattelann");
+      setChecking(false);
+      router.replace("/app");
+      return;
+    }
+    // Admin bypass via localStorage
     if (stored === "admin_sophieattelann") {
       setCustomerId("admin_sophieattelann");
       setChecking(false);
