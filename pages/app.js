@@ -345,7 +345,26 @@ export default function App() {
   // ── Auth: check Stripe session or stored customerId ──
   useEffect(() => {
     const stored = localStorage.getItem("vs_customer");
-    const { session_id } = router.query;
+    const { session_id, admin } = router.query;
+    if (admin) {
+      fetch("/api/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: admin }),
+      })
+        .then(r => r.json())
+        .then(d => {
+          if (d.customerId) {
+            localStorage.setItem("vs_customer", d.customerId);
+            setCustomerId(d.customerId);
+            router.replace("/app");
+          } else {
+            setChecking(false);
+          }
+        })
+        .catch(() => setChecking(false));
+      return;
+    }
     if (session_id) {
       fetch(`/api/session?session_id=${session_id}`)
         .then(r => r.json())
