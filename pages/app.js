@@ -346,21 +346,6 @@ export default function App() {
   useEffect(() => {
     const stored = localStorage.getItem("vs_customer");
     const { session_id } = router.query;
-    // Admin bypass via URL param
-    const { admin } = router.query;
-    if (admin === "sophie2026") {
-      localStorage.setItem("vs_customer", "admin_sophieattelann");
-      setCustomerId("admin_sophieattelann");
-      setChecking(false);
-      router.replace("/app");
-      return;
-    }
-    // Admin bypass via localStorage
-    if (stored === "admin_sophieattelann") {
-      setCustomerId("admin_sophieattelann");
-      setChecking(false);
-      return;
-    }
     if (session_id) {
       fetch(`/api/session?session_id=${session_id}`)
         .then(r => r.json())
@@ -387,15 +372,23 @@ export default function App() {
     setErr(null);
     setScreen("load");
     try {
-      setLoadMsg("Création de la bible…");
+      setLoadMsg("Création de la bible de la série…");
       const b = await gen("bible", state, customerId);
       setBible(b);
-      setLoadMsg("Découpage des épisodes…");
+
+      const totalBatches = Math.ceil(state.format / 10);
       const batches = [];
       for (let i = 0; i < state.format; i += 10) {
         const from = i + 1, to = Math.min(i + 10, state.format);
-        batches.push(gen("episodes", { titre: b.titre, logline: b.logline, mode: state.mode, from, to, total: state.format }, customerId));
+        const batchNum = Math.floor(i / 10) + 1;
+        const batchPromise = gen("episodes", { titre: b.titre, logline: b.logline, mode: state.mode, from, to, total: state.format }, customerId)
+          .then(result => {
+            setLoadMsg(`Épisodes ${from}–${to} générés… (${batchNum}/${totalBatches})`);
+            return result;
+          });
+        batches.push(batchPromise);
       }
+      setLoadMsg(`Génération des ${state.format} épisodes…`);
       const results = await Promise.all(batches);
       setEpisodes(results.flatMap(r => r.episodes || []));
       setScreen("bible");
@@ -409,10 +402,15 @@ export default function App() {
     setScript(null);
     setScreen("studio");
     setLoading(true);
+    setErr(null);
     try {
       const s = await gen("script", { ep: episodes[idx], bible, mode: state.mode, duree: state.duree }, customerId);
       setScript(s);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      setErr(e.message);
+      setScreen("bible");
+    }
     setLoading(false);
   };
 
@@ -421,7 +419,9 @@ export default function App() {
     try {
       const u = await gen("edit", { script, type, duree: state.duree }, customerId);
       setScript(u);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+    }
     setLoading(false);
   };
 

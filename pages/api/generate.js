@@ -1,6 +1,61 @@
 import { callClaude } from "../../lib/anthropic";
 import { requireSub } from "../../lib/auth";
 
+// Rate limiting en mémoire : max 20 requêtes par minute par customerId
+const rateLimitMap = new Map();
+function isRateLimited(customerId) {
+  const now = Date.now();
+  const window = 60_000;
+  const max = 20;
+  const entry = rateLimitMap.get(customerId) || { count: 0, start: now };
+  if (now - entry.start > window) {
+    rateLimitMap.set(customerId, { count: 1, start: now });
+    return false;
+  }
+  if (entry.count >= max) return true;
+  entry.count++;
+  rateLimitMap.set(customerId, entry);
+  return false;
+}
+
+const VALID_ACTIONS = ["bible", "episodes", "script", "edit"];
+const VALID_MODES = ["fast", "premium"];
+const VALID_DUREES = [60, 90, 120];
+const VALID_FORMATS = [10, 20, 40];
+const VALID_EDIT_TYPES = ["pimenter", "subtil", "simplifier"];
+
+function validatePayload(action, payload) {
+  if (!payload || typeof payload !== "object") return "Payload invalide";
+  if (action === "bible") {
+    const { mode, casting, univers, secret, format, duree } = payload;
+    if (!VALID_MODES.includes(mode)) return "Mode invalide";
+    if (!VALID_DUREES.includes(duree)) return "Durée invalide";
+    if (!VALID_FORMATS.includes(format)) return "Format invalide";
+    if (typeof casting !== "string" || casting.length > 100) return "Casting invalide";
+    if (typeof univers !== "string" || univers.length > 100) return "Univers invalide";
+    if (typeof secret !== "string" || secret.length > 100) return "Secret invalide";
+  } else if (action === "episodes") {
+    const { titre, logline, mode, from, to, total } = payload;
+    if (!VALID_MODES.includes(mode)) return "Mode invalide";
+    if (typeof titre !== "string" || titre.length > 200) return "Titre invalide";
+    if (typeof logline !== "string" || logline.length > 500) return "Logline invalide";
+    if (!Number.isInteger(from) || !Number.isInteger(to) || !Number.isInteger(total)) return "Numéros d'épisodes invalides";
+    if (from < 1 || to > 40 || from > to) return "Plage d'épisodes invalide";
+  } else if (action === "script") {
+    const { ep, bible, mode, duree } = payload;
+    if (!VALID_MODES.includes(mode)) return "Mode invalide";
+    if (!VALID_DUREES.includes(duree)) return "Durée invalide";
+    if (!ep || typeof ep !== "object") return "Épisode invalide";
+    if (!bible || typeof bible !== "object") return "Bible invalide";
+  } else if (action === "edit") {
+    const { script, type, duree } = payload;
+    if (!VALID_EDIT_TYPES.includes(type)) return "Type d'édition invalide";
+    if (!VALID_DUREES.includes(duree)) return "Durée invalide";
+    if (!script || typeof script !== "object") return "Script invalide";
+  }
+  return null;
+}
+
 const DUR_INSTR = {
   60: "Format 1 MINUTE: 4 à 5 échanges, max 20 mots par réplique, une seule révélation percutante.",
   90: "Format 1MIN30: 6 à 7 échanges, max 25 mots, montée progressive + retournement.",
@@ -10,11 +65,23 @@ const DUR_INSTR = {
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  // Vérifier l'abonnement
   const customerId = await requireSub(req, res);
   if (!customerId) return;
 
-  const { action, payload } = req.body;
+  if (isRateLimited(customerId)) {
+    return res.status(429).json({ error: "Trop de requêtes, veuillez patienter une minute." });
+  }
+
+  const { action, payload } = req.body || {};
+
+  if (!VALID_ACTIONS.includes(action)) {
+    return res.status(400).json({ error: "Action inconnue" });
+  }
+
+  const validationError = validatePayload(action, payload);
+  if (validationError) {
+    return res.status(400).json({ error: validationError });
+  }
 
   try {
     if (action === "bible") {
@@ -81,7 +148,6 @@ JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue
       return res.json(result);
     }
 
-    res.status(400).json({ error: "Action inconnue" });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: e.message });
