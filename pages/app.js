@@ -347,23 +347,11 @@ export default function App() {
     if (!router.isReady) return;
     const stored = localStorage.getItem("vs_customer");
     const { session_id, admin } = router.query;
-    if (admin) {
-      fetch("/api/admin-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: admin }),
-      })
-        .then(r => r.json())
-        .then(d => {
-          if (d.customerId) {
-            localStorage.setItem("vs_customer", d.customerId);
-            setCustomerId(d.customerId);
-            router.replace("/app");
-          } else {
-            setChecking(false);
-          }
-        })
-        .catch(() => setChecking(false));
+    if (admin && admin === process.env.NEXT_PUBLIC_JETON_ADMIN) {
+      localStorage.setItem("vs_customer", "admin");
+      setCustomerId("admin");
+      setChecking(false);
+      router.replace("/app");
       return;
     }
     if (session_id) {
