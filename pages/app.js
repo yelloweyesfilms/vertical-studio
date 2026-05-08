@@ -261,7 +261,7 @@ function TournageView({ script, ep, duree, onBack }) {
   const [playing, setPlaying] = useState(true);
   const ref = useRef(null);
   const iv = useRef(null);
-  const spd = duree <= 60 ? 1.0 : duree <= 90 ? 0.8 : 0.6;
+  const spd = duree <= 60 ? 3.0 : duree <= 90 ? 2.5 : 2.0;
 
   useEffect(() => {
     if (playing && ref.current) iv.current = setInterval(() => { if (ref.current) ref.current.scrollTop += spd; }, 55);
@@ -293,8 +293,8 @@ function TournageView({ script, ep, duree, onBack }) {
           <span style={{ fontSize: 11, fontWeight: 800, color: "var(--r)", letterSpacing: 2 }}>REC</span>
           <span style={{ fontSize: 12, color: "#888" }}>Ép. {ep?.numero} · {ep?.titre}</span>
         </div>
-        <button onClick={() => setPlaying(!playing)} style={{ background: playing ? "#333" : "var(--r)", border: "none", cursor: "pointer", padding: "8px 16px", borderRadius: 8, fontSize: 13, fontWeight: 700, color: "#fff", fontFamily: "var(--sans)", minWidth: 72 }}>
-          {playing ? "⏸ Pause" : "▶ Play"}
+        <button onClick={() => setPlaying(p => !p)} style={{ background: playing ? "var(--r)" : "#444", border: "none", cursor: "pointer", padding: "8px 16px", borderRadius: 8, fontSize: 13, fontWeight: 700, color: "#fff", fontFamily: "var(--sans)", minWidth: 80 }}>
+          {playing ? "⏸ Pause" : "▶ Démarrer"}
         </button>
       </div>
 
