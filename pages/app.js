@@ -12,6 +12,17 @@ const OPTS = {
 const DUR_LABEL = { 60: "1 min", 90: "1 min 30", 120: "2 min" };
 const DUR_SCENES = { 60: 5, 90: 7, 120: 10 };
 
+const PACKS = [
+  { emoji: "🏥", label: "Médical Secret",   mode: "fast",    casting: "1 Femme + 1 Homme", univers: "Hôpital privé",          secret: "Double vie" },
+  { emoji: "💼", label: "Corporate War",    mode: "premium", casting: "2 Hommes",           univers: "Finance internationale", secret: "Sabotage interne" },
+  { emoji: "👨‍👩‍👧", label: "Famille Brisée",  mode: "fast",    casting: "Trio mixte",         univers: "Famille recomposée",     secret: "Enfant caché" },
+  { emoji: "💕", label: "Amour Interdit",   mode: "fast",    casting: "1 Femme + 1 Homme", univers: "Mode & Influence",        secret: "Trahison amoureuse" },
+  { emoji: "🔪", label: "Vengeance",        mode: "premium", casting: "2 Femmes",           univers: "Héritage familial",       secret: "Manipulation psychologique" },
+  { emoji: "🤖", label: "IA & Pouvoir",     mode: "premium", casting: "1 Femme + 1 Homme", univers: "Start-up IA",             secret: "Espionnage industriel" },
+  { emoji: "🏆", label: "Sport & Trahison", mode: "fast",    casting: "2 Hommes",           univers: "Sport élite",             secret: "Vengeance planifiée" },
+  { emoji: "💊", label: "Pharma Noir",      mode: "premium", casting: "1 Femme + 1 Homme", univers: "Pharma & Biotech",        secret: "Complot financier" },
+];
+
 // ── API HELPER ───────────────────────────────────────────────
 async function gen(action, payload, customerId) {
   const res = await fetch("/api/generate", {
@@ -184,6 +195,23 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
       </div>
 
       <div style={{ padding: "24px 20px", maxWidth: 520, margin: "0 auto" }}>
+
+        {/* Packs thématiques */}
+        <div style={{ marginBottom: 28 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>
+            🎬 Packs rapides <span style={{ fontSize: 10, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>— remplit tout en 1 clic</span>
+          </p>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {PACKS.map(p => (
+              <button key={p.label} onClick={() => set({ mode: p.mode, casting: p.casting, univers: p.univers, secret: p.secret, format: p.mode === "fast" ? 10 : state.format })}
+                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 12px", borderRadius: 20, border: `1.5px solid ${p.mode === "premium" ? "var(--n)" : "var(--bo)"}`, background: p.mode === "premium" ? "var(--n)" : "var(--card)", color: p.mode === "premium" ? "#fff" : "var(--tx)", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)", whiteSpace: "nowrap" }}>
+                <span>{p.emoji}</span><span>{p.label}</span>
+                {p.mode === "premium" && <span style={{ fontSize: 9, background: "rgba(255,255,255,0.2)", padding: "1px 5px", borderRadius: 4, fontWeight: 700, letterSpacing: 0.5 }}>PRO</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {[
           { label: "Casting", opts: OPTS.casting, key: "casting" },
           { label: "Univers", opts: univOpts, key: "univers" },
