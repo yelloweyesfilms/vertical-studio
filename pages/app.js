@@ -147,6 +147,7 @@ const CUSTOM_PREFIX = "__custom__";
 function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
   const univOpts = state.mode === "fast" ? OPTS.univers_fast : OPTS.univers_prem;
   const secOpts = state.mode === "fast" ? OPTS.secret_fast : OPTS.secret_prem;
+  const totalMin = Math.round(state.format * state.duree / 60);
   const [customInputs, setCustomInputs] = useState({ casting: "", univers: "", secret: "" });
 
   const isCustom = (key) => state[key]?.startsWith(CUSTOM_PREFIX);
