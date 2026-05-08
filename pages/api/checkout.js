@@ -6,15 +6,19 @@ export default async function handler(req, res) {
   const { email } = req.body;
   const url = process.env.NEXT_PUBLIC_URL;
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    payment_method_types: ["card"],
-    customer_email: email || undefined,
-    line_items: [{ price: process.env.STRIPE_PRICE_ID, quantity: 1 }],
-    success_url: `${url}/app?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${url}/?canceled=1`,
-    allow_promotion_codes: true,
-  });
-
-  res.json({ url: session.url });
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      payment_method_types: ["card"],
+      customer_email: email || undefined,
+      line_items: [{ price: process.env.STRIPE_PRICE_ID, quantity: 1 }],
+      success_url: `${url}/app?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${url}/?canceled=1`,
+      allow_promotion_codes: true,
+    });
+    res.json({ url: session.url });
+  } catch (e) {
+    console.error("checkout:", e.message);
+    res.status(500).json({ error: "Erreur lors de la création de la session de paiement." });
+  }
 }

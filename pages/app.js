@@ -611,8 +611,8 @@ export default function App() {
     const stored = localStorage.getItem("vs_customer");
     const { session_id, admin } = router.query;
     if (admin && admin === process.env.NEXT_PUBLIC_JETON_ADMIN) {
-      localStorage.setItem("vs_customer", "admin");
-      setCustomerId("admin");
+      localStorage.setItem("vs_customer", admin);
+      setCustomerId(admin);
       setChecking(false);
       router.replace("/app");
       return;

@@ -64,6 +64,7 @@ function validatePayload(action, payload) {
     if (!VALID_MODES.includes(mode)) return "Mode invalide";
     if (typeof titre !== "string" || titre.length > 200) return "Titre invalide";
     if (typeof logline !== "string" || logline.length > 500) return "Logline invalide";
+    if (pitch !== undefined && (typeof pitch !== "string" || pitch.length > 500)) return "Pitch invalide";
   }
   return null;
 }
