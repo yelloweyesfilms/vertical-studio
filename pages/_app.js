@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import Head from "next/head";
+import Script from "next/script";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -14,6 +15,7 @@ export default function App({ Component, pageProps }) {
         <title>Vertical Studio</title>
         <meta name="description" content="Crée tes micro-dramas verticaux en 5 minutes. Écris, structure et tourne." />
       </Head>
+      <Script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" strategy="lazyOnload" />
       <Component {...pageProps} />
     </>
   );

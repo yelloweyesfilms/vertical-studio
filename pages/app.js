@@ -649,7 +649,8 @@ export default function App() {
     const b = bible, ep = episodes[epIdx], s = script;
     if (!s) return;
 
-    const { jsPDF } = await import("https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm");
+    const jsPDF = window.jspdf?.jsPDF;
+    if (!jsPDF) { alert("PDF non disponible, réessayez dans quelques secondes."); return; }
     const doc = new jsPDF({ unit: "mm", format: "a4" });
     const W = 210, margin = 20, contentW = W - margin * 2;
     const RED = [232, 92, 58], DARK = [15, 26, 18], GRAY = [120, 120, 120];
