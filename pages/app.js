@@ -312,7 +312,10 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
             </p>
             {(script.scenes || []).map((s, i) => (
               <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: 14, borderLeft: "3px solid var(--bo)", marginBottom: 10 }}>
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--n)", marginBottom: 6 }}>{s.perso}</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--n)" }}>{s.perso}</p>
+                  {s.jeu && <span style={{ fontSize: 10, background: "#f0f4f0", color: "var(--n)", padding: "2px 8px", borderRadius: 20, fontStyle: "italic" }}>{s.jeu}</span>}
+                </div>
                 <p style={{ fontSize: 14, lineHeight: 1.55, marginBottom: 6, fontWeight: 500 }}>{s.dialogue}</p>
                 <p style={{ fontSize: 12, color: "var(--mt)", fontStyle: "italic" }}>[9:16] {s.visuel_916}</p>
               </div>
@@ -355,7 +358,7 @@ function TournageView({ script, ep, duree, onBack }) {
 
   const lines = [];
   if (script.hook_scene) { lines.push({ t: "lbl", v: "⚡ HOOK" }); lines.push({ t: "txt", v: script.hook_scene.texte }); lines.push({ t: "stg", v: script.hook_scene.visuel_916 }); }
-  (script.scenes || []).forEach(s => { lines.push({ t: "nm", v: s.perso }); lines.push({ t: "txt", v: s.dialogue }); lines.push({ t: "stg", v: s.visuel_916 }); });
+  (script.scenes || []).forEach(s => { lines.push({ t: "nm", v: s.perso, jeu: s.jeu }); lines.push({ t: "txt", v: s.dialogue }); lines.push({ t: "stg", v: s.visuel_916 }); });
   if (script.cliffhanger_scene) { lines.push({ t: "lbl", v: "🎬 CLIFFHANGER" }); lines.push({ t: "txt", v: script.cliffhanger_scene.texte }); if (script.cliffhanger_scene.label) lines.push({ t: "hi", v: script.cliffhanger_scene.label }); }
 
   return (
@@ -382,7 +385,7 @@ function TournageView({ script, ep, duree, onBack }) {
         <div className="tp-content" style={{ padding: "0 28px", willChange: "transform" }}>
           {lines.map((l, i) => {
             if (l.t === "lbl") return <p key={i} style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: "var(--r)", marginBottom: 8, marginTop: 40, textAlign: "center" }}>{l.v}</p>;
-            if (l.t === "nm") return <p key={i} style={{ fontSize: 14, fontWeight: 700, color: "#facc15", letterSpacing: 2, textTransform: "uppercase", marginBottom: 6, marginTop: 32, textAlign: "center" }}>{l.v}</p>;
+            if (l.t === "nm") return <div key={i} style={{ textAlign: "center", marginTop: 32, marginBottom: 6 }}><p style={{ fontSize: 14, fontWeight: 700, color: "#facc15", letterSpacing: 2, textTransform: "uppercase" }}>{l.v}</p>{l.jeu && <p style={{ fontSize: 11, color: "#888", fontStyle: "italic", marginTop: 2 }}>{l.jeu}</p>}</div>;
             if (l.t === "txt") return <p key={i} style={{ fontFamily: "var(--serif)", fontSize: 30, color: "#fff", lineHeight: 1.6, marginBottom: 12, fontWeight: 700, textAlign: "center" }}>{l.v}</p>;
             if (l.t === "stg") return <p key={i} style={{ fontSize: 13, color: "#666", fontStyle: "italic", marginBottom: 28, textAlign: "center" }}>[{l.v}]</p>;
             if (l.t === "hi") return <div key={i} style={{ textAlign: "center", marginTop: 10, marginBottom: 28 }}><span style={{ display: "inline-block", background: "var(--r)", borderRadius: 6, padding: "8px 20px", fontSize: 16, fontWeight: 800, color: "#fff", letterSpacing: 2, textTransform: "uppercase" }}>{l.v}</span></div>;

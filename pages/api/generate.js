@@ -126,8 +126,9 @@ JSON: {"episodes":[{"numero":${from},"titre":"","cliffhanger":"","tension":${tFr
         `Script ép.${ep.numero} "${ep.titre}". Série: ${bible.titre}. Persos: ${persos}.
 Cliffhanger: ${ep.cliffhanger}.
 RÈGLES: hook 1 phrase choc, ${maxS} échanges max 25 mots, cliffhanger brutal, max 2 acteurs, gros plans 9:16.
-JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue":"","visuel_916":""}],"cliffhanger_scene":{"texte":"","visuel_916":"","label":""},"checklist":[""]}`,
-        2000
+Le champ "jeu" = indication de jeu d'acteur courte (ex: "voix brisée", "sourire forcé", "colère froide", "chuchote").
+JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue":"","jeu":"","visuel_916":""}],"cliffhanger_scene":{"texte":"","visuel_916":"","label":""},"checklist":[""]}`,
+        2200
       );
       return res.json(result);
     }
