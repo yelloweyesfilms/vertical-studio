@@ -39,15 +39,16 @@ export default function Landing() {
   const router = useRouter();
   const canceled = router.query.canceled;
 
-  const startCheckout = async () => {
+  const startCheckout = async (plan = "standard") => {
     if (!email) { alert("Entre ton email pour continuer"); return; }
     setLoading(true);
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, plan }),
     });
-    const { url } = await res.json();
+    const { url, error } = await res.json();
+    if (error) { alert(error); setLoading(false); return; }
     window.location.href = url;
   };
 
@@ -146,36 +147,47 @@ export default function Landing() {
       </div>
 
       {/* PRICING */}
-      <div style={s.pricing}>
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: 34, fontWeight: 900, marginBottom: 36, color: "#1A1A18" }}>Un seul tarif, tout inclus</h2>
-        <div style={s.pCard}>
-          <div style={s.price}>9€</div>
-          <p style={s.perMonth}>/mois · Sans engagement</p>
-          <div style={s.checkList}>
-            {[
-              "Séries illimitées",
-              "Scripts 1min, 1min30, 2min",
-              "Fast Drama + Premium Suspense",
-              "Mode Tournage + Téléprompteur",
-              "Export PDF",
-              "Mises à jour incluses",
-            ].map((item, i) => (
-              <div key={i} style={s.checkItem}>
-                <span style={{ color: "#E85C3A", fontSize: 18 }}>✓</span>
-                <span style={{ color: "#fff" }}>{item}</span>
-              </div>
-            ))}
+      <div style={{ ...s.pricing, maxWidth: 860 }}>
+        <h2 style={{ fontFamily: "var(--serif)", fontSize: 34, fontWeight: 900, marginBottom: 12, color: "#1A1A18" }}>Choisissez votre plan</h2>
+        <p style={{ color: "#6B6B68", marginBottom: 36, fontSize: 15 }}>Annulable à tout moment · Sans engagement</p>
+        <input type="email" placeholder="ton@email.com" value={email} onChange={e => setEmail(e.target.value)}
+          style={{ width: "100%", padding: "14px 18px", borderRadius: 10, border: "1px solid #ddd", background: "#fff", color: "#1A1A18", fontSize: 15, marginBottom: 24, outline: "none", maxWidth: 400, display: "block", margin: "0 auto 28px" }} />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+          {/* Standard */}
+          <div style={{ background: "#1A1A18", borderRadius: 24, padding: "36px 32px" }}>
+            <p style={{ fontSize: 12, fontWeight: 800, letterSpacing: 2, color: "#888", textTransform: "uppercase", marginBottom: 8 }}>Standard</p>
+            <div style={{ fontFamily: "var(--serif)", fontSize: 52, fontWeight: 900, color: "#fff", lineHeight: 1 }}>9€</div>
+            <p style={{ color: "#888", fontSize: 14, marginBottom: 28, marginTop: 4 }}>/mois</p>
+            <div style={{ marginBottom: 28 }}>
+              {["⚡ Fast Drama uniquement", "10 épisodes max", "Scripts 1min – 2min", "Mode Tournage + Téléprompteur", "Export PDF", "Sauvegardes illimitées"].map((item, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <span style={{ color: "#E85C3A", fontSize: 16 }}>✓</span>
+                  <span style={{ color: "#ddd", fontSize: 14 }}>{item}</span>
+                </div>
+              ))}
+            </div>
+            <button style={{ ...s.btnRed, width: "100%", fontSize: 15, padding: 16 }} onClick={() => startCheckout("standard")} disabled={loading}>
+              {loading ? "Redirection…" : "Commencer →"}
+            </button>
           </div>
-          <input
-            type="email"
-            placeholder="ton@email.com"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            style={{ width: "100%", padding: "14px 18px", borderRadius: 10, border: "1px solid #2a3a2e", background: "#242424", color: "#fff", fontSize: 15, marginBottom: 12, outline: "none", border: "1px solid #333" }}
-          />
-          <button style={{ ...s.btnRed, width: "100%", fontSize: 16, padding: 18 }} onClick={startCheckout} disabled={loading}>
-            {loading ? "Redirection…" : "Commencer maintenant →"}
-          </button>
+          {/* Premium */}
+          <div style={{ background: "#1A1A18", border: "2px solid #E85C3A", borderRadius: 24, padding: "36px 32px", position: "relative" }}>
+            <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: "#E85C3A", color: "#fff", fontSize: 11, fontWeight: 800, padding: "4px 14px", borderRadius: 20, letterSpacing: 1, whiteSpace: "nowrap" }}>⭐ RECOMMANDÉ</div>
+            <p style={{ fontSize: 12, fontWeight: 800, letterSpacing: 2, color: "#E85C3A", textTransform: "uppercase", marginBottom: 8 }}>Premium</p>
+            <div style={{ fontFamily: "var(--serif)", fontSize: 52, fontWeight: 900, color: "#E85C3A", lineHeight: 1 }}>19€</div>
+            <p style={{ color: "#888", fontSize: 14, marginBottom: 28, marginTop: 4 }}>/mois</p>
+            <div style={{ marginBottom: 28 }}>
+              {["⚡ Fast Drama + 🎭 Premium Suspense", "Jusqu'à 40 épisodes", "Scripts 1min – 2min", "Mode Tournage + Téléprompteur", "🎲 3 variations par script", "🔥 Générateur de titres viraux", "Export PDF", "Sauvegardes illimitées"].map((item, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <span style={{ color: "#E85C3A", fontSize: 16 }}>✓</span>
+                  <span style={{ color: "#ddd", fontSize: 14 }}>{item}</span>
+                </div>
+              ))}
+            </div>
+            <button style={{ ...s.btnRed, width: "100%", fontSize: 15, padding: 16 }} onClick={() => startCheckout("premium")} disabled={loading}>
+              {loading ? "Redirection…" : "Commencer Premium →"}
+            </button>
+          </div>
         </div>
       </div>
 

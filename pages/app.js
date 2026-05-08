@@ -155,7 +155,7 @@ function MesSeriesView({ onLoad, onBack }) {
 
 const CUSTOM_PREFIX = "__custom__";
 
-function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
+function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan }) {
   const univOpts = state.mode === "fast" ? OPTS.univers_fast : OPTS.univers_prem;
   const secOpts = state.mode === "fast" ? OPTS.secret_fast : OPTS.secret_prem;
   const totalMin = Math.round(state.format * state.duree / 60);
@@ -187,10 +187,15 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
           </div>
         </div>
         <div style={{ display: "flex", background: "#1a2a1e", borderRadius: 12, padding: 4 }}>
-          {[{ k: "fast", l: "⚡ Fast Drama" }, { k: "premium", l: "🎭 Premium Suspense" }].map(({ k, l }) => (
-            <button key={k} onClick={() => set(prev => ({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0], format: k === "fast" && prev.format > 10 ? 10 : prev.format }))}
-              style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: state.mode === k ? "#fff" : "#3a5040", transition: "all .2s", cursor: "pointer" }}>{l}</button>
-          ))}
+          {[{ k: "fast", l: "⚡ Fast Drama" }, { k: "premium", l: "🎭 Premium Suspense" }].map(({ k, l }) => {
+            const locked = k === "premium" && plan === "standard";
+            return (
+              <button key={k} onClick={() => { if (!locked) set(prev => ({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0], format: k === "fast" && prev.format > 10 ? 10 : prev.format })); }}
+                style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: locked ? "#3a5040" : state.mode === k ? "#fff" : "#3a5040", transition: "all .2s", cursor: locked ? "not-allowed" : "pointer", opacity: locked ? 0.5 : 1 }}>
+                {l}{locked && " 🔒"}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -285,7 +290,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
   );
 }
 
-function BibleView({ bible, episodes, mode, duree, onEp, onBack, customerId }) {
+function BibleView({ bible, episodes, mode, duree, onEp, onBack, customerId, plan }) {
   const [tab, setTab] = useState("bible");
   const [titres, setTitres] = useState(null);
   const [loadingTitres, setLoadingTitres] = useState(false);
@@ -316,9 +321,14 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, customerId }) {
         <p style={{ fontFamily: "var(--serif)", fontSize: 15, fontStyle: "italic", color: "var(--mt)", lineHeight: 1.5, marginBottom: 12 }}>« {bible.logline} »</p>
         <p style={{ fontSize: 14, lineHeight: 1.7, marginBottom: 16 }}>{bible.pitch}</p>
         <div style={{ display: "flex", borderBottom: "2px solid var(--bo)", marginBottom: 0 }}>
-          {[{ k: "bible", l: "Bible" }, { k: "seq", l: `${episodes.length} ép.` }, { k: "titres", l: "🔥 Titres" }].map(({ k, l }) => (
-            <button key={k} onClick={() => k === "titres" ? (titres ? setTab("titres") : genTitres()) : setTab(k)} style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, color: tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}</button>
-          ))}
+          {[{ k: "bible", l: "Bible" }, { k: "seq", l: `${episodes.length} ép.` }, { k: "titres", l: plan === "standard" ? "🔒 Titres" : "🔥 Titres" }].map(({ k, l }) => {
+            const locked = k === "titres" && plan === "standard";
+            return (
+              <button key={k} onClick={() => locked ? alert("Les titres viraux sont réservés au plan Premium. Passez à Premium pour débloquer cette fonctionnalité.") : k === "titres" ? (titres ? setTab("titres") : genTitres()) : setTab(k)}
+                style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: locked ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 700, color: locked ? "var(--bo)" : tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k && !locked ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}
+              </button>
+            );
+          })}
         </div>
       </div>
       <div style={{ padding: "20px", maxWidth: 520, margin: "0 auto" }}>
@@ -384,7 +394,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, customerId }) {
   );
 }
 
-function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onBack, onExport, onVariations }) {
+function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onBack, onExport, onVariations, plan }) {
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
       <div style={{ padding: "16px 20px 0", maxWidth: 520, margin: "0 auto" }}>
@@ -435,7 +445,7 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
                 <button key={k} onClick={() => onEdit(k)} disabled={loading} style={{ flex: 1, padding: "11px 6px", borderRadius: 10, border: "1.5px solid var(--bo)", background: "var(--card)", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "var(--sans)", transition: "all .15s" }}>{l}</button>
               ))}
             </div>
-            <button onClick={onVariations} disabled={loading} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", marginBottom: 10, fontFamily: "var(--sans)" }}>🎲 Générer 3 versions</button>
+            <button onClick={plan === "standard" ? () => alert("Les variations sont réservées au plan Premium.") : onVariations} disabled={loading} style={{ background: "var(--card)", color: plan === "standard" ? "var(--mt)" : "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: plan === "standard" ? "not-allowed" : "pointer", marginBottom: 10, fontFamily: "var(--sans)", opacity: plan === "standard" ? 0.6 : 1 }}>{plan === "standard" ? "🔒 Générer 3 versions" : "🎲 Générer 3 versions"}</button>
             <button onClick={onTournage} style={{ background: "var(--n)", color: "#fff", border: "none", padding: 15, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 10, fontFamily: "var(--sans)" }}>📱 Mode Tournage</button>
             <button onClick={onExport} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)" }}>📄 Exporter en PDF</button>
           </>
@@ -571,6 +581,7 @@ function TournageView({ script, ep, duree, onBack }) {
 export default function App() {
   const router = useRouter();
   const [customerId, setCustomerId] = useState(null);
+  const [plan, setPlan] = useState("standard");
   const [checking, setChecking] = useState(true);
   const [screen, setScreen] = useState("mix");
   const [darkMode, setDarkMode] = useState(false);
@@ -580,6 +591,8 @@ export default function App() {
     try {
       if (localStorage.getItem("vs_theme") === "dark") setDarkMode(true);
       setSavedCount(JSON.parse(localStorage.getItem(SAVE_KEY) || "[]").length);
+      const storedPlan = localStorage.getItem("vs_plan");
+      if (storedPlan) setPlan(storedPlan);
     } catch {}
   }, []);
 
@@ -623,7 +636,9 @@ export default function App() {
         .then(d => {
           if (d.customerId) {
             localStorage.setItem("vs_customer", d.customerId);
+            localStorage.setItem("vs_plan", d.plan || "standard");
             setCustomerId(d.customerId);
+            setPlan(d.plan || "standard");
             router.replace("/app");
           }
         })
@@ -636,7 +651,7 @@ export default function App() {
     }
   }, [router.isReady, router.query]);
 
-  const logout = () => { localStorage.removeItem("vs_customer"); setCustomerId(null); };
+  const logout = () => { localStorage.removeItem("vs_customer"); localStorage.removeItem("vs_plan"); setCustomerId(null); setPlan("standard"); };
 
   // ── Generation ──
   const generate = async () => {
@@ -864,10 +879,10 @@ export default function App() {
         </div>
       )}
 
-      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} />}
+      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} />}
-      {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} customerId={customerId} />}
-      {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => setScreen("tour")} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} />}
+      {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} customerId={customerId} plan={plan} />}
+      {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => setScreen("tour")} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} />}
       {screen === "variations" && <VariationsView variations={variations} loading={loadingVariations} ep={episodes[epIdx]} onSelect={selectVariation} onBack={() => setScreen("studio")} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
 

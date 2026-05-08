@@ -78,8 +78,9 @@ const DUR_INSTR = {
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const customerId = await requireSub(req, res);
-  if (!customerId) return;
+  const sub = await requireSub(req, res);
+  if (!sub) return;
+  const { customerId, plan } = sub;
 
   if (isRateLimited(customerId)) {
     return res.status(429).json({ error: "Trop de requêtes, veuillez patienter une minute." });
@@ -89,6 +90,18 @@ export default async function handler(req, res) {
 
   if (!VALID_ACTIONS.includes(action)) {
     return res.status(400).json({ error: "Action inconnue" });
+  }
+
+  // Restrictions plan Standard
+  const PREMIUM_ACTIONS = ["variations", "titres"];
+  if (plan === "standard" && PREMIUM_ACTIONS.includes(action)) {
+    return res.status(403).json({ error: "Cette fonctionnalité est réservée au plan Premium. Passez à Premium pour débloquer les variations et les titres viraux." });
+  }
+  if (plan === "standard" && action === "bible" && payload?.mode === "premium") {
+    return res.status(403).json({ error: "Le mode Premium Suspense est réservé au plan Premium." });
+  }
+  if (plan === "standard" && action === "bible" && payload?.format > 10) {
+    return res.status(403).json({ error: "Le plan Standard est limité à 10 épisodes. Passez à Premium pour créer jusqu'à 40 épisodes." });
   }
 
   const validationError = validatePayload(action, payload);
