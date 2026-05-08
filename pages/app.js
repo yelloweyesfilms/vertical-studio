@@ -63,9 +63,86 @@ function Chip({ label, active, onClick, block, sub }) {
   );
 }
 
+// ── SAUVEGARDE ───────────────────────────────────────────────
+const SAVE_KEY = "vs_series";
+
+function loadSaved() {
+  try { return JSON.parse(localStorage.getItem(SAVE_KEY) || "[]"); } catch { return []; }
+}
+
+function saveSerie(bible, episodes, state) {
+  const saved = loadSaved();
+  const entry = { id: Date.now(), savedAt: new Date().toISOString(), bible, episodes, state };
+  const updated = [entry, ...saved].slice(0, 20);
+  localStorage.setItem(SAVE_KEY, JSON.stringify(updated));
+  return entry.id;
+}
+
+function deleteSerie(id) {
+  const updated = loadSaved().filter(s => s.id !== id);
+  localStorage.setItem(SAVE_KEY, JSON.stringify(updated));
+}
+
+// ── ÉCRAN MES SÉRIES ─────────────────────────────────────────
+function MesSeriesView({ onLoad, onBack }) {
+  const [series, setSeries] = useState(() => loadSaved());
+
+  const handleDelete = (id) => {
+    deleteSerie(id);
+    setSeries(loadSaved());
+  };
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
+      <div style={{ background: "var(--tx)", padding: "28px 20px 24px" }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "#3a5040", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
+        <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>Mes Séries</h1>
+        <p style={{ fontSize: 12, color: "#3a5040", marginTop: 4 }}>{series.length} série{series.length !== 1 ? "s" : ""} sauvegardée{series.length !== 1 ? "s" : ""}</p>
+      </div>
+      <div style={{ padding: "20px", maxWidth: 520, margin: "0 auto" }}>
+        {series.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 0", color: "var(--mt)" }}>
+            <p style={{ fontSize: 32, marginBottom: 12 }}>📂</p>
+            <p style={{ fontSize: 15 }}>Aucune série sauvegardée</p>
+            <p style={{ fontSize: 13, marginTop: 6 }}>Générez votre première série !</p>
+          </div>
+        ) : series.map(s => (
+          <div key={s.id} style={{ background: "var(--card)", borderRadius: 14, padding: 16, marginBottom: 12, border: "1.5px solid var(--bo)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h3 style={{ fontFamily: "var(--serif)", fontSize: 18, fontWeight: 800, marginBottom: 4 }}>{s.bible.titre}</h3>
+                <p style={{ fontSize: 12, color: "var(--mt)", lineHeight: 1.5, marginBottom: 6 }}>{s.bible.logline}</p>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  <span style={{ fontSize: 11, background: s.state.mode === "fast" ? "#fff0ec" : "#e8edf2", color: s.state.mode === "fast" ? "var(--r)" : "var(--n)", padding: "2px 8px", borderRadius: 4, fontWeight: 700 }}>
+                    {s.state.mode === "fast" ? "⚡ Fast" : "🎭 Premium"}
+                  </span>
+                  <span style={{ fontSize: 11, background: "var(--bo)", padding: "2px 8px", borderRadius: 4, color: "var(--mt)" }}>
+                    {s.episodes.length} ép.
+                  </span>
+                  <span style={{ fontSize: 11, color: "var(--mt)" }}>
+                    {new Date(s.savedAt).toLocaleDateString("fr-FR")}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => onLoad(s)} style={{ flex: 1, background: "var(--r)", color: "#fff", border: "none", padding: "10px 0", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "var(--sans)" }}>
+                Ouvrir →
+              </button>
+              <button onClick={() => handleDelete(s.id)} style={{ background: "none", border: "1.5px solid var(--bo)", color: "var(--mt)", padding: "10px 14px", borderRadius: 10, fontSize: 13, cursor: "pointer", fontFamily: "var(--sans)" }}>
+                🗑
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── SCREENS ──────────────────────────────────────────────────
 
-function Mixeur({ state, set, onGen }) {
+function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
   const univOpts = state.mode === "fast" ? OPTS.univers_fast : OPTS.univers_prem;
   const secOpts = state.mode === "fast" ? OPTS.secret_fast : OPTS.secret_prem;
   const totalMin = Math.round(state.format * state.duree / 60);
@@ -129,6 +206,11 @@ function Mixeur({ state, set, onGen }) {
         <p style={{ fontSize: 12, color: "var(--mt)", textAlign: "center", marginTop: 12 }}>
           {state.format} épisodes · {DUR_LABEL[state.duree]} · {totalMin} min de contenu
         </p>
+        {hasSeries && (
+          <button onClick={onMesSeries} style={{ background: "none", border: "1.5px solid var(--bo)", color: "var(--tx)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 10, fontFamily: "var(--sans)" }}>
+            📂 Mes séries sauvegardées
+          </button>
+        )}
       </div>
     </div>
   );
@@ -327,6 +409,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [loadMsg, setLoadMsg] = useState("Initialisation…");
   const [err, setErr] = useState(null);
+  const [savedCount, setSavedCount] = useState(() => { try { return JSON.parse(localStorage.getItem(SAVE_KEY) || "[]").length; } catch { return 0; } });
 
   const set = (patch) => setState(prev => ({ ...prev, ...patch }));
 
@@ -386,11 +469,22 @@ export default function App() {
       }
       setLoadMsg(`Génération des ${state.format} épisodes…`);
       const results = await Promise.all(batches);
-      setEpisodes(results.flatMap(r => r.episodes || []));
+      const eps = results.flatMap(r => r.episodes || []);
+      setEpisodes(eps);
+      saveSerie(b, eps, state);
+      setSavedCount(loadSaved().length);
       setScreen("bible");
     } catch (e) {
       setErr(e.message);
     }
+  };
+
+  const loadSerie = (s) => {
+    setBible(s.bible);
+    setEpisodes(s.episodes);
+    setState(prev => ({ ...prev, ...s.state }));
+    setScript(null);
+    setScreen("bible");
   };
 
   const openEp = async (idx) => {
@@ -503,7 +597,8 @@ ${scenes}
         </div>
       )}
 
-      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} />}
+      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} />}
+      {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} />}
       {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => setScreen("tour")} onBack={() => setScreen("bible")} onExport={exportScript} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
