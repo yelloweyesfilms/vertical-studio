@@ -344,6 +344,7 @@ export default function App() {
 
   // ── Auth: check Stripe session or stored customerId ──
   useEffect(() => {
+    if (!router.isReady) return;
     const stored = localStorage.getItem("vs_customer");
     const { session_id, admin } = router.query;
     if (admin) {
@@ -382,7 +383,7 @@ export default function App() {
     } else {
       setChecking(false);
     }
-  }, [router.query]);
+  }, [router.isReady, router.query]);
 
   const logout = () => { localStorage.removeItem("vs_customer"); setCustomerId(null); };
 
