@@ -216,8 +216,21 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
   );
 }
 
-function BibleView({ bible, episodes, mode, duree, onEp, onBack }) {
+function BibleView({ bible, episodes, mode, duree, onEp, onBack, customerId }) {
   const [tab, setTab] = useState("bible");
+  const [titres, setTitres] = useState(null);
+  const [loadingTitres, setLoadingTitres] = useState(false);
+
+  const genTitres = async () => {
+    setLoadingTitres(true);
+    try {
+      const r = await gen("titres", { titre: bible.titre, logline: bible.logline, pitch: bible.pitch, mode }, customerId);
+      setTitres(r.titres || []);
+      setTab("titres");
+    } catch (e) { console.error(e); }
+    setLoadingTitres(false);
+  };
+
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
       <div style={{ padding: "16px 20px 0", maxWidth: 520, margin: "0 auto" }}>
@@ -234,8 +247,8 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack }) {
         <p style={{ fontFamily: "var(--serif)", fontSize: 15, fontStyle: "italic", color: "var(--mt)", lineHeight: 1.5, marginBottom: 12 }}>« {bible.logline} »</p>
         <p style={{ fontSize: 14, lineHeight: 1.7, marginBottom: 16 }}>{bible.pitch}</p>
         <div style={{ display: "flex", borderBottom: "2px solid var(--bo)", marginBottom: 0 }}>
-          {[{ k: "bible", l: "Bible" }, { k: "seq", l: `${episodes.length} épisodes` }].map(({ k, l }) => (
-            <button key={k} onClick={() => setTab(k)} style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, color: tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}</button>
+          {[{ k: "bible", l: "Bible" }, { k: "seq", l: `${episodes.length} ép.` }, { k: "titres", l: "🔥 Titres" }].map(({ k, l }) => (
+            <button key={k} onClick={() => k === "titres" ? (titres ? setTab("titres") : genTitres()) : setTab(k)} style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, color: tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}</button>
           ))}
         </div>
       </div>
@@ -259,6 +272,26 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack }) {
             <button onClick={() => setTab("seq")} style={{ background: "var(--r)", color: "#fff", border: "none", padding: 18, borderRadius: 14, width: "100%", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
               Voir les {episodes.length} épisodes →
             </button>
+          </>
+        ) : tab === "titres" ? (
+          <>
+            {loadingTitres ? (
+              <div style={{ textAlign: "center", padding: "40px 0", color: "var(--mt)" }}>
+                <div style={{ fontSize: 28, marginBottom: 12, animation: "pulse 1.2s infinite" }}>🔥</div>
+                <p>Analyse de la viralité…</p>
+              </div>
+            ) : (titres || []).map((t, i) => (
+              <div key={i} style={{ background: "var(--card)", borderRadius: 14, padding: 16, marginBottom: 12, border: "1.5px solid var(--bo)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <h3 style={{ fontFamily: "var(--serif)", fontSize: 17, fontWeight: 800, flex: 1 }}>{t.titre}</h3>
+                  <div style={{ background: t.score >= 90 ? "var(--r)" : t.score >= 80 ? "#f59e0b" : "var(--n)", color: "#fff", borderRadius: 8, padding: "4px 10px", fontSize: 13, fontWeight: 800, marginLeft: 10, flexShrink: 0 }}>
+                    {t.score}
+                  </div>
+                </div>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "var(--tx)", marginBottom: 4 }}>« {t.accroche} »</p>
+                <p style={{ fontSize: 12, color: "var(--mt)", lineHeight: 1.5 }}>{t.pourquoi}</p>
+              </div>
+            ))}
           </>
         ) : (
           (episodes || []).map((ep, i) => (
@@ -642,7 +675,7 @@ export default function App() {
 
       {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} />}
-      {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} />}
+      {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => setScreen("tour")} onBack={() => setScreen("bible")} onExport={exportScript} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
 

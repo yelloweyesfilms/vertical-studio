@@ -18,7 +18,7 @@ function isRateLimited(customerId) {
   return false;
 }
 
-const VALID_ACTIONS = ["bible", "episodes", "script", "edit"];
+const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres"];
 const VALID_MODES = ["fast", "premium"];
 const VALID_DUREES = [60, 90, 120];
 const VALID_FORMATS = [10, 20, 40];
@@ -52,6 +52,11 @@ function validatePayload(action, payload) {
     if (!VALID_EDIT_TYPES.includes(type)) return "Type d'édition invalide";
     if (!VALID_DUREES.includes(duree)) return "Durée invalide";
     if (!script || typeof script !== "object") return "Script invalide";
+  } else if (action === "titres") {
+    const { titre, logline, pitch, mode } = payload;
+    if (!VALID_MODES.includes(mode)) return "Mode invalide";
+    if (typeof titre !== "string" || titre.length > 200) return "Titre invalide";
+    if (typeof logline !== "string" || logline.length > 500) return "Logline invalide";
   }
   return null;
 }
@@ -145,6 +150,18 @@ JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue
         "Scénariste expert. JSON uniquement, même structure.",
         `${instr[type]}\n${JSON.stringify(script)}`,
         2000
+      );
+      return res.json(result);
+    }
+
+    if (action === "titres") {
+      const { titre, logline, pitch, mode } = payload;
+      const result = await callClaude(
+        "Expert en viralité des contenus courts (TikTok, Reels, Shorts). JSON uniquement.",
+        `Série micro-drama 9:16. Titre actuel: "${titre}". Logline: ${logline}. Pitch: ${pitch}. Mode: ${mode}.
+Génère 5 titres alternatifs ultra-viraux pour cette série. Chaque titre doit créer de la curiosité, du désir ou de la tension.
+JSON: {"titres":[{"titre":"","score":95,"accroche":"","pourquoi":""}]}`
+        , 1000
       );
       return res.json(result);
     }
