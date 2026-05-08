@@ -264,6 +264,15 @@ function TournageView({ script, ep, duree, onBack }) {
   const iv = useRef(null);
   const spd = duree <= 60 ? 1.0 : duree <= 90 ? 0.8 : 0.6;
 
+  if (!script) return (
+    <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#080E0B" }}>
+      <div style={{ textAlign: "center" }}>
+        <p style={{ color: "#5a7060", marginBottom: 20 }}>Script non disponible</p>
+        <button onClick={onBack} style={{ background: "var(--r)", color: "#fff", border: "none", padding: "12px 24px", borderRadius: 10, cursor: "pointer", fontFamily: "var(--sans)", fontWeight: 700 }}>← Retour</button>
+      </div>
+    </div>
+  );
+
   useEffect(() => {
     if (playing && ref.current) iv.current = setInterval(() => { if (ref.current) ref.current.scrollTop += spd; }, 55);
     else clearInterval(iv.current);
