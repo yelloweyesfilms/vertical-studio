@@ -515,49 +515,89 @@ export default function App() {
     setLoading(false);
   };
 
-  const exportScript = () => {
+  const exportScript = async () => {
     const b = bible, ep = episodes[epIdx], s = script;
     if (!s) return;
-    const scenes = (s.scenes || []).map(sc =>
-      `<div style="border-left:3px solid #ddd;padding-left:14px;margin-bottom:14px">
-        <p style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0F2236;margin-bottom:5px">${sc.perso}</p>
-        <p style="font-size:15px;line-height:1.55;font-weight:500;margin-bottom:5px">${sc.dialogue}</p>
-        <p style="font-size:11px;color:#888;font-style:italic">[9:16] ${sc.visuel_916}</p>
-      </div>`).join("");
-    const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>${b.titre} — Ép.${ep.numero}</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'DM Sans',sans-serif;color:#0F1A12;padding:52px 60px;max-width:720px;margin:0 auto;}h1{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin:10px 0 8px;}@media print{.np{display:none!important;}}</style>
-</head><body>
-<button class="np" onclick="window.print()" style="margin-bottom:28px;padding:12px 28px;background:#E85C3A;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">🖨 Imprimer / PDF</button>
-<div style="border-bottom:3px solid #E85C3A;padding-bottom:20px;margin-bottom:24px">
-  <p style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px">${b.titre}</p>
-  <h1>${ep.titre}</h1>
-  <p style="font-family:'Playfair Display',serif;font-size:14px;font-style:italic;color:#888">« ${b.logline} »</p>
-  <p style="font-size:12px;font-weight:700;color:#E85C3A;text-transform:uppercase;letter-spacing:1px;margin-top:8px">Épisode ${ep.numero} · ${DUR_LABEL[state.duree]}</p>
-</div>
-<p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#E85C3A;margin-bottom:10px">⚡ Hook — 3 premières secondes</p>
-<div style="background:#fff5f2;border:2px solid #E85C3A;border-radius:12px;padding:16px;margin-bottom:20px">
-  <p style="font-size:16px;font-weight:700;line-height:1.4;margin-bottom:8px">${s.hook_scene?.texte}</p>
-  <p style="font-size:12px;color:#E85C3A;font-style:italic">[9:16] ${s.hook_scene?.visuel_916}</p>
-</div>
-<p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#E85C3A;margin-bottom:14px">Script · ${DUR_LABEL[state.duree]}</p>
-${scenes}
-<div style="background:#0F1A12;border-radius:12px;padding:18px;margin-top:18px;color:#fff">
-  <p style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#E85C3A;margin-bottom:10px">🎬 Cliffhanger</p>
-  <p style="font-size:16px;font-weight:700;line-height:1.4;margin-bottom:8px">${s.cliffhanger_scene?.texte}</p>
-  <p style="font-size:12px;color:#E85C3A;font-style:italic">${s.cliffhanger_scene?.visuel_916}</p>
-</div>
-<div style="margin-top:36px;padding-top:14px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:12px">
-  <span style="font-weight:700;color:#E85C3A">VERTICAL STUDIO</span>
-  <span style="color:#888">${b.titre} — Ép.${ep.numero}</span>
-</div>
-</body></html>`;
-    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = `${b.titre.replace(/\s+/g, "_")}_ep${ep.numero}.html`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+    const { jsPDF } = await import("https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm");
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const W = 210, margin = 20, contentW = W - margin * 2;
+    const RED = [232, 92, 58], DARK = [15, 26, 18], GRAY = [120, 120, 120];
+    let y = margin;
+
+    const addText = (text, opts = {}) => {
+      const { size = 11, bold = false, color = [0, 0, 0], italic = false, align = "left", maxWidth = contentW } = opts;
+      doc.setFontSize(size);
+      doc.setFont("helvetica", bold && italic ? "bolditalic" : bold ? "bold" : italic ? "italic" : "normal");
+      doc.setTextColor(...color);
+      const lines = doc.splitTextToSize(String(text || ""), maxWidth);
+      const lineH = size * 0.4;
+      if (y + lines.length * lineH > 280) { doc.addPage(); y = margin; }
+      doc.text(lines, align === "center" ? W / 2 : margin, y, { align });
+      y += lines.length * lineH + 2;
+      return lines.length * lineH + 2;
+    };
+
+    const addSpace = (h = 4) => { y += h; };
+    const addLine = (color = [220, 220, 220]) => { doc.setDrawColor(...color); doc.line(margin, y, W - margin, y); addSpace(4); };
+
+    // En-tête
+    doc.setFillColor(...RED);
+    doc.rect(0, 0, W, 12, "F");
+    doc.setFontSize(8); doc.setFont("helvetica", "bold"); doc.setTextColor(255, 255, 255);
+    doc.text("VERTICAL STUDIO", margin, 8);
+    doc.text(`${b.titre} — Ép. ${ep.numero}`, W - margin, 8, { align: "right" });
+    y = 22;
+
+    addText(b.titre.toUpperCase(), { size: 9, bold: true, color: GRAY });
+    addText(ep.titre, { size: 22, bold: true });
+    addSpace(2);
+    addText(`« ${b.logline} »`, { size: 11, italic: true, color: GRAY });
+    addSpace(2);
+    addText(`Épisode ${ep.numero} · ${DUR_LABEL[state.duree]}`, { size: 10, bold: true, color: RED });
+    addSpace(4);
+    addLine(RED);
+
+    // Hook
+    addText("⚡ HOOK — 3 PREMIÈRES SECONDES", { size: 8, bold: true, color: RED });
+    addSpace(2);
+    doc.setFillColor(255, 245, 242);
+    const hookH = doc.splitTextToSize(String(s.hook_scene?.texte || ""), contentW - 8).length * 4.5 + 12;
+    doc.roundedRect(margin, y, contentW, hookH, 3, 3, "F");
+    y += 4;
+    addText(s.hook_scene?.texte, { size: 13, bold: true, maxWidth: contentW - 8 });
+    addText(`[9:16] ${s.hook_scene?.visuel_916}`, { size: 9, italic: true, color: RED, maxWidth: contentW - 8 });
+    y = Math.max(y, margin + 22 + hookH + 4);
+    addSpace(6);
+
+    // Scènes
+    addText(`SCRIPT · ${DUR_LABEL[state.duree]}`, { size: 8, bold: true, color: RED });
+    addSpace(3);
+    (s.scenes || []).forEach(sc => {
+      addText(sc.perso, { size: 9, bold: true, color: DARK });
+      addText(sc.dialogue, { size: 12 });
+      addText(`[9:16] ${sc.visuel_916}`, { size: 9, italic: true, color: GRAY });
+      addSpace(4);
+      addLine();
+    });
+
+    // Cliffhanger
+    addSpace(2);
+    doc.setFillColor(...DARK);
+    const cliffH = doc.splitTextToSize(String(s.cliffhanger_scene?.texte || ""), contentW - 8).length * 5.5 + 16;
+    doc.roundedRect(margin, y, contentW, Math.max(cliffH, 24), 3, 3, "F");
+    y += 5;
+    addText("🎬 CLIFFHANGER", { size: 8, bold: true, color: RED });
+    addSpace(1);
+    addText(s.cliffhanger_scene?.texte, { size: 13, bold: true, color: [255, 255, 255], maxWidth: contentW - 8 });
+    addText(s.cliffhanger_scene?.visuel_916, { size: 9, italic: true, color: RED, maxWidth: contentW - 8 });
+    addSpace(12);
+
+    // Pied de page
+    addLine();
+    addText("VERTICAL STUDIO", { size: 8, bold: true, color: RED });
+
+    doc.save(`${b.titre.replace(/\s+/g, "_")}_ep${ep.numero}.pdf`);
   };
 
   // ── Render ──
