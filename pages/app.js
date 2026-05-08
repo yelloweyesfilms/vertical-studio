@@ -261,12 +261,17 @@ function TournageView({ script, ep, duree, onBack }) {
   const [playing, setPlaying] = useState(true);
   const ref = useRef(null);
   const iv = useRef(null);
-  const spd = duree <= 60 ? 3.0 : duree <= 90 ? 2.5 : 2.0;
+  const spd = duree <= 60 ? 1.5 : duree <= 90 ? 1.2 : 0.9;
 
   useEffect(() => {
-    if (playing && ref.current) iv.current = setInterval(() => { if (ref.current) ref.current.scrollTop += spd; }, 55);
-    else clearInterval(iv.current);
-    return () => clearInterval(iv.current);
+    if (!playing) return;
+    let raf;
+    const step = () => {
+      if (ref.current) ref.current.scrollTop += spd;
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
   }, [playing, spd]);
 
   const lines = [];
