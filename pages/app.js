@@ -422,6 +422,9 @@ function VariationsView({ variations, loading, ep, onSelect, onBack }) {
 
 function TournageView({ script, ep, duree, onBack }) {
   const [playing, setPlaying] = useState(false);
+  const [fontSize, setFontSize] = useState(28);
+  const [speed, setSpeed] = useState(duree <= 60 ? 50 : duree <= 90 ? 70 : 90);
+  const [showSettings, setShowSettings] = useState(false);
 
   if (!script) return (
     <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
@@ -432,8 +435,6 @@ function TournageView({ script, ep, duree, onBack }) {
     </div>
   );
 
-  const animDuration = duree <= 60 ? 50 : duree <= 90 ? 70 : 90;
-
   const lines = [];
   if (script.hook_scene) { lines.push({ t: "lbl", v: "⚡ HOOK" }); lines.push({ t: "txt", v: script.hook_scene.texte }); lines.push({ t: "stg", v: script.hook_scene.visuel_916 }); }
   (script.scenes || []).forEach(s => { lines.push({ t: "nm", v: s.perso, jeu: s.jeu }); lines.push({ t: "txt", v: s.dialogue }); lines.push({ t: "stg", v: s.visuel_916 }); });
@@ -443,29 +444,50 @@ function TournageView({ script, ep, duree, onBack }) {
     <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#000", color: "#fff", overflow: "hidden" }}>
       <style>{`
         @keyframes teleprompt { from { transform: translateY(100vh); } to { transform: translateY(-100%); } }
-        .tp-content { animation: teleprompt ${animDuration}s linear infinite; animation-play-state: ${playing ? "running" : "paused"}; }
+        .tp-content { animation: teleprompt ${speed}s linear infinite; animation-play-state: ${playing ? "running" : "paused"}; }
       `}</style>
 
       {/* Barre du haut */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", background: "#111", flexShrink: 0, zIndex: 10 }}>
-        <button onClick={onBack} style={{ background: "none", border: "1px solid #333", color: "#aaa", cursor: "pointer", padding: "8px 14px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 13 }}>← Retour</button>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 8, height: 8, borderRadius: "50%", background: playing ? "var(--r)" : "#555", animation: playing ? "pulse 1s infinite" : "none" }} />
-          <span style={{ fontSize: 11, fontWeight: 800, color: playing ? "var(--r)" : "#555", letterSpacing: 2 }}>REC</span>
-        </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: "#111", flexShrink: 0, zIndex: 10 }}>
+        <button onClick={onBack} style={{ background: "none", border: "1px solid #333", color: "#aaa", cursor: "pointer", padding: "8px 12px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 13 }}>← Retour</button>
         <button onClick={() => setPlaying(p => !p)} style={{ background: playing ? "#333" : "var(--r)", border: "none", cursor: "pointer", padding: "10px 18px", borderRadius: 8, fontSize: 14, fontWeight: 700, color: "#fff", fontFamily: "var(--sans)", minWidth: 100 }}>
           {playing ? "⏸ Pause" : "▶ Démarrer"}
         </button>
+        <button onClick={() => setShowSettings(s => !s)} style={{ background: showSettings ? "#333" : "none", border: "1px solid #333", color: "#aaa", cursor: "pointer", padding: "8px 12px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 16 }}>⚙️</button>
       </div>
+
+      {/* Panneau réglages */}
+      {showSettings && (
+        <div style={{ background: "#1a1a1a", padding: "16px 20px", flexShrink: 0, borderBottom: "1px solid #333" }}>
+          <div style={{ display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: 160 }}>
+              <p style={{ fontSize: 11, color: "#888", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>Taille du texte — {fontSize}px</p>
+              <input type="range" min={18} max={44} value={fontSize} onChange={e => setFontSize(Number(e.target.value))}
+                style={{ width: "100%", accentColor: "var(--r)" }} />
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#555", marginTop: 4 }}>
+                <span>A</span><span style={{ fontSize: 16 }}>A</span>
+              </div>
+            </div>
+            <div style={{ flex: 1, minWidth: 160 }}>
+              <p style={{ fontSize: 11, color: "#888", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>Vitesse — {speed}s</p>
+              <input type="range" min={20} max={150} value={speed} onChange={e => setSpeed(Number(e.target.value))}
+                style={{ width: "100%", accentColor: "var(--r)" }} />
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#555", marginTop: 4 }}>
+                <span>⚡ Rapide</span><span>🐢 Lent</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Zone téléprompteur */}
       <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
         <div className="tp-content" style={{ padding: "0 28px", willChange: "transform" }}>
           {lines.map((l, i) => {
             if (l.t === "lbl") return <p key={i} style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: "var(--r)", marginBottom: 8, marginTop: 40, textAlign: "center" }}>{l.v}</p>;
-            if (l.t === "nm") return <div key={i} style={{ textAlign: "center", marginTop: 32, marginBottom: 6 }}><p style={{ fontSize: 14, fontWeight: 700, color: "#facc15", letterSpacing: 2, textTransform: "uppercase" }}>{l.v}</p>{l.jeu && <p style={{ fontSize: 11, color: "#888", fontStyle: "italic", marginTop: 2 }}>{l.jeu}</p>}</div>;
-            if (l.t === "txt") return <p key={i} style={{ fontFamily: "var(--serif)", fontSize: 30, color: "#fff", lineHeight: 1.6, marginBottom: 12, fontWeight: 700, textAlign: "center" }}>{l.v}</p>;
-            if (l.t === "stg") return <p key={i} style={{ fontSize: 13, color: "#666", fontStyle: "italic", marginBottom: 28, textAlign: "center" }}>[{l.v}]</p>;
+            if (l.t === "nm") return <div key={i} style={{ textAlign: "center", marginTop: 32, marginBottom: 6 }}><p style={{ fontSize: Math.round(fontSize * 0.5), fontWeight: 700, color: "#facc15", letterSpacing: 2, textTransform: "uppercase" }}>{l.v}</p>{l.jeu && <p style={{ fontSize: 11, color: "#888", fontStyle: "italic", marginTop: 2 }}>{l.jeu}</p>}</div>;
+            if (l.t === "txt") return <p key={i} style={{ fontFamily: "var(--serif)", fontSize, color: "#fff", lineHeight: 1.6, marginBottom: 12, fontWeight: 700, textAlign: "center" }}>{l.v}</p>;
+            if (l.t === "stg") return <p key={i} style={{ fontSize: 12, color: "#555", fontStyle: "italic", marginBottom: 28, textAlign: "center" }}>[{l.v}]</p>;
             if (l.t === "hi") return <div key={i} style={{ textAlign: "center", marginTop: 10, marginBottom: 28 }}><span style={{ display: "inline-block", background: "var(--r)", borderRadius: 6, padding: "8px 20px", fontSize: 16, fontWeight: 800, color: "#fff", letterSpacing: 2, textTransform: "uppercase" }}>{l.v}</span></div>;
             return null;
           })}
