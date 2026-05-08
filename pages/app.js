@@ -258,26 +258,7 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
 }
 
 function TournageView({ script, ep, duree, onBack }) {
-  const [playing, setPlaying] = useState(true);
-  const ref = useRef(null);
-  const iv = useRef(null);
-  const spd = duree <= 60 ? 1.5 : duree <= 90 ? 1.2 : 0.9;
-
-  useEffect(() => {
-    if (!playing) return;
-    let raf;
-    const step = () => {
-      if (ref.current) ref.current.scrollTop += spd;
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [playing, spd]);
-
-  const lines = [];
-  if (script?.hook_scene) { lines.push({ t: "lbl", v: "⚡ HOOK" }); lines.push({ t: "txt", v: script.hook_scene.texte }); lines.push({ t: "stg", v: script.hook_scene.visuel_916 }); }
-  (script?.scenes || []).forEach(s => { lines.push({ t: "nm", v: s.perso }); lines.push({ t: "txt", v: s.dialogue }); lines.push({ t: "stg", v: s.visuel_916 }); });
-  if (script?.cliffhanger_scene) { lines.push({ t: "lbl", v: "🎬 CLIFFHANGER" }); lines.push({ t: "txt", v: script.cliffhanger_scene.texte }); if (script.cliffhanger_scene.label) lines.push({ t: "hi", v: script.cliffhanger_scene.label }); }
+  const [playing, setPlaying] = useState(false);
 
   if (!script) return (
     <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
@@ -288,42 +269,45 @@ function TournageView({ script, ep, duree, onBack }) {
     </div>
   );
 
+  const animDuration = duree <= 60 ? 50 : duree <= 90 ? 70 : 90;
+
+  const lines = [];
+  if (script.hook_scene) { lines.push({ t: "lbl", v: "⚡ HOOK" }); lines.push({ t: "txt", v: script.hook_scene.texte }); lines.push({ t: "stg", v: script.hook_scene.visuel_916 }); }
+  (script.scenes || []).forEach(s => { lines.push({ t: "nm", v: s.perso }); lines.push({ t: "txt", v: s.dialogue }); lines.push({ t: "stg", v: s.visuel_916 }); });
+  if (script.cliffhanger_scene) { lines.push({ t: "lbl", v: "🎬 CLIFFHANGER" }); lines.push({ t: "txt", v: script.cliffhanger_scene.texte }); if (script.cliffhanger_scene.label) lines.push({ t: "hi", v: script.cliffhanger_scene.label }); }
+
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#000", color: "#fff" }}>
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#000", color: "#fff", overflow: "hidden" }}>
+      <style>{`
+        @keyframes teleprompt { from { transform: translateY(100vh); } to { transform: translateY(-100%); } }
+        .tp-content { animation: teleprompt ${animDuration}s linear infinite; animation-play-state: ${playing ? "running" : "paused"}; }
+      `}</style>
+
       {/* Barre du haut */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", background: "#111", flexShrink: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", background: "#111", flexShrink: 0, zIndex: 10 }}>
         <button onClick={onBack} style={{ background: "none", border: "1px solid #333", color: "#aaa", cursor: "pointer", padding: "8px 14px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 13 }}>← Retour</button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--r)", animation: "pulse 1s infinite" }} />
-          <span style={{ fontSize: 11, fontWeight: 800, color: "var(--r)", letterSpacing: 2 }}>REC</span>
-          <span style={{ fontSize: 12, color: "#888" }}>Ép. {ep?.numero} · {ep?.titre}</span>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: playing ? "var(--r)" : "#555", animation: playing ? "pulse 1s infinite" : "none" }} />
+          <span style={{ fontSize: 11, fontWeight: 800, color: playing ? "var(--r)" : "#555", letterSpacing: 2 }}>REC</span>
         </div>
-        <button onClick={() => setPlaying(p => !p)} style={{ background: playing ? "var(--r)" : "#444", border: "none", cursor: "pointer", padding: "8px 16px", borderRadius: 8, fontSize: 13, fontWeight: 700, color: "#fff", fontFamily: "var(--sans)", minWidth: 80 }}>
+        <button onClick={() => setPlaying(p => !p)} style={{ background: playing ? "#333" : "var(--r)", border: "none", cursor: "pointer", padding: "10px 18px", borderRadius: 8, fontSize: 14, fontWeight: 700, color: "#fff", fontFamily: "var(--sans)", minWidth: 100 }}>
           {playing ? "⏸ Pause" : "▶ Démarrer"}
         </button>
       </div>
 
-      <div ref={ref} style={{ flex: 1, overflowY: "scroll", padding: "24px 28px 80px", scrollbarWidth: "none" }}>
-        {lines.map((l, i) => {
-          if (l.t === "lbl") return (
-            <p key={i} style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: "var(--r)", marginBottom: 8, marginTop: 36, textAlign: "center" }}>{l.v}</p>
-          );
-          if (l.t === "nm") return (
-            <p key={i} style={{ fontSize: 13, fontWeight: 700, color: "#facc15", letterSpacing: 2, textTransform: "uppercase", marginBottom: 6, marginTop: 28, textAlign: "center" }}>{l.v}</p>
-          );
-          if (l.t === "txt") return (
-            <p key={i} style={{ fontFamily: "var(--serif)", fontSize: 28, color: "#fff", lineHeight: 1.6, marginBottom: 10, fontWeight: 700, textAlign: "center" }}>{l.v}</p>
-          );
-          if (l.t === "stg") return (
-            <p key={i} style={{ fontSize: 13, color: "#888", fontStyle: "italic", marginBottom: 24, textAlign: "center" }}>[{l.v}]</p>
-          );
-          if (l.t === "hi") return (
-            <div key={i} style={{ textAlign: "center", marginTop: 8, marginBottom: 24 }}>
-              <span style={{ display: "inline-block", background: "var(--r)", borderRadius: 6, padding: "8px 20px", fontSize: 16, fontWeight: 800, color: "#fff", letterSpacing: 2, textTransform: "uppercase" }}>{l.v}</span>
-            </div>
-          );
-          return null;
-        })}
+      {/* Zone téléprompteur */}
+      <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
+        <div className="tp-content" style={{ padding: "0 28px", willChange: "transform" }}>
+          {lines.map((l, i) => {
+            if (l.t === "lbl") return <p key={i} style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: "var(--r)", marginBottom: 8, marginTop: 40, textAlign: "center" }}>{l.v}</p>;
+            if (l.t === "nm") return <p key={i} style={{ fontSize: 14, fontWeight: 700, color: "#facc15", letterSpacing: 2, textTransform: "uppercase", marginBottom: 6, marginTop: 32, textAlign: "center" }}>{l.v}</p>;
+            if (l.t === "txt") return <p key={i} style={{ fontFamily: "var(--serif)", fontSize: 30, color: "#fff", lineHeight: 1.6, marginBottom: 12, fontWeight: 700, textAlign: "center" }}>{l.v}</p>;
+            if (l.t === "stg") return <p key={i} style={{ fontSize: 13, color: "#666", fontStyle: "italic", marginBottom: 28, textAlign: "center" }}>[{l.v}]</p>;
+            if (l.t === "hi") return <div key={i} style={{ textAlign: "center", marginTop: 10, marginBottom: 28 }}><span style={{ display: "inline-block", background: "var(--r)", borderRadius: 6, padding: "8px 20px", fontSize: 16, fontWeight: 800, color: "#fff", letterSpacing: 2, textTransform: "uppercase" }}>{l.v}</span></div>;
+            return null;
+          })}
+          <div style={{ height: "100vh" }} />
+        </div>
       </div>
     </div>
   );
