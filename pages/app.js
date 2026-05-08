@@ -544,14 +544,21 @@ export default function App() {
   const [customerId, setCustomerId] = useState(null);
   const [checking, setChecking] = useState(true);
   const [screen, setScreen] = useState("mix");
-  const [darkMode, setDarkMode] = useState(() => {
-    try { return localStorage.getItem("vs_theme") === "dark"; } catch { return false; }
-  });
+  const [darkMode, setDarkMode] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("vs_theme") === "dark") setDarkMode(true);
+      setSavedCount(JSON.parse(localStorage.getItem(SAVE_KEY) || "[]").length);
+    } catch {}
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "");
     try { localStorage.setItem("vs_theme", darkMode ? "dark" : "light"); } catch {}
   }, [darkMode]);
+
   const [state, setState] = useState({ mode: "fast", casting: OPTS.casting[0], univers: OPTS.univers_fast[0], secret: OPTS.secret_fast[0], format: 10, duree: 60 });
   const [bible, setBible] = useState(null);
   const [episodes, setEpisodes] = useState([]);
@@ -560,7 +567,6 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [loadMsg, setLoadMsg] = useState("Initialisation…");
   const [err, setErr] = useState(null);
-  const [savedCount, setSavedCount] = useState(() => { try { return JSON.parse(localStorage.getItem(SAVE_KEY) || "[]").length; } catch { return 0; } });
 
   const set = (patch) => setState(prev => ({ ...prev, ...(typeof patch === "function" ? patch(prev) : patch) }));
   const cleanState = (s) => ({
