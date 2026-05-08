@@ -31,6 +31,7 @@ function validatePayload(action, payload) {
     if (!VALID_MODES.includes(mode)) return "Mode invalide";
     if (!VALID_DUREES.includes(duree)) return "Durée invalide";
     if (!VALID_FORMATS.includes(format)) return "Format invalide";
+    if (mode === "fast" && format > 10) return "Le mode Fast est limité à 10 épisodes. Passez en Premium Suspense pour créer jusqu'à 40 épisodes.";
     if (typeof casting !== "string" || casting.length > 100) return "Casting invalide";
     if (typeof univers !== "string" || univers.length > 100) return "Univers invalide";
     if (typeof secret !== "string" || secret.length > 100) return "Secret invalide";

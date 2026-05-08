@@ -162,7 +162,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
         </div>
         <div style={{ display: "flex", background: "#1a2a1e", borderRadius: 12, padding: 4 }}>
           {[{ k: "fast", l: "⚡ Fast Drama" }, { k: "premium", l: "🎭 Premium Suspense" }].map(({ k, l }) => (
-            <button key={k} onClick={() => set({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0] })}
+            <button key={k} onClick={() => set(prev => ({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0], format: k === "fast" && prev.format > 10 ? 10 : prev.format }))}
               style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: state.mode === k ? "#fff" : "#3a5040", transition: "all .2s", cursor: "pointer" }}>{l}</button>
           ))}
         </div>
@@ -192,11 +192,26 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries }) {
         </div>
 
         <div style={{ marginBottom: 28 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>Nombre d'épisodes</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>
+            Nombre d'épisodes
+            {state.mode === "fast" && <span style={{ marginLeft: 8, fontSize: 10, color: "var(--r)", fontWeight: 700 }}>max 10 en Fast</span>}
+          </p>
           <div style={{ display: "flex", gap: 8 }}>
-            {[10, 20, 40].map(f => (
-              <Chip key={f} label={`${f} ép.`} sub={`${Math.round(f * state.duree / 60)} min`} block active={state.format === f} onClick={() => set({ format: f })} />
-            ))}
+            {[10, 20, 40].map(f => {
+              const locked = state.mode === "fast" && f > 10;
+              return (
+                <div key={f} style={{ flex: 1, position: "relative" }}>
+                  <Chip
+                    label={`${f} ép.`}
+                    sub={locked ? "🎭 Premium" : `${Math.round(f * state.duree / 60)} min`}
+                    block
+                    active={state.format === f && !locked}
+                    onClick={() => { if (!locked) set({ format: f }); }}
+                  />
+                  {locked && <div style={{ position: "absolute", inset: 0, borderRadius: 14, background: "rgba(var(--bg-rgb,242,237,230),0.6)", cursor: "not-allowed" }} />}
+                </div>
+              );
+            })}
           </div>
         </div>
 
