@@ -207,13 +207,17 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan }) {
             🎬 Packs rapides <span style={{ fontSize: 10, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>— remplit tout en 1 clic</span>
           </p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {PACKS.map(p => (
-              <button key={p.label} onClick={() => set({ mode: p.mode, casting: p.casting, univers: p.univers, secret: p.secret, format: p.mode === "fast" ? 10 : state.format })}
-                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 12px", borderRadius: 20, border: `1.5px solid ${p.mode === "premium" ? "var(--n)" : "var(--bo)"}`, background: p.mode === "premium" ? "var(--n)" : "var(--card)", color: p.mode === "premium" ? "#fff" : "var(--tx)", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)", whiteSpace: "nowrap" }}>
-                <span>{p.emoji}</span><span>{p.label}</span>
-                {p.mode === "premium" && <span style={{ fontSize: 9, background: "rgba(255,255,255,0.2)", padding: "1px 5px", borderRadius: 4, fontWeight: 700, letterSpacing: 0.5 }}>PRO</span>}
-              </button>
-            ))}
+            {PACKS.map(p => {
+              const locked = p.mode === "premium" && plan === "standard";
+              return (
+                <button key={p.label}
+                  onClick={() => { if (!locked) set({ mode: p.mode, casting: p.casting, univers: p.univers, secret: p.secret, format: p.mode === "fast" ? 10 : state.format }); }}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 12px", borderRadius: 20, border: `1.5px solid ${p.mode === "premium" ? "var(--n)" : "var(--bo)"}`, background: p.mode === "premium" ? "var(--n)" : "var(--card)", color: p.mode === "premium" ? "#fff" : "var(--tx)", fontSize: 12, fontWeight: 600, cursor: locked ? "not-allowed" : "pointer", fontFamily: "var(--sans)", whiteSpace: "nowrap", opacity: locked ? 0.45 : 1 }}>
+                  <span>{p.emoji}</span><span>{p.label}</span>
+                  {p.mode === "premium" && <span style={{ fontSize: 9, background: "rgba(255,255,255,0.2)", padding: "1px 5px", borderRadius: 4, fontWeight: 700, letterSpacing: 0.5 }}>{locked ? "🔒" : "PRO"}</span>}
+                </button>
+              );
+            })}
           </div>
         </div>
 
