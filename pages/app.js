@@ -300,12 +300,15 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, customerId, pla
   const [loadingTitres, setLoadingTitres] = useState(false);
 
   const genTitres = async () => {
+    setTab("titres");
     setLoadingTitres(true);
     try {
       const r = await gen("titres", { titre: bible.titre, logline: bible.logline, pitch: bible.pitch, mode }, customerId);
       setTitres(r.titres || []);
-      setTab("titres");
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      setTitres([]);
+    }
     setLoadingTitres(false);
   };
 
