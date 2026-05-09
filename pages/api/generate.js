@@ -121,6 +121,15 @@ export default async function handler(req, res) {
 JSON: {"titre":"","logline":"","pitch":"","personnages":[{"nom":"","age":25,"role":"","secret":""},{"nom":"","age":28,"role":"","secret":""}],"tension_centrale":""}`,
         1500
       );
+      // Normalise les clés (Claude retourne parfois title/logLine en anglais)
+      if (!result.titre) result.titre = result.title || result.name || "Série sans titre";
+      if (!result.logline) result.logline = result.logLine || result.description || "";
+      if (!result.pitch) result.pitch = result.synopsis || result.summary || "";
+      if (!result.tension_centrale) result.tension_centrale = result.tension || result.central_tension || "";
+      if (!result.personnages) result.personnages = result.characters || result.personages || [];
+      // Tronque si trop long pour la validation episodes
+      result.titre = String(result.titre).slice(0, 199);
+      result.logline = String(result.logline).slice(0, 499);
       return res.json(result);
     }
 
