@@ -685,7 +685,6 @@ export default function App() {
     try {
       setLoadMsg("Création de la bible de la série…");
       const b = await gen("bible", cleanState(state), customerId);
-      if (!b.titre || !b.logline) throw new Error("La génération a retourné une bible incomplète. Réessayez.");
       setBible(b);
 
       const totalBatches = Math.ceil(state.format / 10);
