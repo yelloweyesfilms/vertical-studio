@@ -16,16 +16,22 @@ export default async function handler(req, res) {
     return res.status(400).send(`Webhook Error: ${e.message}`);
   }
 
-  // Tu peux logger les événements ici ou envoyer des emails
+  const obj = event.data.object;
   switch (event.type) {
     case "customer.subscription.created":
-      console.log("Nouvel abonné:", event.data.object.customer);
+      console.log("[stripe] nouvel abonné:", obj.customer, "status:", obj.status);
+      break;
+    case "customer.subscription.updated":
+      console.log("[stripe] abonnement mis à jour:", obj.customer, "status:", obj.status);
       break;
     case "customer.subscription.deleted":
-      console.log("Désabonnement:", event.data.object.customer);
+      console.log("[stripe] abonnement résilié:", obj.customer);
       break;
     case "invoice.payment_failed":
-      console.log("Paiement échoué:", event.data.object.customer);
+      console.log("[stripe] paiement échoué:", obj.customer, "montant:", obj.amount_due);
+      break;
+    case "invoice.payment_succeeded":
+      console.log("[stripe] paiement réussi:", obj.customer);
       break;
   }
 

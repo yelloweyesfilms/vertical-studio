@@ -644,8 +644,26 @@ export default function App() {
         })
         .finally(() => setChecking(false));
     } else if (stored) {
-      setCustomerId(stored);
-      setChecking(false);
+      fetch("/api/verify-plan", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${stored}` },
+      })
+        .then(r => r.json())
+        .then(d => {
+          if (d.active) {
+            setCustomerId(stored);
+            setPlan(d.plan || "standard");
+            localStorage.setItem("vs_plan", d.plan || "standard");
+          } else {
+            localStorage.removeItem("vs_customer");
+            localStorage.removeItem("vs_plan");
+          }
+        })
+        .catch(() => {
+          // En cas d'erreur réseau, on fait confiance au localStorage
+          setCustomerId(stored);
+        })
+        .finally(() => setChecking(false));
     } else {
       setChecking(false);
     }
