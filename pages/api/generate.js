@@ -1,6 +1,8 @@
 import { callClaude } from "../../lib/anthropic";
 import { requireSub } from "../../lib/auth";
+import { checkRateLimit } from "../../lib/rateLimit";
 import { Redis } from "@upstash/redis";
+import * as Sentry from "@sentry/nextjs";
 
 function getRedis() {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
@@ -38,22 +40,6 @@ function setCached(key, data) {
   genCache.set(key, { data, ts: Date.now() });
 }
 
-// Rate limiting en mémoire : max 20 requêtes par minute par customerId
-const rateLimitMap = new Map();
-function isRateLimited(customerId) {
-  const now = Date.now();
-  const window = 60_000;
-  const max = 20;
-  const entry = rateLimitMap.get(customerId) || { count: 0, start: now };
-  if (now - entry.start > window) {
-    rateLimitMap.set(customerId, { count: 1, start: now });
-    return false;
-  }
-  if (entry.count >= max) return true;
-  entry.count++;
-  rateLimitMap.set(customerId, entry);
-  return false;
-}
 
 const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variations", "traduire"];
 const VALID_MODES = ["fast", "premium"];
@@ -124,8 +110,9 @@ export default async function handler(req, res) {
   if (!sub) return;
   const { customerId, plan } = sub;
 
-  if (isRateLimited(customerId)) {
-    return res.status(429).json({ error: "Trop de requêtes, veuillez patienter une minute." });
+  const { limited, count, max } = await checkRateLimit(customerId, plan);
+  if (limited) {
+    return res.status(429).json({ error: `Limite atteinte (${max} générations/heure). Réessayez dans quelques minutes.` });
   }
 
   const { action, payload } = req.body || {};
@@ -315,6 +302,7 @@ Règles strictes:
     }
 
   } catch (e) {
+    Sentry.captureException(e, { extra: { action: req.body?.action, customerId, plan } });
     console.error(e);
     res.status(500).json({ error: e.message });
   }

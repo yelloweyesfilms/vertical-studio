@@ -1,5 +1,7 @@
 import { streamClaude } from "../../lib/anthropic";
 import { requireSub } from "../../lib/auth";
+import { checkRateLimit } from "../../lib/rateLimit";
+import * as Sentry from "@sentry/nextjs";
 
 export const config = { api: { responseLimit: false } };
 
@@ -18,7 +20,12 @@ export default async function handler(req, res) {
 
   const sub = await requireSub(req, res);
   if (!sub) return;
-  const { plan } = sub;
+  const { plan, customerId } = sub;
+
+  const { limited, max } = await checkRateLimit(customerId, plan);
+  if (limited) {
+    return res.status(429).json({ error: `Limite atteinte (${max} générations/heure). Réessayez dans quelques minutes.` });
+  }
 
   const { action, payload } = req.body || {};
   if (action !== "bible") return res.status(400).json({ error: "Seul l'action bible est streamable" });
@@ -72,6 +79,7 @@ JSON: {"titre":"","logline":"","pitch":"","personnages":[{"nom":"","age":25,"rol
 
     send({ done: true, result });
   } catch (e) {
+    Sentry.captureException(e, { extra: { customerId, plan, mode, format } });
     send({ error: e.message });
   }
 

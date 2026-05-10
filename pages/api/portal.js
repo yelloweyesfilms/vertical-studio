@@ -1,5 +1,6 @@
 import { stripe } from "../../lib/stripe";
 import { requireSub } from "../../lib/auth";
+import * as Sentry from "@sentry/nextjs";
 
 const RETURN_URL = process.env.NEXT_PUBLIC_URL
   ? `${process.env.NEXT_PUBLIC_URL}/app`
@@ -19,6 +20,7 @@ export default async function handler(req, res) {
     });
     res.json({ url: session.url });
   } catch (e) {
+    Sentry.captureException(e);
     res.status(500).json({ error: e.message });
   }
 }

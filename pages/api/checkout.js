@@ -1,5 +1,6 @@
 import { stripe } from "../../lib/stripe";
 import { Redis } from "@upstash/redis";
+import * as Sentry from "@sentry/nextjs";
 
 function getRedis() {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
@@ -55,6 +56,7 @@ export default async function handler(req, res) {
 
     res.json({ url: session.url });
   } catch (e) {
+    Sentry.captureException(e);
     console.error("checkout:", e.message);
     res.status(500).json({ error: "Erreur lors de la création de la session de paiement." });
   }
