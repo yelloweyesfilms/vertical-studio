@@ -4,8 +4,8 @@ import Script from "next/script";
 
 const SITE = "https://studiovertical.app";
 const TITLE = "Studio Vertical — Micro-dramas 9:16 en 5 minutes avec l'IA";
-const DESC = "Génère des micro-dramas verticaux complets : bible, scripts, hooks et cliffhangers. Prêts à tourner sur TikTok, Reels et Shorts.";
-const OG_IMAGE = `${SITE}/og.png`;
+const DESC = "Génère des micro-dramas verticaux complets : bible, scripts, hooks et cliffhangers. Prêts à tourner sur TikTok, Reels et Shorts.";
+const OG_IMAGE = `${SITE}/api/og`;
 
 export default function App({ Component, pageProps }) {
   return (
@@ -23,7 +23,6 @@ export default function App({ Component, pageProps }) {
         <meta name="keywords" content="micro-drama, vertical, 9:16, TikTok, Reels, Shorts, scénario, script, IA, générateur" />
         <link rel="canonical" href={SITE} />
 
-        {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={SITE} />
         <meta property="og:title" content={TITLE} />
@@ -34,7 +33,6 @@ export default function App({ Component, pageProps }) {
         <meta property="og:locale" content="fr_FR" />
         <meta property="og:site_name" content="Studio Vertical" />
 
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={TITLE} />
         <meta name="twitter:description" content={DESC} />
