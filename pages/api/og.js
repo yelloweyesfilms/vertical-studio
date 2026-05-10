@@ -2,7 +2,11 @@ import { ImageResponse } from "next/og";
 
 export const config = { runtime: "edge" };
 
-export default function handler() {
+export default function handler(req) {
+  const host = req.headers.get("host") || "studiovertical.app";
+  const proto = host.includes("localhost") ? "http" : "https";
+  const imageUrl = `${proto}://${host}/og.png`;
+
   return new ImageResponse(
     (
       <div
@@ -10,46 +14,36 @@ export default function handler() {
           width: "1200px",
           height: "630px",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          padding: "80px",
-          background: "#0F1A12",
-          fontFamily: "Georgia, serif",
+          position: "relative",
         }}
       >
-        {/* Accent bar */}
-        <div style={{ width: 60, height: 6, background: "#E85C3A", borderRadius: 3, marginBottom: 40, display: "flex" }} />
+        {/* Bannière originale en fond */}
+        <img
+          src={imageUrl}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        />
 
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 48 }}>
-          <div style={{ width: 48, height: 48, background: "#E85C3A", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ color: "#fff", fontSize: 24, fontWeight: 900, display: "flex" }}>V</div>
-          </div>
-          <div style={{ color: "#fff", fontSize: 22, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", display: "flex" }}>
-            STUDIO <span style={{ color: "#E85C3A", marginLeft: 8, display: "flex" }}>VERTICAL</span>
-          </div>
-        </div>
-
-        {/* Headline */}
-        <div style={{ color: "#fff", fontSize: 64, fontWeight: 900, lineHeight: 1.1, marginBottom: 24, display: "flex", flexDirection: "column" }}>
-          <span style={{ display: "flex" }}>Micro-dramas 9:16</span>
-          <span style={{ color: "#E85C3A", display: "flex" }}>en 5 minutes.</span>
-        </div>
-
-        {/* Subline */}
-        <div style={{ color: "#6a7a6e", fontSize: 26, lineHeight: 1.5, maxWidth: 700, display: "flex" }}>
-          Bible · Scripts · Hooks · Cliffhangers — prêts à tourner sur TikTok, Reels & Shorts.
-        </div>
-
-        {/* Bottom right badge */}
-        <div style={{ position: "absolute", bottom: 60, right: 80, display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ background: "#1a2a1e", border: "1px solid #2a3a2e", borderRadius: 20, padding: "8px 20px", display: "flex" }}>
-            <span style={{ color: "#4ade80", fontSize: 16, fontWeight: 700, display: "flex" }}>✦ Propulsé par l'IA</span>
-          </div>
+        {/* Overlay CTA en bas à gauche */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 48,
+            left: 72,
+            display: "flex",
+            alignItems: "center",
+            background: "#E85C3A",
+            borderRadius: "14px",
+            padding: "16px 32px",
+            boxShadow: "0 8px 32px rgba(232,92,58,0.5)",
+          }}
+        >
+          <span style={{ color: "#fff", fontSize: 28, fontWeight: 800, fontFamily: "sans-serif", display: "flex" }}>
+            Commencer gratuitement →
+          </span>
         </div>
       </div>
     ),
     { width: 1200, height: 630 }
   );
 }
+
