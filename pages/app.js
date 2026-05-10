@@ -137,37 +137,54 @@ function deleteSerie(id) {
 }
 
 // ── ONBOARDING ───────────────────────────────────────────────
-const ONBOARDING_STEPS = [
-  { icon: "🎲", titre: "Le Mixeur", desc: "Choisis ton casting, ton univers et ton secret central. En 1 clic, la série prend forme." },
-  { icon: "📖", titre: "La Bible", desc: "Titre viral, logline, personnages et séquencier complet. De l'idée à la bible pro en secondes." },
-  { icon: "📝", titre: "Les Scripts", desc: "Chaque épisode de 1 à 2 min : hook, dialogues, directions 9:16. Prêt à tourner." },
-  { icon: "📱", titre: "Mode Tournage", desc: "Téléprompteur auto-scroll, fond clair/sombre, réglage vitesse. Tout sur le plateau." },
+const ONBOARDING_PACKS = [
+  { emoji: "🏥", label: "Médical Secret",  mode: "fast",    casting: "1 Femme + 1 Homme", univers: "Hôpital privé",          secret: "Double vie",        desc: "Une infirmière cache une erreur qui peut tout faire basculer." },
+  { emoji: "👨‍👩‍👧", label: "Famille Brisée", mode: "fast",    casting: "Trio mixte",         univers: "Famille recomposée",     secret: "Enfant caché",      desc: "Un secret de famille remonte à la surface au pire moment." },
+  { emoji: "💼", label: "Corporate War",   mode: "fast",    casting: "2 Hommes",           univers: "Milieu corporate",       secret: "Trahison amoureuse", desc: "Deux associés, un seul pouvait rester." },
 ];
 
-function OnboardingModal({ onClose }) {
+function OnboardingModal({ onClose, onLaunch }) {
   const [step, setStep] = useState(0);
-  const current = ONBOARDING_STEPS[step];
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <div style={{ background: "var(--bg)", borderRadius: 20, padding: 32, maxWidth: 360, width: "100%", textAlign: "center", boxShadow: "0 24px 64px rgba(0,0,0,.4)" }}>
-        <div style={{ fontSize: 52, marginBottom: 16 }}>{current.icon}</div>
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: 22, fontWeight: 900, marginBottom: 10 }}>{current.titre}</h2>
-        <p style={{ fontSize: 14, color: "var(--mt)", lineHeight: 1.65, marginBottom: 28 }}>{current.desc}</p>
-        <div style={{ display: "flex", justifyContent: "center", gap: 7, marginBottom: 24 }}>
-          {ONBOARDING_STEPS.map((_, i) => (
-            <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: i === step ? "var(--r)" : "var(--bo)", transition: "all .2s" }} />
-          ))}
-        </div>
-        <button
-          onClick={() => { if (step < ONBOARDING_STEPS.length - 1) setStep(s => s + 1); else onClose(); }}
-          style={{ background: "var(--r)", color: "#fff", border: "none", padding: "14px 0", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", width: "100%", fontFamily: "var(--sans)" }}>
-          {step < ONBOARDING_STEPS.length - 1 ? "Suivant →" : "C'est parti !"}
+
+  if (step === 0) return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.82)", zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 0 }}>
+      <div style={{ background: "var(--bg)", borderRadius: "24px 24px 0 0", padding: "36px 28px 48px", maxWidth: 480, width: "100%", textAlign: "center", boxShadow: "0 -12px 64px rgba(0,0,0,.5)" }}>
+        <div style={{ width: 40, height: 4, background: "var(--bo)", borderRadius: 2, margin: "0 auto 28px" }} />
+        <div style={{ fontSize: 48, marginBottom: 16 }}>🎬</div>
+        <h2 style={{ fontFamily: "var(--serif)", fontSize: 24, fontWeight: 900, marginBottom: 10, lineHeight: 1.2 }}>Ta première série<br/>en 30 secondes</h2>
+        <p style={{ fontSize: 14, color: "var(--mt)", lineHeight: 1.7, marginBottom: 10 }}>Vertical Studio génère une bible complète, un séquencier d'épisodes et des scripts prêts à tourner.</p>
+        <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.6, marginBottom: 32 }}>Choisis un thème et on s'occupe du reste.</p>
+        <button onClick={() => setStep(1)} style={{ background: "var(--r)", color: "#fff", border: "none", padding: "16px 0", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", width: "100%", fontFamily: "var(--sans)", marginBottom: 12 }}>
+          Choisir mon thème →
         </button>
-        {step === 0 && (
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--mt)", fontSize: 12, cursor: "pointer", marginTop: 12, fontFamily: "var(--sans)" }}>
-            Passer
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--mt)", fontSize: 13, cursor: "pointer", fontFamily: "var(--sans)" }}>
+          Je préfère configurer moi-même
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.82)", zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div style={{ background: "var(--bg)", borderRadius: "24px 24px 0 0", padding: "36px 28px 48px", maxWidth: 480, width: "100%", boxShadow: "0 -12px 64px rgba(0,0,0,.5)" }}>
+        <div style={{ width: 40, height: 4, background: "var(--bo)", borderRadius: 2, margin: "0 auto 28px" }} />
+        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 16, textAlign: "center" }}>Choisis ton premier thème</p>
+        {ONBOARDING_PACKS.map((pack, i) => (
+          <button key={i} onClick={() => onLaunch(pack)}
+            style={{ display: "flex", alignItems: "center", gap: 14, width: "100%", background: "var(--card)", border: "1.5px solid var(--bo)", borderRadius: 16, padding: "16px 18px", marginBottom: 10, cursor: "pointer", textAlign: "left", fontFamily: "var(--sans)", transition: "border-color .15s" }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = "var(--r)"}
+            onMouseLeave={e => e.currentTarget.style.borderColor = "var(--bo)"}>
+            <span style={{ fontSize: 30, flexShrink: 0 }}>{pack.emoji}</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>{pack.label}</p>
+              <p style={{ fontSize: 12, color: "var(--mt)", lineHeight: 1.4 }}>{pack.desc}</p>
+            </div>
+            <span style={{ color: "var(--r)", fontSize: 18, flexShrink: 0 }}>→</span>
           </button>
-        )}
+        ))}
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--mt)", fontSize: 13, cursor: "pointer", width: "100%", marginTop: 6, fontFamily: "var(--sans)" }}>
+          ← Retour
+        </button>
       </div>
     </div>
   );
@@ -1005,6 +1022,12 @@ export default function App() {
     try { localStorage.setItem("vs_onboarded", "1"); } catch {}
   };
 
+  const launchOnboarding = (pack) => {
+    setState(s => ({ ...s, mode: pack.mode, casting: pack.casting, univers: pack.univers, secret: pack.secret }));
+    dismissOnboarding();
+    setTimeout(() => generate(pack), 50);
+  };
+
   const [state, setState] = useState({ mode: "fast", casting: OPTS.casting[0], univers: OPTS.univers_fast[0], secret: OPTS.secret_fast[0], format: 10, duree: 60 });
   const [bible, setBible] = useState(null);
   const [episodes, setEpisodes] = useState([]);
@@ -1082,7 +1105,7 @@ export default function App() {
   };
 
   // Generation avec streaming bible
-  const generate = async () => {
+  const generate = async (overrideState) => {
     setErr(null);
     setScreen("load");
     setLoadMsg("Connexion au générateur…");
@@ -1090,11 +1113,13 @@ export default function App() {
     setRawStream("");
     setLoadProgress(0);
 
+    const activeState = overrideState ? { ...state, mode: overrideState.mode, casting: overrideState.casting, univers: overrideState.univers, secret: overrideState.secret } : state;
+
     try {
       setLoadMsg("Création de la bible…");
       let accumulated = "";
 
-      const b = await genBibleStream(cleanState(state), customerId, (chunk) => {
+      const b = await genBibleStream(cleanState(activeState), customerId, (chunk) => {
         accumulated += chunk;
         setRawStream(accumulated);
         // Extraire les champs visibles au fur et à mesure
@@ -1106,14 +1131,14 @@ export default function App() {
       setBible(b);
       setStreamBible(b);
 
-      const totalBatches = Math.ceil(state.format / 10);
+      const totalBatches = Math.ceil(activeState.format / 10);
       let completedBatches = 0;
       const batches = [];
       for (let i = 0; i < state.format; i += 10) {
-        const from = i + 1, to = Math.min(i + 10, state.format);
+        const from = i + 1, to = Math.min(i + 10, activeState.format);
         const batchNum = Math.floor(i / 10) + 1;
         batches.push(
-          gen("episodes", { titre: b.titre, logline: b.logline, mode: state.mode, from, to, total: state.format }, customerId)
+          gen("episodes", { titre: b.titre, logline: b.logline, mode: activeState.mode, from, to, total: activeState.format }, customerId)
             .then(result => {
               completedBatches++;
               setLoadProgress(Math.round((completedBatches / totalBatches) * 100));
@@ -1122,15 +1147,15 @@ export default function App() {
             })
         );
       }
-      setLoadMsg(`Génération des ${state.format} épisodes…`);
+      setLoadMsg(`Génération des ${activeState.format} épisodes…`);
       const results = await Promise.all(batches);
       const eps = results.flatMap(r => r.episodes || []);
       setEpisodes(eps);
 
-      saveSerie(b, eps, state);
+      saveSerie(b, eps, activeState);
       setSavedCount(loadSaved().length);
       // Sync cloud (fire and forget)
-      cloudSave(b, eps, state, customerId);
+      cloudSave(b, eps, activeState, customerId);
 
       setScreen("bible");
     } catch (e) {
@@ -1305,7 +1330,7 @@ export default function App() {
         input, textarea, select { font-size: 16px !important; }
       `}</style>
 
-      {showOnboarding && <OnboardingModal onClose={dismissOnboarding} />}
+      {showOnboarding && <OnboardingModal onClose={dismissOnboarding} onLaunch={launchOnboarding} />}
 
       {/* Loading */}
       {screen === "load" && (
