@@ -1,11 +1,14 @@
 import { requireSub } from "../../lib/auth";
+import { Redis } from "@upstash/redis";
 
-// Vercel KV avec fallback silencieux si non configuré
-async function getKv() {
-  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) return null;
+// Upstash Redis avec fallback silencieux si non configuré
+function getKv() {
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
   try {
-    const { kv } = await import("@vercel/kv");
-    return kv;
+    return new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    });
   } catch {
     return null;
   }
@@ -16,7 +19,7 @@ export default async function handler(req, res) {
   if (!sub) return;
   const { customerId } = sub;
 
-  const kv = await getKv();
+  const kv = getKv();
   if (!kv) return res.status(503).json({ error: "Cloud storage non configuré" });
 
   const indexKey = `series_index:${customerId}`;
