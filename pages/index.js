@@ -53,10 +53,25 @@ const FAQ_ITEMS = [
 
 export default function Landing() {
   const [email, setEmail] = useState("");
+  const [refCode, setRefCode] = useState("");
+  const [refValid, setRefValid] = useState(null); // null | true | false
   const [loading, setLoading] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const router = useRouter();
   const canceled = router.query.canceled;
+
+  const checkRefCode = async (code) => {
+    setRefCode(code);
+    if (code.length < 4) { setRefValid(null); return; }
+    try {
+      const res = await fetch("/api/referral", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      setRefValid(res.ok);
+    } catch { setRefValid(false); }
+  };
 
   const startCheckout = async (plan = "standard") => {
     if (!email) { alert("Entre ton email pour continuer"); return; }
@@ -64,7 +79,7 @@ export default function Landing() {
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, plan }),
+      body: JSON.stringify({ email, plan, refCode: refValid ? refCode : undefined }),
     });
     const { url, error } = await res.json();
     if (error) { alert(error); setLoading(false); return; }
@@ -128,7 +143,22 @@ export default function Landing() {
             {loading ? "Redirection…" : "Commencer →"}
           </button>
         </div>
-        <p style={{ color: "#AAA8A4", fontSize: 13, marginTop: 14 }}>9€/mois · Annulable à tout moment · Aucun engagement</p>
+        <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>
+          <div style={{ position: "relative" }}>
+            <input
+              type="text"
+              placeholder="Code parrainage (optionnel)"
+              value={refCode}
+              onChange={e => checkRefCode(e.target.value.toUpperCase())}
+              maxLength={12}
+              style={{ padding: "10px 36px 10px 14px", borderRadius: 10, border: `1.5px solid ${refValid === true ? "#4ade80" : refValid === false ? "#E85C3A" : "#ddd"}`, background: "#fff", color: DARK, fontSize: 13, width: 220, outline: "none", fontFamily: "monospace", letterSpacing: 2 }}
+            />
+            {refValid === true && <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", color: "#4ade80", fontSize: 16 }}>✓</span>}
+            {refValid === false && <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", color: RED, fontSize: 14 }}>✗</span>}
+          </div>
+        </div>
+        {refValid === true && <p style={{ color: "#4ade80", fontSize: 13, marginTop: 8, fontWeight: 600 }}>Code valide — 30 jours offerts !</p>}
+        <p style={{ color: "#AAA8A4", fontSize: 13, marginTop: 10 }}>9€/mois · Annulable à tout moment · Aucun engagement</p>
       </div>
 
       {/* STATS BAR */}

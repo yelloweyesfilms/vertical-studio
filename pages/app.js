@@ -208,6 +208,83 @@ function Chip({ label, active, onClick, block, sub }) {
   );
 }
 
+// ── ÉCRAN PARRAINAGE ─────────────────────────────────────────
+function ParrainageView({ customerId, onBack }) {
+  const [code, setCode] = useState(null);
+  const [count, setCount] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/referral", { headers: { Authorization: `Bearer ${customerId}` } })
+      .then(r => r.json())
+      .then(d => { setCode(d.code); setCount(d.count || 0); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [customerId]);
+
+  const copy = () => {
+    if (!code) return;
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
+      <div style={{ background: "var(--tx)", padding: "28px 20px 24px" }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "#3a5040", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
+        <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>Parrainage</h1>
+        <p style={{ fontSize: 12, color: "#3a5040", marginTop: 4 }}>Gagne 1 mois offert par ami parrainé</p>
+      </div>
+
+      <div style={{ padding: "24px 20px", maxWidth: 520, margin: "0 auto" }}>
+        {/* Comment ça marche */}
+        <div style={{ background: "var(--card)", borderRadius: 16, padding: 20, marginBottom: 20, border: "1.5px solid var(--bo)" }}>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 14 }}>Comment ça marche</p>
+          {[
+            { n: "1", t: "Partage ton code", d: "Envoie ton code à un ami créateur de contenu." },
+            { n: "2", t: "Il s'abonne", d: "Il entre ton code au moment du paiement → il reçoit 30 jours offerts." },
+            { n: "3", t: "Tu gagnes 1 mois", d: "Un crédit d'1 mois est automatiquement appliqué à ton prochain paiement." },
+          ].map(({ n, t, d }) => (
+            <div key={n} style={{ display: "flex", gap: 14, marginBottom: 14 }}>
+              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--r)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{n}</div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{t}</p>
+                <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5 }}>{d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Ton code */}
+        <div style={{ background: "var(--tx)", borderRadius: 16, padding: 24, marginBottom: 20, textAlign: "center" }}>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", marginBottom: 12 }}>Ton code de parrainage</p>
+          {loading ? (
+            <p style={{ color: "#3a5040", fontSize: 14 }}>Chargement…</p>
+          ) : code ? (
+            <>
+              <div style={{ fontFamily: "var(--serif)", fontSize: 36, fontWeight: 900, color: "#fff", letterSpacing: 4, marginBottom: 16 }}>{code}</div>
+              <button onClick={copy} style={{ background: copied ? "#2a6040" : "var(--r)", color: "#fff", border: "none", padding: "12px 28px", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "var(--sans)", transition: "background .2s" }}>
+                {copied ? "✓ Copié !" : "Copier le code"}
+              </button>
+            </>
+          ) : (
+            <p style={{ color: "var(--mt)", fontSize: 13 }}>Impossible de charger ton code</p>
+          )}
+        </div>
+
+        {/* Stats */}
+        <div style={{ background: "var(--card)", borderRadius: 14, padding: 20, border: "1.5px solid var(--bo)", textAlign: "center" }}>
+          <div style={{ fontFamily: "var(--serif)", fontSize: 48, fontWeight: 900, color: "var(--r)", lineHeight: 1 }}>{count}</div>
+          <p style={{ fontSize: 14, color: "var(--mt)", marginTop: 6 }}>ami{count !== 1 ? "s" : ""} parrainé{count !== 1 ? "s" : ""}</p>
+          {count > 0 && <p style={{ fontSize: 12, color: "var(--r)", fontWeight: 700, marginTop: 8 }}>{count} mois offert{count !== 1 ? "s" : ""} sur ton abonnement</p>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── ÉCRAN MES SÉRIES ─────────────────────────────────────────
 function MesSeriesView({ onLoad, onBack, customerId }) {
   const [series, setSeries] = useState(() => loadSaved());
@@ -313,7 +390,7 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
 
 const CUSTOM_PREFIX = "__custom__";
 
-function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding }) {
+function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage }) {
   const univOpts = state.mode === "fast" ? OPTS.univers_fast : OPTS.univers_prem;
   const secOpts = state.mode === "fast" ? OPTS.secret_fast : OPTS.secret_prem;
   const totalMin = Math.round(state.format * state.duree / 60);
@@ -441,6 +518,9 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
             📂 Mes séries sauvegardées
           </button>
         )}
+        <button onClick={onParrainage} style={{ background: "none", border: "1.5px solid var(--bo)", color: "var(--tx)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 10, fontFamily: "var(--sans)" }}>
+          🎁 Parrainer un ami — 1 mois offert
+        </button>
       </div>
     </div>
   );
@@ -1171,7 +1251,8 @@ export default function App() {
         </div>
       )}
 
-      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} />}
+      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} />}
+      {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} customerId={customerId} plan={plan} />}
       {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => setScreen("tour")} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} customerId={customerId} />}
