@@ -1,6 +1,8 @@
 import { callClaude } from "../../lib/anthropic";
 import { requireSub } from "../../lib/auth";
+import { checkRateLimit } from "../../lib/rateLimit";
 import { Redis } from "@upstash/redis";
+import * as Sentry from "@sentry/nextjs";
 
 function getRedis() {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
@@ -16,12 +18,11 @@ async function trackAction(action, customerId) {
       redis.incr(`analytics:daily:${today}:${action}`),
       redis.incr(`analytics:total:${action}`),
       redis.sadd(`analytics:users:${today}`, customerId),
-      redis.expire(`analytics:users:${today}`, 60 * 60 * 24 * 60), // 60 jours
+      redis.expire(`analytics:users:${today}`, 60 * 60 * 24 * 60),
     ]);
   } catch {}
 }
 
-// Cache in-memory : bible et épisodes cachés 1h (même params = même résultat)
 const genCache = new Map();
 const CACHE_TTL = 60 * 60 * 1000;
 function getCached(key) {
@@ -38,24 +39,7 @@ function setCached(key, data) {
   genCache.set(key, { data, ts: Date.now() });
 }
 
-// Rate limiting en mémoire : max 20 requêtes par minute par customerId
-const rateLimitMap = new Map();
-function isRateLimited(customerId) {
-  const now = Date.now();
-  const window = 60_000;
-  const max = 20;
-  const entry = rateLimitMap.get(customerId) || { count: 0, start: now };
-  if (now - entry.start > window) {
-    rateLimitMap.set(customerId, { count: 1, start: now });
-    return false;
-  }
-  if (entry.count >= max) return true;
-  entry.count++;
-  rateLimitMap.set(customerId, entry);
-  return false;
-}
-
-const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variations", "traduire"];
+const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variations", "traduire", "production"];
 const VALID_MODES = ["fast", "premium"];
 const VALID_DUREES = [60, 90, 120];
 const VALID_FORMATS = [10, 20, 40];
@@ -105,8 +89,13 @@ function validatePayload(action, payload) {
   } else if (action === "traduire") {
     const { script, langue } = payload;
     if (!script || typeof script !== "object") return "Script invalide";
-    const VALID_LANGUES = ["en", "es", "de", "pt", "it", "ar"];
+    const VALID_LANGUES = ["en", "es", "de", "pt", "it", "ar", "he", "zh"];
     if (!VALID_LANGUES.includes(langue)) return "Langue invalide";
+  } else if (action === "production") {
+    const { titre, logline, personnages } = payload;
+    if (typeof titre !== "string" || titre.length > 200) return "Titre invalide";
+    if (typeof logline !== "string" || logline.length > 500) return "Logline invalide";
+    if (!Array.isArray(personnages)) return "Personnages invalides";
   }
   return null;
 }
@@ -124,8 +113,9 @@ export default async function handler(req, res) {
   if (!sub) return;
   const { customerId, plan } = sub;
 
-  if (isRateLimited(customerId)) {
-    return res.status(429).json({ error: "Trop de requêtes, veuillez patienter une minute." });
+  const { limited, count, max } = await checkRateLimit(customerId, plan);
+  if (limited) {
+    return res.status(429).json({ error: `Limite atteinte (${max} générations/heure). Réessayez dans quelques minutes.` });
   }
 
   const { action, payload } = req.body || {};
@@ -134,7 +124,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Action inconnue" });
   }
 
-  // Restrictions plan Standard
   const PREMIUM_ACTIONS = ["variations", "titres"];
   if (plan === "standard" && PREMIUM_ACTIONS.includes(action)) {
     return res.status(403).json({ error: "Cette fonctionnalité est réservée au plan Premium. Passez à Premium pour débloquer les variations et les titres viraux." });
@@ -298,7 +287,7 @@ JSON: {"titres":[{"titre":"","score":95,"accroche":"en quoi ce titre arrête le 
 
     if (action === "traduire") {
       const { script, langue } = payload;
-      const noms = { en: "English", es: "Español", de: "Deutsch", pt: "Português", it: "Italiano", ar: "العربية" };
+      const noms = { en: "English", es: "Español", de: "Deutsch", pt: "Português", it: "Italiano", ar: "العربية", he: "עברית", zh: "中文" };
       const result = await callClaude(
         `Tu es expert en adaptation de scripts micro-dramas 9:16 pour ${noms[langue]}.
 Règles strictes:
@@ -314,7 +303,23 @@ Règles strictes:
       return res.json(result);
     }
 
+    if (action === "production") {
+      const { titre, logline, personnages, mode } = payload;
+      const persos = (personnages || []).map(p => `${p.nom} (${p.role}, ${p.age} ans)`).join(", ");
+      const md = mode === "fast" ? "Fast Drama — décors minimalistes, émotions frontales" : "Premium Suspense — décors évocateurs, atmosphère soignée";
+      const result = await callClaude(
+        `Tu es directeur artistique expert en micro-dramas 9:16 tournés au smartphone. ${md}. JSON uniquement.`,
+        `Série "${titre}". Logline: ${logline}. Personnages: ${persos}.
+Génère une fiche technique de production complète pour tourner avec un smartphone.
+JSON: {"decors":[{"nom":"","description":"","ambiance":"","conseil_tournage":""}],"costumes":[{"personnage":"","look":"","couleurs":"","symbolique":""}],"lieux":[{"type":"","exemples":[""],"lumiere":"","heure_ideale":""}]}`,
+        1200
+      );
+      trackAction("production", customerId);
+      return res.json(result);
+    }
+
   } catch (e) {
+    Sentry.captureException(e, { extra: { action: req.body?.action, customerId, plan } });
     console.error(e);
     res.status(500).json({ error: e.message });
   }
