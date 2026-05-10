@@ -390,7 +390,7 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
 
 const CUSTOM_PREFIX = "__custom__";
 
-function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage, darkMode, onDarkMode, onLogout }) {
+function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage, darkMode, onDarkMode, onLogout, onUpgrade }) {
   const univOpts = state.mode === "fast" ? OPTS.univers_fast : OPTS.univers_prem;
   const secOpts = state.mode === "fast" ? OPTS.secret_fast : OPTS.secret_prem;
   const totalMin = Math.round(state.format * state.duree / 60);
@@ -437,6 +437,17 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
       </div>
 
       <div style={{ padding: "24px 20px", maxWidth: 520, margin: "0 auto" }}>
+        {plan === "standard" && (
+          <div style={{ background: "var(--n)", borderRadius: 14, padding: "14px 16px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 2 }}>🎭 Passer à Premium</p>
+              <p style={{ fontSize: 12, color: "#8a9a8e", lineHeight: 1.4 }}>40 ép., 4 variations, titres viraux</p>
+            </div>
+            <button onClick={onUpgrade} style={{ background: "var(--r)", color: "#fff", border: "none", padding: "10px 16px", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "var(--sans)", flexShrink: 0 }}>
+              Upgrade →
+            </button>
+          </div>
+        )}
         <div style={{ marginBottom: 28 }}>
           <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>
             🎬 Packs rapides <span style={{ fontSize: 10, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>— remplit tout en 1 clic</span>
@@ -1004,6 +1015,15 @@ export default function App() {
 
   const logout = () => { localStorage.removeItem("vs_customer"); localStorage.removeItem("vs_plan"); setCustomerId(null); setPlan("standard"); };
 
+  const openPortal = async () => {
+    try {
+      const res = await fetch("/api/portal", { method: "POST", headers: { Authorization: `Bearer ${customerId}` } });
+      const { url, error } = await res.json();
+      if (error) { alert(error); return; }
+      window.location.href = url;
+    } catch (e) { alert("Impossible d'ouvrir le portail. Réessaie."); }
+  };
+
   // Generation avec streaming bible
   const generate = async () => {
     setErr(null);
@@ -1235,9 +1255,12 @@ export default function App() {
         <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 40, textAlign: "center" }}>
           {err ? (
             <>
-              <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#999", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}><span style={{ color: "#fff", fontSize: 20 }}>!</span></div>
-              <p style={{ color: "var(--r)", fontSize: 14, lineHeight: 1.7, marginBottom: 24, maxWidth: 340 }}>{err}</p>
-              <button onClick={() => setScreen("mix")} style={{ background: "var(--r)", color: "#fff", border: "none", padding: "14px 28px", borderRadius: 12, fontWeight: 700, cursor: "pointer", fontFamily: "var(--sans)" }}>← Retour</button>
+              <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#2a3a2e", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24, fontSize: 26 }}>⚠️</div>
+              <p style={{ color: "var(--r)", fontSize: 14, lineHeight: 1.7, marginBottom: 28, maxWidth: 340 }}>{err}</p>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+                <button onClick={() => { setErr(null); generate(); }} style={{ background: "var(--r)", color: "#fff", border: "none", padding: "14px 24px", borderRadius: 12, fontWeight: 700, cursor: "pointer", fontFamily: "var(--sans)", fontSize: 14 }}>↻ Réessayer</button>
+                <button onClick={() => { setErr(null); setScreen("mix"); }} style={{ background: "none", border: "1.5px solid var(--bo)", color: "var(--mt)", padding: "14px 24px", borderRadius: 12, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)", fontSize: 14 }}>← Retour</button>
+              </div>
             </>
           ) : (
             <>
@@ -1261,7 +1284,7 @@ export default function App() {
         </div>
       )}
 
-      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} />}
+      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} onUpgrade={openPortal} />}
       {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} customerId={customerId} plan={plan} />}
