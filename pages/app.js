@@ -390,7 +390,7 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
 
 const CUSTOM_PREFIX = "__custom__";
 
-function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage }) {
+function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage, darkMode, onDarkMode, onLogout }) {
   const univOpts = state.mode === "fast" ? OPTS.univers_fast : OPTS.univers_prem;
   const secOpts = state.mode === "fast" ? OPTS.secret_fast : OPTS.secret_prem;
   const totalMin = Math.round(state.format * state.duree / 60);
@@ -521,6 +521,10 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
         <button onClick={onParrainage} style={{ background: "none", border: "1.5px solid var(--bo)", color: "var(--tx)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 10, fontFamily: "var(--sans)" }}>
           🎁 Parrainer un ami — 1 mois offert
         </button>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 20, paddingTop: 16, borderTop: "1px solid var(--bo)" }}>
+          <button onClick={onDarkMode} style={{ background: "none", border: "none", fontSize: 18, color: "var(--mt)", padding: "8px 4px", cursor: "pointer", lineHeight: 1 }} title={darkMode ? "Mode jour" : "Mode nuit"}>{darkMode ? "☀️" : "🌙"}</button>
+          <button onClick={onLogout} style={{ background: "none", border: "none", fontSize: 12, color: "var(--mt)", cursor: "pointer", padding: "8px 0" }}>Déconnexion</button>
+        </div>
       </div>
     </div>
   );
@@ -725,12 +729,12 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
                 <span style={{ display: "inline-block", background: "var(--r)", borderRadius: 6, padding: "6px 12px", fontSize: 12, fontWeight: 800, color: "#fff", letterSpacing: 1, textTransform: "uppercase" }}>{displayScript.cliffhanger_scene.label}</span>
               )}
             </div>
-            <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
-              {[["pimenter", "🌶 Pimenter"], ["subtil", "🤫 Plus subtil"], ["simplifier", "🎬 Simplifier"]].map(([k, l]) => (
-                <button key={k} onClick={() => onEdit(k)} disabled={loading} style={{ flex: 1, padding: "11px 6px", borderRadius: 10, border: "1.5px solid var(--bo)", background: "var(--card)", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "var(--sans)", transition: "all .15s" }}>{l}</button>
+            <div className="edit-row" style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+              {[["pimenter", "🌶 Pimenter"], ["subtil", "🤫 Subtil"], ["simplifier", "🎬 Simple"]].map(([k, l]) => (
+                <button key={k} onClick={() => onEdit(k)} disabled={loading} style={{ flex: 1, minWidth: 80, padding: "12px 6px", borderRadius: 10, border: "1.5px solid var(--bo)", background: "var(--card)", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "var(--sans)", transition: "all .15s" }}>{l}</button>
               ))}
             </div>
-            <button onClick={plan === "standard" ? () => alert("Les variations sont réservées au plan Premium.") : onVariations} disabled={loading} style={{ background: "var(--card)", color: plan === "standard" ? "var(--mt)" : "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: plan === "standard" ? "not-allowed" : "pointer", marginBottom: 10, fontFamily: "var(--sans)", opacity: plan === "standard" ? 0.6 : 1 }}>{plan === "standard" ? "🔒 Générer 3 versions" : "🎲 Générer 3 versions"}</button>
+            <button onClick={plan === "standard" ? () => alert("Les variations sont réservées au plan Premium.") : onVariations} disabled={loading} style={{ background: "var(--card)", color: plan === "standard" ? "var(--mt)" : "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: plan === "standard" ? "not-allowed" : "pointer", marginBottom: 10, fontFamily: "var(--sans)", opacity: plan === "standard" ? 0.6 : 1 }}>{plan === "standard" ? "🔒 Générer 4 versions" : "🎲 Générer 4 versions"}</button>
             <button onClick={onTournage} style={{ background: "var(--n)", color: "#fff", border: "none", padding: 15, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 10, fontFamily: "var(--sans)" }}>📱 Mode Tournage</button>
             <button onClick={onExport} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)" }}>📄 Exporter en PDF</button>
           </>
@@ -745,7 +749,7 @@ function VariationsView({ variations, loading, ep, onSelect, onBack }) {
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
       <div style={{ padding: "16px 20px 0", maxWidth: 520, margin: "0 auto" }}>
         <button onClick={onBack} style={{ background: "none", border: "none", fontSize: 14, color: "var(--mt)", marginBottom: 14, cursor: "pointer", padding: 0 }}>← Studio</button>
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: 22, fontWeight: 900, marginBottom: 4 }}>3 versions</h2>
+        <h2 style={{ fontFamily: "var(--serif)", fontSize: 22, fontWeight: 900, marginBottom: 4 }}>4 versions</h2>
         <p style={{ fontSize: 13, color: "var(--mt)", marginBottom: 20 }}>Ép. {ep?.numero} · {ep?.titre} — Choisissez la meilleure</p>
       </div>
       <div style={{ padding: "0 20px 40px", maxWidth: 520, margin: "0 auto" }}>
@@ -843,16 +847,16 @@ function TournageView({ script, ep, duree, onBack }) {
       `}</style>
 
       {/* Barre du haut */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", background: darkBg ? "#111" : "#f5f5f5", flexShrink: 0, zIndex: 10, gap: 8 }}>
-        <button onClick={onBack} style={{ background: "none", border: `1px solid ${darkBg ? "#333" : "#ddd"}`, color: darkBg ? "#aaa" : "#666", cursor: "pointer", padding: "7px 10px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 13 }}>← Retour</button>
-        <button onClick={restart} style={{ background: "none", border: `1px solid ${darkBg ? "#333" : "#ddd"}`, color: darkBg ? "#aaa" : "#666", cursor: "pointer", padding: "7px 10px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 13 }}>⏮</button>
-        <button onClick={() => setPlaying(p => !p)} style={{ background: playing ? "#333" : "var(--r)", border: "none", cursor: "pointer", padding: "9px 18px", borderRadius: 8, fontSize: 14, fontWeight: 700, color: "#fff", fontFamily: "var(--sans)", flex: 1 }}>
-          {playing ? "⏸ Pause" : "▶ Démarrer"}
+      <div style={{ display: "flex", alignItems: "center", padding: "10px 12px", background: darkBg ? "#111" : "#f5f5f5", flexShrink: 0, zIndex: 10, gap: 6 }}>
+        <button onClick={onBack} style={{ background: "none", border: `1px solid ${darkBg ? "#333" : "#ddd"}`, color: darkBg ? "#aaa" : "#666", cursor: "pointer", padding: "9px 10px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 16, lineHeight: 1, flexShrink: 0 }}>←</button>
+        <button onClick={restart} style={{ background: "none", border: `1px solid ${darkBg ? "#333" : "#ddd"}`, color: darkBg ? "#aaa" : "#666", cursor: "pointer", padding: "9px 10px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 16, lineHeight: 1, flexShrink: 0 }}>⏮</button>
+        <button onClick={() => setPlaying(p => !p)} style={{ background: playing ? "#333" : "var(--r)", border: "none", cursor: "pointer", padding: "10px 0", borderRadius: 8, fontSize: 14, fontWeight: 700, color: "#fff", fontFamily: "var(--sans)", flex: 1 }}>
+          {playing ? "⏸" : "▶ Play"}
         </button>
-        <button onClick={() => setDarkBg(d => !d)} style={{ background: "none", border: `1px solid ${darkBg ? "#333" : "#ddd"}`, color: darkBg ? "#aaa" : "#666", cursor: "pointer", padding: "7px 10px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 15 }}>
+        <button onClick={() => setDarkBg(d => !d)} style={{ background: "none", border: `1px solid ${darkBg ? "#333" : "#ddd"}`, color: darkBg ? "#aaa" : "#666", cursor: "pointer", padding: "9px 10px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 16, lineHeight: 1, flexShrink: 0 }}>
           {darkBg ? "☀️" : "🌙"}
         </button>
-        <button onClick={() => setShowSettings(s => !s)} style={{ background: showSettings ? "#333" : "none", border: `1px solid ${darkBg ? "#333" : "#ddd"}`, color: darkBg ? "#aaa" : "#666", cursor: "pointer", padding: "7px 10px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 15 }}>⚙️</button>
+        <button onClick={() => setShowSettings(s => !s)} style={{ background: showSettings ? "#333" : "none", border: `1px solid ${darkBg ? "#333" : "#ddd"}`, color: darkBg ? "#aaa" : "#666", cursor: "pointer", padding: "9px 10px", borderRadius: 8, fontFamily: "var(--sans)", fontSize: 16, lineHeight: 1, flexShrink: 0 }}>⚙️</button>
       </div>
 
       {/* Barre de progression */}
@@ -1216,7 +1220,13 @@ export default function App() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100dvh", overflow: "hidden", background: "var(--bg)" }}>
-      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}`}</style>
+      <style>{`
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+        @media (max-width: 380px) {
+          .edit-row button { font-size: 12px !important; padding: 11px 4px !important; }
+        }
+        input, textarea, select { font-size: 16px !important; }
+      `}</style>
 
       {showOnboarding && <OnboardingModal onClose={dismissOnboarding} />}
 
@@ -1251,7 +1261,7 @@ export default function App() {
         </div>
       )}
 
-      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} />}
+      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} />}
       {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} customerId={customerId} plan={plan} />}
@@ -1259,8 +1269,8 @@ export default function App() {
       {screen === "variations" && <VariationsView variations={variations} loading={loadingVariations} ep={episodes[epIdx]} onSelect={selectVariation} onBack={() => setScreen("studio")} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
 
-      {/* Logout + dark mode */}
-      {screen !== "tour" && (
+      {/* Logout + dark mode (hidden on mix — gérés dans Mixeur) */}
+      {screen !== "tour" && screen !== "mix" && (
         <div style={{ position: "fixed", top: 14, right: 20, zIndex: 100, display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => setDarkMode(d => !d)} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", lineHeight: 1 }} title={darkMode ? "Mode jour" : "Mode nuit"}>{darkMode ? "☀️" : "🌙"}</button>
           <button onClick={logout} style={{ background: "none", border: "none", fontSize: 12, color: "var(--mt)", cursor: "pointer" }}>Déconnexion</button>

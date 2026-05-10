@@ -93,16 +93,23 @@ export default function Landing() {
         input::placeholder { color: #AAA8A4; }
         button:hover { opacity: .88; }
         * { box-sizing: border-box; }
+        input { font-size: 16px; }
         @media (max-width: 640px) {
           .hero-input-row { flex-direction: column !important; }
-          .hero-input-row input { width: 100% !important; }
+          .hero-input-row input { width: 100% !important; max-width: 100% !important; }
+          .hero-input-row button { width: 100% !important; }
           .pricing-grid { grid-template-columns: 1fr !important; }
           .feat-grid { grid-template-columns: 1fr !important; }
           .steps-grid { grid-template-columns: 1fr !important; }
           .testi-grid { grid-template-columns: 1fr !important; }
-          nav { padding: 16px 20px !important; }
-          .hero { padding: 60px 20px 40px !important; }
-          .section { padding: 60px 20px !important; }
+          nav { padding: 14px 16px !important; }
+          .hero { padding: 48px 20px 32px !important; }
+          .section { padding: 48px 20px !important; }
+          .stats-bar { gap: 24px !important; padding: 16px 20px !important; }
+          .pricing-input { width: 100% !important; max-width: 100% !important; }
+          .ref-input { width: 100% !important; }
+          .mock-phone { display: none !important; }
+          .footer-inner { padding: 24px 20px !important; }
         }
       `}</style>
 
@@ -162,7 +169,7 @@ export default function Landing() {
       </div>
 
       {/* STATS BAR */}
-      <div style={{ background: DARK, padding: "20px 40px" }}>
+      <div className="stats-bar" style={{ background: DARK, padding: "20px 40px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap" }}>
           {[["2 000+", "séries générées"], ["50+", "créateurs actifs"], ["< 5 min", "par série complète"], ["6 langues", "de traduction"]].map(([val, label]) => (
             <div key={label} style={{ textAlign: "center" }}>
@@ -174,7 +181,7 @@ export default function Landing() {
       </div>
 
       {/* MOCK PHONE */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 40px" }} className="section">
+      <div className="mock-phone section" style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 40px" }}>
         <div style={{ maxWidth: 320, margin: "0 auto", background: DARK, borderRadius: 40, border: "6px solid #DDD8D0", padding: "28px 16px", boxShadow: "0 40px 80px rgba(0,0,0,.5)" }}>
           <div style={{ width: 80, height: 6, background: "#DDD8D0", borderRadius: 10, margin: "0 auto 20px" }} />
           {[
@@ -266,6 +273,7 @@ export default function Landing() {
           <h2 style={{ fontFamily: "var(--serif)", fontSize: 34, fontWeight: 900, textAlign: "center", marginBottom: 8 }}>Choisissez votre plan</h2>
           <p style={{ textAlign: "center", color: GRAY, marginBottom: 36, fontSize: 15 }}>Annulable à tout moment · Sans engagement</p>
           <input type="email" placeholder="ton@email.com" value={email} onChange={e => setEmail(e.target.value)}
+            className="pricing-input"
             style={{ width: "100%", maxWidth: 400, display: "block", margin: "0 auto 32px", padding: "14px 18px", borderRadius: 10, border: "1px solid #ddd", background: "#fff", color: DARK, fontSize: 15, outline: "none" }} />
           <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
             {/* Standard */}
@@ -345,6 +353,7 @@ export default function Landing() {
 
       {/* FOOTER */}
       <footer style={s.footer}>
+        <div className="footer-inner" style={{ padding: "32px 40px" }}>
         <Logo />
         <p style={{ marginTop: 16 }}>
           © 2026 Studio Vertical · Tous droits réservés ·{" "}
@@ -352,6 +361,7 @@ export default function Landing() {
           <a href="/cgu" style={{ color: "#666" }}>CGU</a> ·{" "}
           <a href="/confidentialite" style={{ color: "#666" }}>Confidentialité</a>
         </p>
+        </div>
       </footer>
     </div>
   );

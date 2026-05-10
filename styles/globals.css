@@ -20,7 +20,7 @@
 html { scroll-behavior: smooth; }
 body { font-family: var(--sans); background: var(--bg); color: var(--tx); -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
-button { cursor: pointer; font-family: var(--sans); }
+button { cursor: pointer; font-family: var(--sans); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 .fade-in { animation: fadeUp .4s ease forwards; }
