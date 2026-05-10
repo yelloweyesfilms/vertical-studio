@@ -474,6 +474,193 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
 
 // ── SCREENS ──────────────────────────────────────────────────
 
+// ── AFFICHE ──────────────────────────────────────────────────
+function drawPoster(canvas, bible, episodes, mode) {
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  const PAD = 52, RED = "#E85C3A", DARK = "#0F1A12", WHITE = "#fff", GRAY = "#6a7a6e", LGRAY = "#9aaa9e";
+
+  // Fond
+  ctx.fillStyle = DARK;
+  ctx.fillRect(0, 0, W, H);
+
+  // Grain de texture subtil
+  for (let i = 0; i < 8000; i++) {
+    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.018})`;
+    ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
+  }
+
+  // Barre rouge top
+  ctx.fillStyle = RED;
+  ctx.fillRect(0, 0, W, 7);
+
+  // Gradient bas
+  const grad = ctx.createLinearGradient(0, H * 0.6, 0, H);
+  grad.addColorStop(0, "rgba(15,26,18,0)");
+  grad.addColorStop(1, "rgba(5,8,6,0.95)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, H * 0.6, W, H * 0.4);
+
+  const wrap = (text, x, y, maxW, lineH, font, color, align = "left") => {
+    ctx.font = font;
+    ctx.fillStyle = color;
+    ctx.textAlign = align;
+    const xPos = align === "center" ? W / 2 : x;
+    const words = String(text || "").split(" ");
+    let line = "", lines = [];
+    for (const w of words) {
+      const test = line + w + " ";
+      if (ctx.measureText(test).width > maxW && line) { lines.push(line.trim()); line = w + " "; }
+      else line = test;
+    }
+    lines.push(line.trim());
+    lines.forEach((l, i) => ctx.fillText(l, xPos, y + i * lineH));
+    return lines.length * lineH;
+  };
+
+  let y = 56;
+
+  // Logo
+  ctx.font = "600 11px sans-serif";
+  ctx.fillStyle = GRAY;
+  ctx.textAlign = "left";
+  ctx.fillText("STUDIO  VERTICAL", PAD, y);
+
+  // Épisodes badge
+  ctx.font = "700 11px sans-serif";
+  ctx.fillStyle = GRAY;
+  ctx.textAlign = "right";
+  ctx.fillText(`${episodes.length} ÉP.`, W - PAD, y);
+  ctx.textAlign = "left";
+
+  y += 50;
+
+  // Mode badge
+  const modeLabel = mode === "fast" ? "⚡ FAST DRAMA" : "🎭 PREMIUM SUSPENSE";
+  const badgeW = ctx.measureText(modeLabel).width + 32;
+  ctx.fillStyle = mode === "fast" ? "#2a1a14" : "#1a2030";
+  roundRect(ctx, PAD, y - 16, badgeW, 28, 6);
+  ctx.fill();
+  ctx.font = "700 11px sans-serif";
+  ctx.fillStyle = mode === "fast" ? RED : "#7090c0";
+  ctx.fillText(modeLabel, PAD + 16, y + 4);
+
+  y += 52;
+
+  // Titre
+  const titleSize = bible.titre.length > 16 ? 68 : 80;
+  y += wrap(bible.titre.toUpperCase(), PAD, y, W - PAD * 2, titleSize * 1.1, `900 ${titleSize}px Georgia, serif`, WHITE);
+  y += 10;
+
+  // Ligne rouge
+  ctx.fillStyle = RED;
+  ctx.fillRect(PAD, y, 60, 4);
+  y += 28;
+
+  // Logline
+  y += wrap(`« ${bible.logline} »`, PAD, y, W - PAD * 2, 30, "italic 19px Georgia, serif", LGRAY);
+  y += 32;
+
+  // Séparateur
+  ctx.fillStyle = "#1e2e22";
+  ctx.fillRect(PAD, y, W - PAD * 2, 1);
+  y += 28;
+
+  // Personnages
+  ctx.font = "700 10px sans-serif";
+  ctx.fillStyle = RED;
+  ctx.fillText("PERSONNAGES", PAD, y);
+  y += 22;
+
+  for (const p of (bible.personnages || []).slice(0, 3)) {
+    ctx.font = "700 16px Georgia, serif";
+    ctx.fillStyle = WHITE;
+    ctx.fillText(p.nom, PAD, y);
+    ctx.font = "400 13px sans-serif";
+    ctx.fillStyle = GRAY;
+    ctx.fillText(`  ${p.role} · ${p.age} ans`, PAD + ctx.measureText(p.nom).width + 4, y);
+    y += 26;
+  }
+  y += 16;
+
+  // Séparateur
+  ctx.fillStyle = "#1e2e22";
+  ctx.fillRect(PAD, y, W - PAD * 2, 1);
+  y += 28;
+
+  // Tension centrale
+  ctx.font = "700 10px sans-serif";
+  ctx.fillStyle = RED;
+  ctx.fillText("QUESTION CENTRALE", PAD, y);
+  y += 22;
+  y += wrap(bible.tension_centrale || "", PAD, y, W - PAD * 2, 26, "italic 17px Georgia, serif", LGRAY);
+  y += 28;
+
+  // Accroche TikTok (grande, en bas)
+  const aY = H - 100;
+  ctx.fillStyle = "#1e2e22";
+  ctx.fillRect(PAD, aY - 20, W - PAD * 2, 1);
+  ctx.font = "700 10px sans-serif";
+  ctx.fillStyle = RED;
+  ctx.textAlign = "left";
+  ctx.fillText("ACCROCHE TIKTOK", PAD, aY);
+  wrap(bible.accroche || "", PAD, aY + 22, W - PAD * 2, 30, "italic bold 20px Georgia, serif", WHITE);
+
+  // Bas: studiovertical.app
+  ctx.font = "400 11px sans-serif";
+  ctx.fillStyle = "#2a3a2e";
+  ctx.textAlign = "center";
+  ctx.fillText("studiovertical.app", W / 2, H - 22);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+function AfficheView({ bible, episodes, mode, onBack }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (canvasRef.current) drawPoster(canvasRef.current, bible, episodes, mode);
+  }, [bible, episodes, mode]);
+
+  const download = () => {
+    canvasRef.current.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${bible.titre.replace(/\s+/g, "_")}_affiche.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  };
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", background: "#080e09" }}>
+      <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "#6a7a6e", fontSize: 14, cursor: "pointer", padding: 0 }}>← Retour</button>
+        <button onClick={download} style={{ background: "#E85C3A", color: "#fff", border: "none", padding: "10px 20px", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "var(--sans)" }}>
+          ↓ Télécharger l'affiche
+        </button>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", padding: "0 20px 48px" }}>
+        <canvas ref={canvasRef} width={630} height={1120} style={{ maxWidth: "100%", borderRadius: 16, boxShadow: "0 24px 64px rgba(0,0,0,.8)" }} />
+      </div>
+    </div>
+  );
+}
+
+
 const CUSTOM_PREFIX = "__custom__";
 
 function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage, darkMode, onDarkMode, onLogout, onUpgrade }) {
@@ -627,7 +814,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
   );
 }
 
-function BibleView({ bible, episodes, mode, duree, onEp, onBack, customerId, plan }) {
+function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, customerId, plan }) {
   const [tab, setTab] = useState("bible");
   const [titres, setTitres] = useState(null);
   const [loadingTitres, setLoadingTitres] = useState(false);
@@ -745,8 +932,11 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, customerId, pla
             <button onClick={() => setTab("seq")} style={{ background: "var(--r)", color: "#fff", border: "none", padding: 18, borderRadius: 14, width: "100%", fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 10 }}>
               Voir les {episodes.length} épisodes →
             </button>
-            <button onClick={exportSerie} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)" }}>
+            <button onClick={exportSerie} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)", marginBottom: 10 }}>
               ↓ Télécharger la série (.txt)
+            </button>
+            <button onClick={onAffiche} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)" }}>
+              🎬 Générer l'affiche
             </button>
           </>
         ) : tab === "titres" ? (
@@ -1438,7 +1628,8 @@ export default function App() {
       {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} onUpgrade={openPortal} />}
       {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
-      {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} customerId={customerId} plan={plan} />}
+      {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} onAffiche={() => setScreen("affiche")} customerId={customerId} plan={plan} />}
+      {screen === "affiche" && bible && <AfficheView bible={bible} episodes={episodes} mode={state.mode} onBack={() => setScreen("bible")} />}
       {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => setScreen("tour")} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} customerId={customerId} />}
       {screen === "variations" && <VariationsView variations={variations} loading={loadingVariations} ep={episodes[epIdx]} onSelect={selectVariation} onBack={() => setScreen("studio")} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
