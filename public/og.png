@@ -1,2 +1,0 @@
-$(base64 /home/user/vertical-studio/public/og.png | tr -d '
-')
