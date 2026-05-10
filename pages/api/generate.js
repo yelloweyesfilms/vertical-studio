@@ -41,7 +41,7 @@ function setCached(key, data) {
 }
 
 
-const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variations", "traduire"];
+const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variations", "traduire", "production"];
 const VALID_MODES = ["fast", "premium"];
 const VALID_DUREES = [60, 90, 120];
 const VALID_FORMATS = [10, 20, 40];
@@ -91,8 +91,13 @@ function validatePayload(action, payload) {
   } else if (action === "traduire") {
     const { script, langue } = payload;
     if (!script || typeof script !== "object") return "Script invalide";
-    const VALID_LANGUES = ["en", "es", "de", "pt", "it", "ar"];
+    const VALID_LANGUES = ["en", "es", "de", "pt", "it", "ar", "he", "zh"];
     if (!VALID_LANGUES.includes(langue)) return "Langue invalide";
+  } else if (action === "production") {
+    const { titre, logline, personnages } = payload;
+    if (typeof titre !== "string" || titre.length > 200) return "Titre invalide";
+    if (typeof logline !== "string" || logline.length > 500) return "Logline invalide";
+    if (!Array.isArray(personnages)) return "Personnages invalides";
   }
   return null;
 }
@@ -285,7 +290,7 @@ JSON: {"titres":[{"titre":"","score":95,"accroche":"en quoi ce titre arrête le 
 
     if (action === "traduire") {
       const { script, langue } = payload;
-      const noms = { en: "English", es: "Español", de: "Deutsch", pt: "Português", it: "Italiano", ar: "العربية" };
+      const noms = { en: "English", es: "Español", de: "Deutsch", pt: "Português", it: "Italiano", ar: "العربية", he: "עברית", zh: "中文" };
       const result = await callClaude(
         `Tu es expert en adaptation de scripts micro-dramas 9:16 pour ${noms[langue]}.
 Règles strictes:
@@ -298,6 +303,21 @@ Règles strictes:
         2400
       );
       trackAction("traduction", customerId);
+      return res.json(result);
+    }
+
+    if (action === "production") {
+      const { titre, logline, personnages, mode } = payload;
+      const persos = (personnages || []).map(p => `${p.nom} (${p.role}, ${p.age} ans)`).join(", ");
+      const md = mode === "fast" ? "Fast Drama — décors minimalistes, émotions frontales" : "Premium Suspense — décors évocateurs, atmosphère soignée";
+      const result = await callClaude(
+        `Tu es directeur artistique expert en micro-dramas 9:16 tournés au smartphone. ${md}. JSON uniquement.`,
+        `Série "${titre}". Logline: ${logline}. Personnages: ${persos}.
+Génère une fiche technique de production complète pour tourner avec un smartphone.
+JSON: {"decors":[{"nom":"","description":"","ambiance":"","conseil_tournage":""}],"costumes":[{"personnage":"","look":"","couleurs":"","symbolique":""}],"lieux":[{"type":"","exemples":[""],"lumiere":"","heure_ideale":""}]}`,
+        1200
+      );
+      trackAction("production", customerId);
       return res.json(result);
     }
 

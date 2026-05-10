@@ -34,6 +34,8 @@ const LANGUES = [
   { code: "pt", flag: "🇵🇹", label: "Português" },
   { code: "it", flag: "🇮🇹", label: "Italiano" },
   { code: "ar", flag: "🇸🇦", label: "العربية" },
+  { code: "he", flag: "🇮🇱", label: "עברית" },
+  { code: "zh", flag: "🇨🇳", label: "中文" },
 ];
 
 // ── API HELPERS ──────────────────────────────────────────────
@@ -818,6 +820,8 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
   const [tab, setTab] = useState("bible");
   const [titres, setTitres] = useState(null);
   const [loadingTitres, setLoadingTitres] = useState(false);
+  const [prod, setProd] = useState(null);
+  const [loadingProd, setLoadingProd] = useState(false);
 
   const exportSerie = () => {
     const lines = [];
@@ -886,6 +890,20 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
     setLoadingTitres(false);
   };
 
+  const genProd = async () => {
+    setTab("prod");
+    if (prod) return;
+    setLoadingProd(true);
+    try {
+      const r = await gen("production", { titre: bible.titre, logline: bible.logline, personnages: bible.personnages, mode }, customerId);
+      setProd(r);
+    } catch (e) {
+      console.error(e);
+      setProd({});
+    }
+    setLoadingProd(false);
+  };
+
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
       <div style={{ padding: "16px 20px 0", maxWidth: 520, margin: "0 auto" }}>
@@ -902,11 +920,21 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
         <p style={{ fontFamily: "var(--serif)", fontSize: 15, fontStyle: "italic", color: "var(--mt)", lineHeight: 1.5, marginBottom: 12 }}>« {bible.logline} »</p>
         <p style={{ fontSize: 14, lineHeight: 1.7, marginBottom: 16 }}>{bible.pitch}</p>
         <div style={{ display: "flex", borderBottom: "2px solid var(--bo)", marginBottom: 0 }}>
-          {[{ k: "bible", l: "Bible" }, { k: "seq", l: `${episodes.length} ép.` }, { k: "titres", l: plan === "standard" ? "🔒 Titres" : "🔥 Titres" }].map(({ k, l }) => {
+          {[
+            { k: "bible", l: "Bible" },
+            { k: "seq", l: `${episodes.length} ép.` },
+            { k: "titres", l: plan === "standard" ? "🔒 Titres" : "🔥 Titres" },
+            { k: "prod", l: "🎬 Prod" },
+          ].map(({ k, l }) => {
             const locked = k === "titres" && plan === "standard";
+            const onClick = locked
+              ? () => alert("Les titres viraux sont réservés au plan Premium.")
+              : k === "titres" ? (titres ? () => setTab("titres") : genTitres)
+              : k === "prod" ? genProd
+              : () => setTab(k);
             return (
-              <button key={k} onClick={() => locked ? alert("Les titres viraux sont réservés au plan Premium.") : k === "titres" ? (titres ? setTab("titres") : genTitres()) : setTab(k)}
-                style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: locked ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 700, color: locked ? "var(--bo)" : tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k && !locked ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}
+              <button key={k} onClick={onClick}
+                style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: locked ? "not-allowed" : "pointer", fontSize: 12, fontWeight: 700, color: locked ? "var(--bo)" : tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k && !locked ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}
               </button>
             );
           })}
@@ -959,6 +987,64 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
               </div>
             ))}
           </>
+        ) : tab === "prod" ? (
+          loadingProd ? (
+            <div style={{ textAlign: "center", padding: "40px 0", color: "var(--mt)" }}>
+              <div style={{ fontSize: 28, marginBottom: 12, animation: "pulse 1.2s infinite" }}>🎬</div>
+              <p>Préparation de la fiche technique…</p>
+            </div>
+          ) : prod ? (
+            <>
+              {/* Décors */}
+              {(prod.decors || []).length > 0 && (
+                <>
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>🏗 Décors</p>
+                  {(prod.decors || []).map((d, i) => (
+                    <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: 14, borderLeft: "4px solid var(--n)", marginBottom: 10 }}>
+                      <p style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{d.nom}</p>
+                      <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5, marginBottom: 4 }}>{d.description}</p>
+                      {d.ambiance && <p style={{ fontSize: 12, fontStyle: "italic", color: "var(--r)" }}>Ambiance : {d.ambiance}</p>}
+                      {d.conseil_tournage && <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 4 }}>💡 {d.conseil_tournage}</p>}
+                    </div>
+                  ))}
+                </>
+              )}
+
+              {/* Costumes */}
+              {(prod.costumes || []).length > 0 && (
+                <>
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", margin: "20px 0 10px" }}>👗 Costumes</p>
+                  {(prod.costumes || []).map((c, i) => (
+                    <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: 14, borderLeft: `4px solid ${i === 0 ? "var(--r)" : "var(--n)"}`, marginBottom: 10 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                        <p style={{ fontSize: 14, fontWeight: 700 }}>{c.personnage}</p>
+                        {c.couleurs && <span style={{ fontSize: 11, color: "var(--mt)", fontStyle: "italic" }}>{c.couleurs}</span>}
+                      </div>
+                      <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5, marginBottom: c.symbolique ? 4 : 0 }}>{c.look}</p>
+                      {c.symbolique && <p style={{ fontSize: 12, color: "var(--r)", fontStyle: "italic" }}>🎭 {c.symbolique}</p>}
+                    </div>
+                  ))}
+                </>
+              )}
+
+              {/* Lieux */}
+              {(prod.lieux || []).length > 0 && (
+                <>
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", margin: "20px 0 10px" }}>📍 Lieux de tournage</p>
+                  {(prod.lieux || []).map((l, i) => (
+                    <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: 14, marginBottom: 10, border: "1.5px solid var(--bo)" }}>
+                      <p style={{ fontSize: 13, fontWeight: 700, color: "var(--r)", marginBottom: 6 }}>{l.type}</p>
+                      {(l.exemples || []).map((e, j) => (
+                        <p key={j} style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.4, marginBottom: 2 }}>· {e}</p>
+                      ))}
+                      {l.lumiere && <p style={{ fontSize: 12, marginTop: 6, color: "var(--tx)" }}>☀️ Lumière : {l.lumiere}</p>}
+                      {l.heure_ideale && <p style={{ fontSize: 12, color: "var(--mt)" }}>🕐 Idéal : {l.heure_ideale}</p>}
+                    </div>
+                  ))}
+                </>
+              )}
+            </>
+          ) : null
         ) : (
           (episodes || []).map((ep, i) => (
             <div key={i} onClick={() => onEp(i)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 14, background: "var(--card)", cursor: "pointer", border: "1.5px solid transparent", marginBottom: 8, transition: "all .15s" }}
