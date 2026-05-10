@@ -1,6 +1,23 @@
 import { callClaude } from "../../lib/anthropic";
 import { requireSub } from "../../lib/auth";
 
+// Cache in-memory : bible et épisodes cachés 1h (même params = même résultat)
+const genCache = new Map();
+const CACHE_TTL = 60 * 60 * 1000;
+function getCached(key) {
+  const entry = genCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.ts > CACHE_TTL) { genCache.delete(key); return null; }
+  return entry.data;
+}
+function setCached(key, data) {
+  if (genCache.size > 500) {
+    const oldest = [...genCache.entries()].sort((a, b) => a[1].ts - b[1].ts)[0];
+    genCache.delete(oldest[0]);
+  }
+  genCache.set(key, { data, ts: Date.now() });
+}
+
 // Rate limiting en mémoire : max 20 requêtes par minute par customerId
 const rateLimitMap = new Map();
 function isRateLimited(customerId) {
@@ -18,7 +35,7 @@ function isRateLimited(customerId) {
   return false;
 }
 
-const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variations"];
+const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variations", "traduire"];
 const VALID_MODES = ["fast", "premium"];
 const VALID_DUREES = [60, 90, 120];
 const VALID_FORMATS = [10, 20, 40];
@@ -65,6 +82,11 @@ function validatePayload(action, payload) {
     if (typeof titre !== "string" || titre.length > 200) return "Titre invalide";
     if (typeof logline !== "string" || logline.length > 500) return "Logline invalide";
     if (pitch !== undefined && (typeof pitch !== "string" || pitch.length > 500)) return "Pitch invalide";
+  } else if (action === "traduire") {
+    const { script, langue } = payload;
+    if (!script || typeof script !== "object") return "Script invalide";
+    const VALID_LANGUES = ["en", "es", "de", "pt", "it", "ar"];
+    if (!VALID_LANGUES.includes(langue)) return "Langue invalide";
   }
   return null;
 }
@@ -112,6 +134,9 @@ export default async function handler(req, res) {
   try {
     if (action === "bible") {
       const { mode, casting, univers, secret, format, duree } = payload;
+      const ck = `bible:${mode}:${casting}:${univers}:${secret}:${format}:${duree}`;
+      const cached = getCached(ck);
+      if (cached) return res.json(cached);
       const md = mode === "fast"
         ? "Fast Drama: viralité immédiate, émotions frontales, hooks agressifs, cliffhangers choc"
         : "Premium Suspense: tension psychologique, sous-texte, silences, réalisme";
@@ -121,20 +146,22 @@ export default async function handler(req, res) {
 JSON: {"titre":"","logline":"","pitch":"","personnages":[{"nom":"","age":25,"role":"","secret":""},{"nom":"","age":28,"role":"","secret":""}],"tension_centrale":""}`,
         1500
       );
-      // Normalise les clés (Claude retourne parfois title/logLine en anglais)
       if (!result.titre) result.titre = result.title || result.name || "Série sans titre";
       if (!result.logline) result.logline = result.logLine || result.description || "";
       if (!result.pitch) result.pitch = result.synopsis || result.summary || "";
       if (!result.tension_centrale) result.tension_centrale = result.tension || result.central_tension || "";
       if (!result.personnages) result.personnages = result.characters || result.personages || [];
-      // Tronque si trop long pour la validation episodes
       result.titre = String(result.titre).slice(0, 199);
       result.logline = String(result.logline).slice(0, 499);
+      setCached(ck, result);
       return res.json(result);
     }
 
     if (action === "episodes") {
       const { titre, logline, mode, from, to, total } = payload;
+      const ck = `episodes:${titre}:${mode}:${from}:${to}:${total}`;
+      const cached = getCached(ck);
+      if (cached) return res.json(cached);
       const md = mode === "fast"
         ? "Fast Drama: viralité immédiate, émotions frontales"
         : "Premium Suspense: tension psychologique, sous-texte";
@@ -146,6 +173,7 @@ JSON: {"titre":"","logline":"","pitch":"","personnages":[{"nom":"","age":25,"rol
 JSON: {"episodes":[{"numero":${from},"titre":"","cliffhanger":"","tension":${tFrom}}]}`,
         2500
       );
+      setCached(ck, result);
       return res.json(result);
     }
 
@@ -208,6 +236,17 @@ JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue
 Génère 5 titres alternatifs ultra-viraux pour cette série. Chaque titre doit créer de la curiosité, du désir ou de la tension.
 JSON: {"titres":[{"titre":"","score":95,"accroche":"","pourquoi":""}]}`
         , 1000
+      );
+      return res.json(result);
+    }
+
+    if (action === "traduire") {
+      const { script, langue } = payload;
+      const noms = { en: "English", es: "Español", de: "Deutsch", pt: "Português", it: "Italiano", ar: "العربية" };
+      const result = await callClaude(
+        `Expert script translator for vertical micro-dramas. Translate to ${noms[langue]}. Preserve tone, emotions, structure, and acting directions. Return the exact same JSON structure.`,
+        JSON.stringify(script),
+        2200
       );
       return res.json(result);
     }
