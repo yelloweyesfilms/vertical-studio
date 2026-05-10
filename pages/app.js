@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
-// ── CONFIG ──────────────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────────────
 const OPTS = {
   casting: ["1 Femme + 1 Homme", "2 Femmes", "2 Hommes", "Trio mixte"],
   univers_fast: ["Hôpital privé", "Milieu corporate", "Famille recomposée", "Mode & Influence", "Sport élite", "École d'élite", "Backstage festival", "Maison de luxe"],
@@ -116,7 +116,7 @@ async function cloudLoad(id, customerId) {
   } catch { return null; }
 }
 
-// ── SAUVEGARDE LOCALE ────────────────────────────────────────
+// ── SAUVEGARDE LOCALE ────────────────────────────────────────────
 const SAVE_KEY = "vs_series";
 
 function loadSaved() {
@@ -136,7 +136,7 @@ function deleteSerie(id) {
   localStorage.setItem(SAVE_KEY, JSON.stringify(updated));
 }
 
-// ── ONBOARDING ───────────────────────────────────────────────
+// ── ONBOARDING ──────────────────────────────────────────────
 const ONBOARDING_STEPS = [
   { icon: "🎲", titre: "Le Mixeur", desc: "Choisis ton casting, ton univers et ton secret central. En 1 clic, la série prend forme." },
   { icon: "📖", titre: "La Bible", desc: "Titre viral, logline, personnages et séquencier complet. De l'idée à la bible pro en secondes." },
@@ -208,7 +208,7 @@ function Chip({ label, active, onClick, block, sub }) {
   );
 }
 
-// ── ÉCRAN PARRAINAGE ─────────────────────────────────────────
+// ── ÉCRAN PARRAINAGE ─────────────────────────────────────────────
 function ParrainageView({ customerId, onBack }) {
   const [code, setCode] = useState(null);
   const [count, setCount] = useState(0);
@@ -277,7 +277,7 @@ function ParrainageView({ customerId, onBack }) {
         {/* Stats */}
         <div style={{ background: "var(--card)", borderRadius: 14, padding: 20, border: "1.5px solid var(--bo)", textAlign: "center" }}>
           <div style={{ fontFamily: "var(--serif)", fontSize: 48, fontWeight: 900, color: "var(--r)", lineHeight: 1 }}>{count}</div>
-          <p style={{ fontSize: 14, color: "var(--mt)", marginTop: 6 }}>ami{count !== 1 ? "s" : ""} parrainé{count !== 1 ? "s" : ""}</p>
+          <p style={{ fontSize: 14, color: "var(--mt)", marginTop: 6 }}>ami{count !== 1 ? "s" : ""} parrainsé{count !== 1 ? "s" : ""}</p>
           {count > 0 && <p style={{ fontSize: 12, color: "var(--r)", fontWeight: 700, marginTop: 8 }}>{count} mois offert{count !== 1 ? "s" : ""} sur ton abonnement</p>}
         </div>
       </div>
@@ -285,7 +285,7 @@ function ParrainageView({ customerId, onBack }) {
   );
 }
 
-// ── ÉCRAN MES SÉRIES ─────────────────────────────────────────
+// ── ÉCRAN MES SÉRIES ─────────────────────────────────────────────
 function MesSeriesView({ onLoad, onBack, customerId }) {
   const [series, setSeries] = useState(() => loadSaved());
   const [cloudSeries, setCloudSeries] = useState([]);
@@ -387,7 +387,6 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
 }
 
 // ── SCREENS ──────────────────────────────────────────────────
-
 const CUSTOM_PREFIX = "__custom__";
 
 function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage, darkMode, onDarkMode, onLogout, onUpgrade }) {
@@ -767,7 +766,7 @@ function VariationsView({ variations, loading, ep, onSelect, onBack }) {
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px 0" }}>
             <div style={{ fontSize: 32, marginBottom: 16, animation: "pulse 1.2s infinite" }}>🎲</div>
-            <p style={{ color: "var(--mt)" }}>Génération de 3 versions en parallèle…</p>
+            <p style={{ color: "var(--mt)" }}>Génération de 4 versions en parallèle…</p>
           </div>
         ) : (variations || []).map((v, i) => (
           <div key={i} style={{ background: "var(--card)", borderRadius: 16, padding: 18, marginBottom: 16, border: "1.5px solid var(--bo)" }}>
@@ -912,7 +911,7 @@ function TournageView({ script, ep, duree, onBack }) {
   );
 }
 
-// ── MAIN APP ─────────────────────────────────────────────────
+// ── MAIN APP ───────────────────────────────────────────────────
 export default function App() {
   const router = useRouter();
   const [customerId, setCustomerId] = useState(null);
