@@ -1,5 +1,25 @@
 import { callClaude } from "../../lib/anthropic";
 import { requireSub } from "../../lib/auth";
+import { Redis } from "@upstash/redis";
+
+function getRedis() {
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
+  return new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN });
+}
+
+async function trackAction(action, customerId) {
+  try {
+    const redis = getRedis();
+    if (!redis) return;
+    const today = new Date().toISOString().slice(0, 10);
+    await Promise.all([
+      redis.incr(`analytics:daily:${today}:${action}`),
+      redis.incr(`analytics:total:${action}`),
+      redis.sadd(`analytics:users:${today}`, customerId),
+      redis.expire(`analytics:users:${today}`, 60 * 60 * 24 * 60), // 60 jours
+    ]);
+  } catch {}
+}
 
 // Cache in-memory : bible et épisodes cachés 1h (même params = même résultat)
 const genCache = new Map();
@@ -154,6 +174,7 @@ JSON: {"titre":"","logline":"","pitch":"","personnages":[{"nom":"","age":25,"rol
       result.titre = String(result.titre).slice(0, 199);
       result.logline = String(result.logline).slice(0, 499);
       setCached(ck, result);
+      trackAction("bible", customerId);
       return res.json(result);
     }
 
@@ -174,6 +195,7 @@ JSON: {"episodes":[{"numero":${from},"titre":"","cliffhanger":"","tension":${tFr
         2500
       );
       setCached(ck, result);
+      trackAction("episodes", customerId);
       return res.json(result);
     }
 
@@ -193,6 +215,7 @@ Le champ "jeu" = indication de jeu d'acteur courte (ex: "voix brisée", "sourire
 JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue":"","jeu":"","visuel_916":""}],"cliffhanger_scene":{"texte":"","visuel_916":"","label":""},"checklist":[""]}`,
         2200
       );
+      trackAction("script", customerId);
       return res.json(result);
     }
 
@@ -225,6 +248,7 @@ JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue
       const results = await Promise.all(styles.map(({ instr }) =>
         callClaude(`Scénariste expert micro-dramas 9:16. ${DUR_INSTR[duree]} JSON uniquement.`, `${instr}\n${base}`, 2000)
       ));
+      trackAction("variations", customerId);
       return res.json({ variations: results.map((r, i) => ({ ...r, label: styles[i].label })) });
     }
 
@@ -237,6 +261,7 @@ Génère 5 titres alternatifs ultra-viraux pour cette série. Chaque titre doit 
 JSON: {"titres":[{"titre":"","score":95,"accroche":"","pourquoi":""}]}`
         , 1000
       );
+      trackAction("titres", customerId);
       return res.json(result);
     }
 
@@ -248,6 +273,7 @@ JSON: {"titres":[{"titre":"","score":95,"accroche":"","pourquoi":""}]}`
         JSON.stringify(script),
         2200
       );
+      trackAction("traduction", customerId);
       return res.json(result);
     }
 
