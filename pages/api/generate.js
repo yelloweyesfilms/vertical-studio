@@ -44,27 +44,29 @@ function setCached(key, data) {
 const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variations", "traduire", "production"];
 const VALID_MODES = ["fast", "premium"];
 const VALID_DUREES = [60, 90, 120];
-const VALID_FORMATS = [10, 20, 40];
+const VALID_FORMATS = [10, 20, 40, 90];
 const VALID_EDIT_TYPES = ["pimenter", "subtil", "simplifier"];
 
 function validatePayload(action, payload) {
   if (!payload || typeof payload !== "object") return "Payload invalide";
   if (action === "bible") {
-    const { mode, casting, univers, secret, format, duree } = payload;
+    const { mode, casting, univers, secret, format, duree, genre, lieu } = payload;
     if (!VALID_MODES.includes(mode)) return "Mode invalide";
     if (!VALID_DUREES.includes(duree)) return "Durée invalide";
     if (!VALID_FORMATS.includes(format)) return "Format invalide";
-    if (mode === "fast" && format > 10) return "Le mode Fast est limité à 10 épisodes. Passez en Premium Suspense pour créer jusqu'à 40 épisodes.";
+    if (mode === "fast" && format > 10) return "Le mode Fast est limité à 10 épisodes. Passez en Premium Suspense pour créer jusqu'à 90 épisodes.";
     if (typeof casting !== "string" || casting.length > 100) return "Casting invalide";
     if (typeof univers !== "string" || univers.length > 100) return "Univers invalide";
     if (typeof secret !== "string" || secret.length > 100) return "Secret invalide";
+    if (genre !== undefined && (typeof genre !== "string" || genre.length > 100)) return "Genre invalide";
+    if (lieu !== undefined && (typeof lieu !== "string" || lieu.length > 100)) return "Lieu invalide";
   } else if (action === "episodes") {
     const { titre, logline, mode, from, to, total } = payload;
     if (!VALID_MODES.includes(mode)) return "Mode invalide";
     if (typeof titre !== "string" || titre.length > 200) return "Titre invalide";
     if (typeof logline !== "string" || logline.length > 500) return "Logline invalide";
     if (!Number.isInteger(from) || !Number.isInteger(to) || !Number.isInteger(total)) return "Numéros d'épisodes invalides";
-    if (from < 1 || to > 40 || from > to) return "Plage d'épisodes invalide";
+    if (from < 1 || to > 90 || from > to) return "Plage d'épisodes invalide";
   } else if (action === "script") {
     const { ep, bible, mode, duree } = payload;
     if (!VALID_MODES.includes(mode)) return "Mode invalide";
@@ -135,7 +137,7 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: "Le mode Premium Suspense est réservé au plan Premium." });
   }
   if (plan === "standard" && action === "bible" && payload?.format > 10) {
-    return res.status(403).json({ error: "Le plan Standard est limité à 10 épisodes. Passez à Premium pour créer jusqu'à 40 épisodes." });
+    return res.status(403).json({ error: "Le plan Standard est limité à 10 épisodes. Passez à Premium pour créer jusqu'à 90 épisodes." });
   }
 
   const validationError = validatePayload(action, payload);
@@ -145,15 +147,19 @@ export default async function handler(req, res) {
 
   try {
     if (action === "bible") {
-      const { mode, casting, univers, secret, format, duree } = payload;
-      const ck = `bible:${mode}:${casting}:${univers}:${secret}:${format}:${duree}`;
+      const { mode, casting, univers, secret, format, duree, genre, lieu } = payload;
+      const ck = `bible:${mode}:${casting}:${univers}:${secret}:${format}:${duree}:${genre || ""}:${lieu || ""}`;
       const cached = getCached(ck);
       if (cached) return res.json(cached);
       const md = mode === "fast"
         ? "Fast Drama: viralité immédiate, émotions explosives, hooks agressifs, cliffhangers choc"
         : "Premium Suspense: tension psychologique, sous-texte riche, silences éloquents, réalisme brut";
+      const genreInstr = genre ? `Genre: ${genre} — respecte les codes émotionnels et narratifs de ce genre.` : "";
+      const lieuInstr = lieu ? `Lieu principal: "${lieu}" — les scènes se déroulent dans ce lieu limité, exploite l'espace pour créer la tension et la claustrophobie dramatique.` : "";
       const result = await callClaude(
         `Tu es showrunner de micro-dramas 9:16 (TikTok, Reels, Shorts). ${md}. ${DUR_INSTR[duree]}
+${genreInstr}
+${lieuInstr}
 Titre: 2-4 mots, mystérieux, crée l'envie immédiate — jamais de sous-titre explicatif.
 Logline: "[Personnage] cache [secret] jusqu'au jour où [déclencheur]" — 15 mots max, formule respectée.
 Pitch: 3 lignes qui hookent un ado de 17 ans — commence par l'émotion, pas l'intrigue.

@@ -8,6 +8,9 @@ const OPTS = {
   univers_prem: ["Start-up IA", "Finance internationale", "Héritage familial", "Politique & Pouvoir", "Pharma & Biotech", "Diplomatie internationale", "Industrie musicale", "Justice & Tribunal"],
   secret_fast: ["Trahison amoureuse", "Double vie", "Vengeance planifiée", "Enfant caché", "Identité volée", "Addiction secrète", "Adoption cachée", "Crime passé"],
   secret_prem: ["Sabotage interne", "Espionnage industriel", "Héritage volé", "Manipulation psychologique", "Complot financier", "Corruption judiciaire", "Trahison d'État", "Chantage au sommet"],
+  genre: ["Romance", "Revenge Story", "Thriller Social", "Teen Drama", "Fantasy", "Soap Premium"],
+  lieu_fast: ["Ascenseur", "Chambre d'hôtel", "Voiture la nuit", "Couloir vide", "Toit d'immeuble", "Salle d'attente"],
+  lieu_prem: ["Cabinet privé", "Parking souterrain", "Loge d'artiste", "Jet privé", "Bibliothèque fermée", "Terrasse au crépuscule"],
 };
 const DUR_LABEL = { 60: "1 min", 90: "1 min 30", 120: "2 min" };
 const DUR_SCENES = { 60: 5, 90: 7, 120: 10 };
@@ -702,7 +705,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
           {[{ k: "fast", l: "⚡ Fast Drama" }, { k: "premium", l: "🎭 Premium Suspense" }].map(({ k, l }) => {
             const locked = k === "premium" && plan === "standard";
             return (
-              <button key={k} onClick={() => { if (!locked) set(prev => ({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0], format: k === "fast" && prev.format > 10 ? 10 : prev.format })); }}
+              <button key={k} onClick={() => { if (!locked) set(prev => ({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0], lieu: k === "fast" ? OPTS.lieu_fast[0] : OPTS.lieu_prem[0], format: k === "fast" && prev.format > 10 ? 10 : prev.format })); }}
                 style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: locked ? "#3a5040" : state.mode === k ? "#fff" : "#3a5040", transition: "all .2s", cursor: locked ? "not-allowed" : "pointer", opacity: locked ? 0.5 : 1 }}>
                 {l}{locked && " 🔒"}
               </button>
@@ -746,6 +749,8 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
           { label: "Casting", opts: OPTS.casting, key: "casting" },
           { label: "Univers", opts: univOpts, key: "univers" },
           { label: "Secret central", opts: secOpts, key: "secret" },
+          { label: "Genre", opts: OPTS.genre, key: "genre" },
+          { label: "Lieu unique", opts: state.mode === "fast" ? OPTS.lieu_fast : OPTS.lieu_prem, key: "lieu" },
         ].map(({ label, opts, key }) => (
           <div key={key} style={{ marginBottom: 22 }}>
             <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>{label}</p>
@@ -778,14 +783,15 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
         <div style={{ marginBottom: 28 }}>
           <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>
             Nombre d'épisodes
-            {state.mode === "fast" && <span style={{ marginLeft: 8, fontSize: 10, color: "var(--r)", fontWeight: 700 }}>max 10 en Fast</span>}
+            {state.mode === "fast" && <span style={{ marginLeft: 8, fontSize: 10, color: "var(--r)", fontWeight: 700 }}>max 10 · 90 ép. en Premium</span>}
           </p>
           <div style={{ display: "flex", gap: 8 }}>
-            {[10, 20, 40].map(f => {
+            {[10, 20, 40, 90].map(f => {
               const locked = state.mode === "fast" && f > 10;
+              const premLocked = f === 90 && state.mode === "fast";
               return (
                 <div key={f} style={{ flex: 1, position: "relative" }}>
-                  <Chip label={`${f} ép.`} sub={locked ? "🎭 Premium" : `${Math.round(f * state.duree / 60)} min`} block active={state.format === f && !locked} onClick={() => { if (!locked) set({ format: f }); }} />
+                  <Chip label={`${f} ép.`} sub={locked ? "⚡ Fast" : f === 90 ? "🎭 Pro" : `${Math.round(f * state.duree / 60)} min`} block active={state.format === f && !locked} onClick={() => { if (!locked) set({ format: f }); }} />
                   {locked && <div style={{ position: "absolute", inset: 0, borderRadius: 14, background: "rgba(var(--bg-rgb,242,237,230),0.6)", cursor: "not-allowed" }} />}
                 </div>
               );
@@ -1373,7 +1379,7 @@ export default function App() {
     setTimeout(() => generate(pack), 50);
   };
 
-  const [state, setState] = useState({ mode: "fast", casting: OPTS.casting[0], univers: OPTS.univers_fast[0], secret: OPTS.secret_fast[0], format: 10, duree: 60 });
+  const [state, setState] = useState({ mode: "fast", casting: OPTS.casting[0], univers: OPTS.univers_fast[0], secret: OPTS.secret_fast[0], genre: OPTS.genre[0], lieu: OPTS.lieu_fast[0], format: 10, duree: 60 });
   const [bible, setBible] = useState(null);
   const [episodes, setEpisodes] = useState([]);
   const [epIdx, setEpIdx] = useState(0);
