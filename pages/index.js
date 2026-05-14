@@ -43,9 +43,9 @@ const TESTIMONIALS = [
 ];
 
 const FAQ_ITEMS = [
-  { q: "C'est quoi un micro-drama vertical ?", r: "Un format vidéo court (1 à 2 min), filmé en 9:16 pour mobile, avec une structure dramatique forte : hook percutant, tension montante et cliffhanger final. Le format qui explose sur TikTok, Instagram Reels et YouTube Shorts." },
+  { q: "C'est quoi un micro-drama vertical ?", r: "Un format vidéo court (1 à 2 min), filmé en 9:16 pour mobile, avec une structure dramatique forte : hook percutant, tension montante et cliffhanger final. Le format qui explose sur TikTok, Instagram Reels et YouTube Shorts." },
   { q: "Combien de temps pour générer une série complète ?", r: "Moins de 5 minutes. La bible (titre, logline, personnages) se génère en streaming en quelques secondes. Les épisodes arrivent en parallèle. Le script d'un épisode prend 10 secondes." },
-  { q: "Quelle différence entre Fast Drama et Premium Suspense ?", r: "Fast Drama : émotions frontales, hooks agressifs, rythme maximal — idéal pour TikTok. Premium Suspense : tension psychologique, sous-texte, silences lourds — pour une audience plus mature et des séries premium." },
+  { q: "Quelle différence entre Fast Drama et Premium Suspense ?", r: "Fast Drama : émotions frontales, hooks agressifs, rythme maximal — idéal pour TikTok. Premium Suspense : tension psychologique, sous-texte, silences lourds — pour une audience plus mature et des séries premium." },
   { q: "Les scripts sont-ils vraiment prêts à tourner ?", r: "Oui. Chaque scène inclut le dialogue, l'indication de jeu d'acteur et la directive de cadrage 9:16. Le Mode Tournage intègre un téléprompteur auto-scroll et une checklist décors." },
   { q: "Mes séries sont-elles sauvegardées ?", r: "Elles sont sauvegardées localement sur ton appareil et synchronisées dans le cloud automatiquement. Tu y accèdes depuis n'importe quel appareil via l'onglet ☁️ Cloud." },
   { q: "Puis-je annuler mon abonnement ?", r: "Oui, à tout moment en un clic depuis ton espace Stripe. Aucun engagement, aucune pénalité. Tu gardes l'accès jusqu'à la fin de la période payée." },
@@ -54,7 +54,7 @@ const FAQ_ITEMS = [
 export default function Landing() {
   const [email, setEmail] = useState("");
   const [refCode, setRefCode] = useState("");
-  const [refValid, setRefValid] = useState(null);
+  const [refValid, setRefValid] = useState(null); // null | true | false
   const [loading, setLoading] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const router = useRouter();
@@ -174,7 +174,7 @@ export default function Landing() {
       {/* STATS BAR */}
       <div className="stats-bar" style={{ background: DARK, padding: "20px 40px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap" }}>
-          {[["2 000+", "séries générées"], ["50+", "créateurs actifs"], ["< 5 min", "par série complète"], ["6 langues", "de traduction"]].map(([val, label]) => (
+          {[["2 000+", "séries générées"], ["50+", "créateurs actifs"], ["< 5 min", "par série complète"], ["8 langues", "de traduction"]].map(([val, label]) => (
             <div key={label} style={{ textAlign: "center" }}>
               <div style={{ fontFamily: "var(--serif)", fontSize: 28, fontWeight: 900, color: RED, lineHeight: 1 }}>{val}</div>
               <div style={{ fontSize: 12, color: "#888", marginTop: 4, fontWeight: 600 }}>{label}</div>
@@ -236,7 +236,8 @@ export default function Landing() {
               { icon: "📖", title: "Bible express", desc: "Titre, logline, personnages avec secrets, tension centrale. Généré en streaming — tu vois la série prendre vie." },
               { icon: "🎬", title: "Scripts prêts à tourner", desc: "Hook 3 secondes, dialogues, jeu d'acteur, cadrage 9:16. Fast Drama ou Premium Suspense selon ton style." },
               { icon: "🎲", title: "3 variations par script", desc: "Intense, Subtil ou Rapide — 3 versions générées en parallèle pour choisir le ton parfait. Premium uniquement." },
-              { icon: "🌍", title: "Traduction en 6 langues", desc: "Traduis n'importe quel script en Anglais, Espagnol, Allemand, Portugais, Italien ou Arabe en un clic." },
+              { icon: "🌍", title: "Traduction en 8 langues", desc: "Traduis n'importe quel script en Anglais, Espagnol, Allemand, Portugais, Italien, Arabe, Hébreu ou Chinois en un clic." },
+              { icon: "🎬", title: "Fiche technique Prod", desc: "Décors, costumes, lieux de tournage générés par l'IA pour chaque série. Tourne pro avec un smartphone." },
               { icon: "📱", title: "Mode Tournage", desc: "Téléprompteur auto-scroll, fond clair ou sombre, vitesse réglable, barre de progression. Rien à imprimer." },
               { icon: "🔥", title: "Titres viraux", desc: "5 titres alternatifs avec score de viralité, accroche et analyse. Pour maximiser tes clics. Premium uniquement." },
               { icon: "☁️", title: "Sauvegarde cloud", desc: "Tes séries synchronisées sur tous tes appareils automatiquement. Accès depuis n'importe où." },
@@ -258,7 +259,7 @@ export default function Landing() {
           <div className="testi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
             {TESTIMONIALS.map((t, i) => (
               <div key={i} style={{ background: LIGHT, borderRadius: 20, padding: 28 }}>
-                <p style={{ fontSize: 13, color: RED, fontWeight: 800, marginBottom: 16, letterSpacing: 1 }}>★★★★★</p>
+                <p style={{ fontSize: 13, color: RED, fontWeight: 800, marginBottom: 16, letterSpacing: 1 }}>{"★★★★★"}</p>
                 <p style={{ fontSize: 15, lineHeight: 1.7, marginBottom: 20, color: DARK }}>« {t.text} »</p>
                 <div>
                   <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>{t.name}</p>
@@ -266,6 +267,36 @@ export default function Landing() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* EXEMPLES */}
+      <div style={{ background: LIGHT, padding: "80px 40px" }} className="section">
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: "var(--serif)", fontSize: 34, fontWeight: 900, textAlign: "center", marginBottom: 8 }}>Vois ce que ça donne</h2>
+          <p style={{ textAlign: "center", color: GRAY, marginBottom: 48, fontSize: 16 }}>Des séries générées en moins de 5 minutes — prêtes à tourner</p>
+          <div className="testi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+            {[
+              { genre: "Revenge Story", titre: "Le Contrat", logline: "Une stagiaire découvre que son patron l'a ruinée. Elle a 30 jours pour tout récupérer.", eps: 10, mode: "⚡ Fast Drama" },
+              { genre: "Premium Suspense", titre: "Chambre 412", logline: "Deux inconnus bloqués dans un hôtel pendant une tempête. L'un d'eux est un meurtrier.", eps: 20, mode: "🎭 Premium" },
+              { genre: "Teen Drama", titre: "Hors Cadre", logline: "Une lycéenne filme tout en secret. Jusqu'au jour où elle capte quelque chose qu'elle n'aurait pas dû voir.", eps: 10, mode: "⚡ Fast Drama" },
+            ].map((ex, i) => (
+              <div key={i} style={{ background: "#fff", borderRadius: 20, padding: 28, boxShadow: "0 2px 12px rgba(0,0,0,.06)", display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: RED, letterSpacing: 1.5, textTransform: "uppercase" }}>{ex.genre}</span>
+                  <span style={{ fontSize: 11, color: GRAY, fontWeight: 600 }}>{ex.eps} éps.</span>
+                </div>
+                <h3 style={{ fontFamily: "var(--serif)", fontSize: 22, fontWeight: 900, color: DARK, margin: 0 }}>{ex.titre}</h3>
+                <p style={{ fontSize: 14, color: GRAY, lineHeight: 1.6, margin: 0 }}>{ex.logline}</p>
+                <div style={{ marginTop: "auto", paddingTop: 8, borderTop: "1px solid #E8E4DC", fontSize: 12, color: GRAY, fontWeight: 600 }}>{ex.mode}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: "center", marginTop: 40 }}>
+            <a href="/exemples" style={{ display: "inline-block", background: DARK, color: "#fff", padding: "16px 36px", borderRadius: 12, fontSize: 16, fontWeight: 700, textDecoration: "none", letterSpacing: -0.3 }}>
+              Voir tous les exemples →
+            </a>
           </div>
         </div>
       </div>
@@ -279,12 +310,13 @@ export default function Landing() {
             className="pricing-input"
             style={{ width: "100%", maxWidth: 400, display: "block", margin: "0 auto 32px", padding: "14px 18px", borderRadius: 10, border: "1px solid #ddd", background: "#fff", color: DARK, fontSize: 15, outline: "none" }} />
           <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
+            {/* Standard */}
             <div style={{ background: DARK, borderRadius: 24, padding: "36px 32px" }}>
               <p style={{ fontSize: 12, fontWeight: 800, letterSpacing: 2, color: "#888", textTransform: "uppercase", marginBottom: 8 }}>Standard</p>
               <div style={{ fontFamily: "var(--serif)", fontSize: 52, fontWeight: 900, color: "#fff", lineHeight: 1 }}>9€</div>
               <p style={{ color: "#888", fontSize: 14, marginBottom: 28, marginTop: 4 }}>/mois</p>
               <div style={{ marginBottom: 28 }}>
-                {["⚡ Fast Drama uniquement", "10 épisodes par série", "Scripts 1 à 2 min", "Mode Tournage + Téléprompteur", "🌍 Traduction en 6 langues", "☁️ Sauvegarde cloud", "📄 Export PDF"].map((item, i) => (
+                {["⚡ Fast Drama uniquement", "10 épisodes par série", "Scripts 1 à 2 min", "Mode Tournage + Téléprompteur", "🌍 Traduction en 8 langues", "☁️ Sauvegarde cloud", "📄 Export PDF"].map((item, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                     <Check />
                     <span style={{ color: "#ddd", fontSize: 14 }}>{item}</span>
@@ -295,13 +327,14 @@ export default function Landing() {
                 {loading ? "Redirection…" : "Commencer →"}
               </button>
             </div>
+            {/* Premium */}
             <div style={{ background: DARK, border: `2px solid ${RED}`, borderRadius: 24, padding: "36px 32px", position: "relative" }}>
               <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: RED, color: "#fff", fontSize: 11, fontWeight: 800, padding: "4px 14px", borderRadius: 20, letterSpacing: 1, whiteSpace: "nowrap" }}>⭐ RECOMMANDÉ</div>
               <p style={{ fontSize: 12, fontWeight: 800, letterSpacing: 2, color: RED, textTransform: "uppercase", marginBottom: 8 }}>Premium</p>
               <div style={{ fontFamily: "var(--serif)", fontSize: 52, fontWeight: 900, color: RED, lineHeight: 1 }}>19€</div>
               <p style={{ color: "#888", fontSize: 14, marginBottom: 28, marginTop: 4 }}>/mois</p>
               <div style={{ marginBottom: 28 }}>
-                {["⚡ Fast Drama + 🎭 Premium Suspense", "Jusqu'à 40 épisodes par série", "Scripts 1 à 2 min", "Mode Tournage + Téléprompteur", "🎲 3 variations par script", "🔥 Générateur de titres viraux", "🌍 Traduction en 6 langues", "☁️ Sauvegarde cloud", "📄 Export PDF"].map((item, i) => (
+                {["⚡ Fast Drama + 🎭 Premium Suspense", "Jusqu'à 90 épisodes par série", "Scripts 1 à 2 min", "Mode Tournage + Téléprompteur", "🎲 3 variations par script", "🔥 Générateur de titres viraux", "🌍 Traduction en 8 langues", "🎬 Fiche technique de production", "☁️ Sauvegarde cloud", "📄 Export PDF"].map((item, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                     <Check color={RED} />
                     <span style={{ color: "#ddd", fontSize: 14 }}>{item}</span>
