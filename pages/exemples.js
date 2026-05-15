@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
 import { SERIES as SERIES_DATA } from "../lib/series";
 
@@ -84,14 +83,7 @@ function PlatformBadge({ platform }) {
 function SerieCard({ serie }) {
   const { bible, episodes, script, mode, platform, mixeurParams, slug } = serie;
   const [showScript, setShowScript] = useState(false);
-  const router = useRouter();
 
-  const handleGenerate = () => {
-    const isLoggedIn = typeof window !== "undefined" && !!localStorage.getItem("vs_customer");
-    if (!isLoggedIn) { router.push("/tarifs"); return; }
-    try { sessionStorage.setItem("vs_preset", JSON.stringify(mixeurParams)); } catch {}
-    router.push("/app");
-  };
 
   return (
     <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 24, overflow: "hidden", marginBottom: 28, backdropFilter: "blur(12px)" }}>
@@ -157,30 +149,17 @@ function SerieCard({ serie }) {
           ))}
         </div>
 
-        {/* CTA — Générer une série similaire */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-          <button
-            onClick={handleGenerate}
-            style={{
-              flex: 1, padding: "15px 20px", borderRadius: 14, fontSize: 14, fontWeight: 700,
-              background: `linear-gradient(135deg, ${mode === "fast" ? RED : VIO}, ${mode === "fast" ? "rgba(232,92,58,0.7)" : "rgba(168,85,247,0.7)"})`,
-              border: "none", color: "#fff", cursor: "pointer",
-              fontFamily: "'Space Grotesk', sans-serif",
-              boxShadow: `0 0 24px ${mode === "fast" ? "rgba(232,92,58,0.3)" : "rgba(168,85,247,0.3)"}`,
-              letterSpacing: -0.3,
-            }}>
-            ✦ Générer similaire →
-          </button>
-          {slug && (
+        {slug && (
+          <div style={{ marginBottom: 12 }}>
             <a href={`/exemples/${slug}`} style={{
-              display: "flex", alignItems: "center", padding: "15px 18px", borderRadius: 14, fontSize: 14, fontWeight: 700,
+              display: "inline-flex", alignItems: "center", padding: "13px 20px", borderRadius: 14, fontSize: 14, fontWeight: 700,
               background: SURFACE, border: `1px solid ${BORDER}`, color: TEXT,
-              textDecoration: "none", whiteSpace: "nowrap",
+              textDecoration: "none",
             }}>
-              Voir la page →
+              Voir la page complète →
             </a>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Script toggle */}
         <button

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { SERIES } from "../../lib/series";
 
 const RED = "#E85C3A";
@@ -28,7 +28,6 @@ function TensionBar({ t = 0 }) {
 }
 
 export default function SeriePage({ serie }) {
-  const router = useRouter();
 
   if (!serie) return null;
 
@@ -37,12 +36,6 @@ export default function SeriePage({ serie }) {
   const platColor = PLATFORM_COLORS[platform] || MUTED;
   const platIcon = PLATFORM_ICONS[platform] || "▶";
 
-  const handleGenerate = () => {
-    const isLoggedIn = typeof window !== "undefined" && !!localStorage.getItem("vs_customer");
-    if (!isLoggedIn) { router.push("/tarifs"); return; }
-    try { sessionStorage.setItem("vs_preset", JSON.stringify(mixeurParams)); } catch {}
-    router.push("/app");
-  };
 
   const schemaArticle = {
     "@context": "https://schema.org",
@@ -81,13 +74,13 @@ export default function SeriePage({ serie }) {
               <span style={{ color: BORDER }}>›</span>
               <span style={{ fontSize: 13, color: TEXT, fontWeight: 600 }}>{bible.titre}</span>
             </div>
-            <button onClick={handleGenerate} style={{
+            <a href="/tarifs" style={{
               background: `linear-gradient(135deg, ${modeColor}, ${VIO})`,
-              border: "none", color: "#fff", padding: "10px 20px", borderRadius: 12,
-              fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif",
+              color: "#fff", padding: "10px 20px", borderRadius: 12,
+              fontSize: 13, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", textDecoration: "none",
             }}>
-              Générer similaire →
-            </button>
+              S'abonner →
+            </a>
           </nav>
         </div>
 
@@ -196,20 +189,21 @@ export default function SeriePage({ serie }) {
           <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 24, padding: "40px 36px", textAlign: "center", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, rgba(168,85,247,0.06) 0%, transparent 60%)", pointerEvents: "none" }} />
             <div style={{ position: "relative" }}>
-              <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: VIO, marginBottom: 14 }}>Générer ta version</p>
+              <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: VIO, marginBottom: 14 }}>Créer ta série</p>
               <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 900, letterSpacing: -1, marginBottom: 12, lineHeight: 1.1 }}>
-                Une série similaire,<br />
-                <span style={{ background: `linear-gradient(135deg, ${RED}, ${VIO})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontStyle: "italic" }}>en 5 minutes</span>.
+                Ta série en 5 minutes,<br />
+                <span style={{ background: `linear-gradient(135deg, ${RED}, ${VIO})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontStyle: "italic" }}>prête à tourner</span>.
               </h2>
-              <p style={{ color: MUTED, fontSize: 14, marginBottom: 28, lineHeight: 1.6 }}>Le Mixeur est pré-configuré avec l'univers et le casting de cette série.<br />Change ce que tu veux, génère le reste.</p>
-              <button onClick={handleGenerate} style={{
-                background: `linear-gradient(135deg, ${modeColor}, ${VIO})`, border: "none",
+              <p style={{ color: MUTED, fontSize: 14, marginBottom: 28, lineHeight: 1.6 }}>Bible, scripts, hooks et cliffhangers générés par l'IA.<br />Prêts pour TikTok, DramaBox et ReelShort.</p>
+              <a href="/tarifs" style={{
+                display: "inline-block",
+                background: `linear-gradient(135deg, ${RED}, ${VIO})`,
                 color: "#fff", padding: "16px 40px", borderRadius: 16, fontSize: 16, fontWeight: 700,
-                cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif", textDecoration: "none",
                 boxShadow: `0 0 40px rgba(168,85,247,0.25)`, letterSpacing: -0.3,
               }}>
-                ✦ Générer une série similaire →
-              </button>
+                Voir les abonnements →
+              </a>
               <p style={{ color: MUTED, fontSize: 12, marginTop: 14 }}>Sans engagement · Dès 7,50€/mois</p>
             </div>
           </div>
