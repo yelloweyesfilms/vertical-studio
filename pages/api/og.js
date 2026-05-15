@@ -42,7 +42,7 @@ export default function handler(req) {
               <div style={{ width: 0, height: 0, borderTop: "8px solid transparent", borderBottom: "8px solid transparent", borderLeft: "14px solid white", marginLeft: 3, display: "flex" }} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: 4, textTransform: "uppercase" }}>Clap</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: 4, textTransform: "uppercase" }}>Vertical</span>
               <span style={{ fontSize: 24, fontWeight: 900, color: "#f1f5f9", letterSpacing: -1 }}>Clap</span>
             </div>
           </div>
