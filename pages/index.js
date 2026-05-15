@@ -156,6 +156,9 @@ export default function Landing() {
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
         @keyframes glow { 0%,100%{opacity:.7} 50%{opacity:1} }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        @keyframes lineGrow { from{width:0} to{width:100%} }
+        @keyframes nodePop { from{transform:scale(0.6);opacity:0} to{transform:scale(1);opacity:1} }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         input { font-size: 16px !important; }
         input::placeholder { color: ${MUTED}; }
@@ -263,6 +266,20 @@ export default function Landing() {
         </div>
       </div>
 
+      {/* MARQUEE */}
+      <div style={{ overflow: "hidden", borderBottom: `1px solid ${BORDER}`, padding: "16px 0", background: "rgba(255,255,255,0.01)", userSelect: "none" }}>
+        <div style={{ display: "flex", gap: 0, animation: "marquee 40s linear infinite", whiteSpace: "nowrap", width: "max-content" }}>
+          {[...Array(2)].map((_, rep) => (
+            ["Le Mensonge", "Héritage", "Deux Vies", "La Trahison", "Le Dernier Appel", "Secrets de Famille", "Le Pacte", "Double Jeu", "La Chute", "Huis Clos", "Rupture", "Le Témoin", "Zone Rouge", "L'Imposteur", "Sous Pression"].map((t, i) => (
+              <span key={`${rep}-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: 20, padding: "0 20px", fontSize: 13, fontWeight: 600, color: i % 3 === 0 ? TEXT : MUTED, letterSpacing: 0.5 }}>
+                <span style={{ width: 4, height: 4, borderRadius: "50%", background: i % 5 === 0 ? RED : i % 5 === 2 ? VIO : BORDER, display: "inline-block", flexShrink: 0 }} />
+                {t}
+              </span>
+            ))
+          ))}
+        </div>
+      </div>
+
       {/* PLATFORMS */}
       <div style={{ padding: "56px 40px", borderBottom: `1px solid ${BORDER}`, textAlign: "center" }}>
         <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 36 }}>Conçu pour les 3 grandes plateformes</p>
@@ -358,6 +375,69 @@ export default function Landing() {
         </div>
       </div>
 
+      {/* AVANT / APRÈS */}
+      <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <Label color={VIO}>La transformation</Label>
+          <Title>Avant. <span style={{ fontStyle: "italic", color: MUTED }}>Après.</span></Title>
+          <p style={{ textAlign: "center", color: MUTED, marginBottom: 56, fontSize: 15 }}>Ce que tu écrivais. Ce que l'IA génère.</p>
+          <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+            {/* AVANT */}
+            <div style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${BORDER}`, borderRadius: 20, padding: "28px 28px", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "rgba(255,255,255,0.06)" }} />
+              <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 20 }}>✗ Sans Studio Vertical</p>
+              <div style={{ fontFamily: "monospace", fontSize: 13, lineHeight: 2, color: MUTED }}>
+                {[
+                  { t: "idée : infirmière qui cache un secret", strike: false },
+                  { t: "le gars revient ? ou la fille ?", strike: true },
+                  { t: "→ faut un truc fort au début", strike: false },
+                  { t: "genre elle cache qqchose", strike: true },
+                  { t: "épisode 1... faire quoi ?", strike: false },
+                  { t: "hook = lui montrer le dossier ??", strike: false },
+                  { t: "ou il arrive et elle flippe", strike: true },
+                  { t: "fin episode = cliffhanger... lequel", strike: false },
+                ].map((l, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, opacity: l.strike ? 0.35 : 0.6 }}>
+                    {l.strike && <span style={{ position: "absolute", left: 28, width: "calc(100% - 56px)", height: 1, background: MUTED, opacity: 0.4 }} />}
+                    <span style={{ textDecoration: l.strike ? "line-through" : "none" }}>{l.t}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 24, display: "flex", alignItems: "center", gap: 8 }}>
+                <ClockIcon size={14} />
+                <span style={{ fontSize: 12, color: MUTED }}>3 à 8 heures de travail</span>
+              </div>
+            </div>
+
+            {/* APRÈS */}
+            <div style={{ background: "rgba(168,85,247,0.04)", border: `1px solid rgba(168,85,247,0.2)`, borderRadius: 20, padding: "28px 28px", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${RED}, ${VIO})` }} />
+              <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: VIO, marginBottom: 20 }}>✓ Avec Studio Vertical</p>
+              <div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 10 }}>
+                <div style={{ background: "rgba(232,92,58,0.08)", border: `1px solid rgba(232,92,58,0.18)`, borderRadius: 10, padding: "10px 14px" }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, color: RED, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>⚡ Hook — 3 sec</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: TEXT, lineHeight: 1.5 }}>Clara tient le dossier. Le nom sur la couverture : JULIEN MOREAU.</p>
+                  <p style={{ fontSize: 10, color: MUTED, fontStyle: "italic", marginTop: 4 }}>[9:16] Gros plan mains crispées, bague qui claque</p>
+                </div>
+                <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 14px" }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, color: VIO, letterSpacing: 2, marginBottom: 6 }}>JULIEN</p>
+                  <p style={{ fontSize: 13, color: TEXT, lineHeight: 1.5 }}>Infirmière Bertin. On se connaît ?</p>
+                  <p style={{ fontSize: 10, color: MUTED, fontStyle: "italic", marginTop: 4 }}>sourire innocent, regard qui cherche</p>
+                </div>
+                <div style={{ background: "rgba(232,92,58,0.06)", border: `1px solid rgba(232,92,58,0.15)`, borderRadius: 10, padding: "10px 14px" }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, color: RED, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>🎬 Cliffhanger</p>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: TEXT, lineHeight: 1.5 }}>Julien tient un dossier de 2021. Il sait.</p>
+                </div>
+              </div>
+              <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 8 }}>
+                <BoltIcon size={14} />
+                <span style={{ fontSize: 12, color: VIO, fontWeight: 700 }}>Généré en 10 secondes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* POUR QUI */}
       <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -411,24 +491,32 @@ export default function Landing() {
           <Label color={VIO}>Comment ça marche</Label>
           <Title>De zéro à une série<br /><span style={{ fontStyle: "italic" }}>en 3 étapes.</span></Title>
           <p style={{ textAlign: "center", color: MUTED, marginBottom: 56, fontSize: 15 }}>Moins de 5 minutes, chrono</p>
-          <div className="grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
-            {[
-              { step: "01", Icon: BoltIcon, iconColor: RED, title: "Configure le Mixeur", desc: "Choisis ton casting, ton univers et ton secret central — ou utilise un pack thématique en 1 clic. 12 univers, 16 secrets disponibles." },
-              { step: "02", Icon: ClapperIcon, iconColor: VIO, title: "La bible se génère en live", desc: "Titre viral, logline, personnages et séquencier complet apparaissent en temps réel. Les épisodes arrivent en parallèle automatiquement." },
-              { step: "03", Icon: PhoneIcon, iconColor: RED, title: "Tourne avec le script", desc: "Ouvre un épisode, génère le script en 10s. Mode Tournage avec téléprompteur, fond clair/sombre, vitesse réglable. Prêt à filmer." },
-            ].map(({ step, Icon, iconColor, title, desc }) => (
-              <div key={step} className="glass" style={{ borderRadius: 20, padding: 28, position: "relative", overflow: "hidden" }}>
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${RED}, ${VIO})`, opacity: 0.5 }} />
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-                  <span style={{ fontSize: 10, fontWeight: 800, color: MUTED, letterSpacing: 3, fontFamily: "monospace" }}>{step}</span>
-                  <div style={{ width: 40, height: 40, borderRadius: 12, background: `${iconColor}14`, border: `1px solid ${iconColor}25`, display: "flex", alignItems: "center", justifyContent: "center", color: iconColor }}>
-                    <Icon size={19} />
+          {/* Timeline */}
+          <div style={{ position: "relative" }}>
+            {/* Connecting line */}
+            <div className="timeline-line" style={{ position: "absolute", top: 28, left: "calc(16.66% - 1px)", right: "calc(16.66% - 1px)", height: 2, background: BORDER, zIndex: 0 }}>
+              <div style={{ height: "100%", background: `linear-gradient(90deg, ${RED}, ${VIO})`, animation: "lineGrow 1.8s ease forwards 0.3s", width: 0 }} />
+            </div>
+            <div className="grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, position: "relative", zIndex: 1 }}>
+              {[
+                { step: "01", Icon: BoltIcon, iconColor: RED, title: "Configure le Mixeur", desc: "Choisis ton casting, ton univers et ton secret central — ou utilise un pack thématique en 1 clic. 12 univers, 16 secrets disponibles.", delay: "0s" },
+                { step: "02", Icon: ClapperIcon, iconColor: VIO, title: "La bible se génère en live", desc: "Titre viral, logline, personnages et séquencier complet apparaissent en temps réel. Les épisodes arrivent en parallèle automatiquement.", delay: "0.5s" },
+                { step: "03", Icon: PhoneIcon, iconColor: RED, title: "Tourne avec le script", desc: "Ouvre un épisode, génère le script en 10s. Mode Tournage avec téléprompteur, fond clair/sombre, vitesse réglable. Prêt à filmer.", delay: "1s" },
+              ].map(({ step, Icon, iconColor, title, desc, delay }) => (
+                <div key={step} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  {/* Node */}
+                  <div style={{ width: 56, height: 56, borderRadius: "50%", background: `linear-gradient(135deg, ${iconColor}20, ${iconColor}08)`, border: `2px solid ${iconColor}`, display: "flex", alignItems: "center", justifyContent: "center", color: iconColor, marginBottom: 24, animation: `nodePop 0.5s ease forwards ${delay}`, opacity: 0, boxShadow: `0 0 20px ${iconColor}30`, zIndex: 2 }}>
+                    <Icon size={22} />
+                  </div>
+                  {/* Card */}
+                  <div className="glass" style={{ borderRadius: 20, padding: "24px 24px", width: "100%", textAlign: "center", position: "relative", overflow: "hidden" }}>
+                    <span style={{ fontSize: 10, fontWeight: 800, color: MUTED, letterSpacing: 3, fontFamily: "monospace", display: "block", marginBottom: 10 }}>{step}</span>
+                    <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 19, fontWeight: 700, marginBottom: 10, letterSpacing: -0.3 }}>{title}</h3>
+                    <p style={{ color: MUTED, lineHeight: 1.65, fontSize: 13 }}>{desc}</p>
                   </div>
                 </div>
-                <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 20, fontWeight: 700, marginBottom: 10 }}>{title}</h3>
-                <p style={{ color: MUTED, lineHeight: 1.65, fontSize: 14 }}>{desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
