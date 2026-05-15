@@ -778,13 +778,17 @@ export default function Landing() {
           <Label color={RED}>Fonctionnalités</Label>
           <Title>Le pipeline créatif<br /><span style={{ fontStyle: "italic" }}>du concept au tournage.</span></Title>
           <p style={{ textAlign: "center", color: MUTED, marginBottom: 48, fontSize: 15 }}>Tout ce qu'il faut, rien de superflu</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {[
-              { icon: <BoltIcon size={20} />, iconColor: RED, title: "Le Mixeur", desc: "12 univers, 16 secrets, 4 castings. Ou entre le tien. Packs thématiques pour démarrer en 1 clic." },
-              { icon: <ClapperIcon size={20} />, iconColor: VIO, title: "Bible + scripts complets", desc: "Titre, logline, personnages, séquencier et scripts épisode par épisode — hook, dialogues, cadrage 9:16." },
-              { icon: <ShortsIcon size={20} />, iconColor: RED, title: "Mode Tournage", desc: "Téléprompteur auto-scroll, fond clair ou sombre, vitesse réglable. Rien à imprimer." },
-              { icon: <TikTokIcon size={20} />, iconColor: "#69C9D0", title: "Traduction en 8 langues", desc: "Traduis n'importe quel script en Anglais, Espagnol, Portugais, Allemand, Italien, Arabe, Hébreu ou Chinois." },
-              { icon: <ClockIcon size={20} />, iconColor: VIO, title: "Sauvegarde cloud", desc: "Tes séries synchronisées sur tous tes appareils automatiquement." },
+              { icon: <BoltIcon size={20} />, iconColor: RED, title: "Le Mixeur", desc: "12 univers, 16 secrets, 4 castings. Ou entre le tien. 12 packs thématiques pour démarrer en 1 clic." },
+              { icon: <ClapperIcon size={20} />, iconColor: VIO, title: "Bible complète", desc: "Titre, logline, personnages avec secrets, tension centrale et séquencier. Tout ce qu'il faut pour commencer à tourner." },
+              { icon: <PhoneIcon size={20} />, iconColor: RED, title: "Scripts prêts à tourner", desc: "Hook 3 secondes, dialogues, jeu d'acteur, cadrage 9:16. Fast Drama ou Premium Suspense selon ton style." },
+              { icon: <ClockIcon size={20} />, iconColor: VIO, title: "3 variations par script", desc: "Intense, Subtil ou Rapide — 3 versions générées en parallèle pour choisir le ton parfait. Premium uniquement." },
+              { icon: <TikTokIcon size={20} />, iconColor: "#69C9D0", title: "Traduction en 8 langues", desc: "Traduis n'importe quel script en Anglais, Espagnol, Allemand, Portugais, Italien, Arabe, Hébreu ou Chinois." },
+              { icon: <ReelsIcon size={20} />, iconColor: VIO, title: "Fiche technique Prod", desc: "Décors, costumes, lieux de tournage générés par l'IA pour chaque série. Tourne pro avec un smartphone." },
+              { icon: <ShortsIcon size={20} />, iconColor: RED, title: "Mode Tournage", desc: "Téléprompteur auto-scroll, fond clair ou sombre, vitesse réglable, barre de progression. Rien à imprimer." },
+              { icon: <BoltIcon size={20} />, iconColor: RED, title: "Titres viraux", desc: "5 titres alternatifs avec score de viralité, accroche et analyse psychologique. Premium uniquement." },
+              { icon: <ClockIcon size={20} />, iconColor: VIO, title: "Sauvegarde cloud", desc: "Tes séries synchronisées sur tous tes appareils automatiquement. Accès depuis n'importe où." },
             ].map((f, i) => (
               <div key={i} className="glass" style={{ borderRadius: 16, padding: 22, borderLeft: `3px solid ${i % 2 === 0 ? RED : VIO}` }}>
                 <div style={{ width: 38, height: 38, borderRadius: 10, background: `${f.iconColor}14`, border: `1px solid ${f.iconColor}22`, display: "flex", alignItems: "center", justifyContent: "center", color: f.iconColor, marginBottom: 14 }}>

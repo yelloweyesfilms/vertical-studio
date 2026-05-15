@@ -38,6 +38,8 @@ export default function SeriePage({ serie }) {
   const platIcon = PLATFORM_ICONS[platform] || "▶";
 
   const handleGenerate = () => {
+    const isLoggedIn = typeof window !== "undefined" && !!localStorage.getItem("vs_customer");
+    if (!isLoggedIn) { router.push("/tarifs"); return; }
     try { sessionStorage.setItem("vs_preset", JSON.stringify(mixeurParams)); } catch {}
     router.push("/app");
   };
