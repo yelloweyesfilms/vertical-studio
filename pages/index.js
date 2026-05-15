@@ -17,7 +17,7 @@ const TESTIMONIALS = [
 ];
 
 const FAQ_ITEMS = [
-  { q: "C'est quoi un micro-drama vertical ?", r: "Un format vidéo court (1 à 2 min), filmé en 9:16 pour mobile, avec une structure dramatique forte : hook percutant, tension montante et cliffhanger final. Le format qui explose sur TikTok, Instagram Reels et YouTube Shorts." },
+  { q: "C'est quoi un micro-drama vertical ?", r: "Un format vidéo court (1 à 2 min), filmé en 9:16 pour mobile, avec une structure dramatique forte : hook percutant, tension montante et cliffhanger final. Le format qui explose sur TikTok, Instagram Reels, YouTube Shorts — et sur les plateformes spécialisées comme DramaBox, ReelShort ou Crazy Maple." },
   { q: "Combien de temps pour générer une série complète ?", r: "Moins de 5 minutes. La bible (titre, logline, personnages) se génère en streaming en quelques secondes. Les épisodes arrivent en parallèle. Le script d'un épisode prend 10 secondes." },
   { q: "Quelle différence entre Fast Drama et Premium Suspense ?", r: "Fast Drama : émotions frontales, hooks agressifs, rythme maximal — idéal pour TikTok. Premium Suspense : tension psychologique, sous-texte, silences lourds — pour une audience plus mature et des séries premium." },
   { q: "Les scripts sont-ils vraiment prêts à tourner ?", r: "Oui. Chaque scène inclut le dialogue, l'indication de jeu d'acteur et la directive de cadrage 9:16. Le Mode Tournage intègre un téléprompteur auto-scroll et une checklist décors." },
@@ -235,7 +235,7 @@ export default function Landing() {
     <>
     <Head>
       <title>Studio Vertical — Génère des micro-dramas 9:16 en 5 minutes avec l'IA</title>
-      <meta name="description" content="Génère des micro-dramas verticaux complets avec l'IA : bible, scripts, hooks et cliffhangers prêts à tourner sur TikTok, Reels et Shorts. Dès 7,50€/mois." />
+      <meta name="description" content="Génère des micro-dramas verticaux complets avec l'IA : bible, scripts, hooks et cliffhangers. Prêts pour TikTok, Reels, Shorts, DramaBox, ReelShort et toutes les plateformes 9:16. Dès 7,50€/mois." />
       <link rel="canonical" href={SITE} />
       <meta property="og:url" content={SITE} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -336,7 +336,7 @@ export default function Landing() {
 
           <p style={{ fontSize: "clamp(15px, 2vw, 18px)", color: MUTED, maxWidth: 480, margin: "0 auto 52px", lineHeight: 1.7, fontWeight: 400 }}>
             {variant === "A"
-              ? "Génère des micro-dramas 9:16 complets avec l'IA — bible, scripts, hooks, cliffhangers. Prêts à tourner sur TikTok, Reels et Shorts."
+              ? "Génère des micro-dramas 9:16 complets avec l'IA — bible, scripts, hooks, cliffhangers. Prêts pour TikTok, Reels, Shorts, DramaBox et ReelShort."
               : "L'IA génère la bible, les scripts et les hooks en 5 minutes. Tu filmes. Tes concurrents passent encore des heures à écrire."
             }
           </p>
@@ -409,8 +409,11 @@ export default function Landing() {
 
       {/* PLATFORMS */}
       <div className="sec" style={{ padding: "56px 40px", borderBottom: `1px solid ${BORDER}`, textAlign: "center" }}>
-        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 36 }}>Conçu pour les 3 grandes plateformes</p>
-        <div className="platform-row" style={{ display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap" }}>
+        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 8 }}>Compatible avec toutes les plateformes</p>
+        <p style={{ fontSize: 13, color: MUTED, marginBottom: 40, maxWidth: 520, margin: "8px auto 40px" }}>Réseaux sociaux ou plateformes de micro-drama — le format 9:16 est universel.</p>
+
+        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, opacity: 0.6, marginBottom: 20 }}>Réseaux sociaux</p>
+        <div className="platform-row" style={{ display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap", marginBottom: 44 }}>
           {[
             { Icon: TikTokIcon, name: "TikTok", color: "#69C9D0", sub: "For You Page" },
             { Icon: ReelsIcon, name: "Instagram Reels", color: VIO, sub: "Explore & Feed" },
@@ -424,6 +427,23 @@ export default function Landing() {
                 <p style={{ fontSize: 14, fontWeight: 700, color: TEXT, marginBottom: 2 }}>{name}</p>
                 <p style={{ fontSize: 12, color: MUTED }}>{sub}</p>
               </div>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, opacity: 0.6, marginBottom: 16 }}>Plateformes micro-drama</p>
+        <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+          {[
+            { name: "DramaBox", color: "#f59e0b" },
+            { name: "ReelShort", color: "#e879f9" },
+            { name: "Crazy Maple", color: "#34d399" },
+            { name: "FlexTV", color: "#60a5fa" },
+            { name: "GoodShort", color: VIO },
+            { name: "MoboReels", color: RED },
+          ].map(({ name, color }) => (
+            <div key={name} style={{ display: "flex", alignItems: "center", gap: 7, background: `${color}0f`, border: `1px solid ${color}25`, borderRadius: 10, padding: "8px 16px" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontSize: 13, fontWeight: 600, color: TEXT }}>{name}</span>
             </div>
           ))}
         </div>
