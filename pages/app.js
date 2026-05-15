@@ -1763,6 +1763,26 @@ export default function App() {
     }
   }, [router.isReady, router.query]);
 
+  // Apply preset from /exemples "Générer une série similaire"
+  useEffect(() => {
+    if (!customerId) return;
+    try {
+      const raw = sessionStorage.getItem("vs_preset");
+      if (!raw) return;
+      sessionStorage.removeItem("vs_preset");
+      const preset = JSON.parse(raw);
+      setState(prev => ({
+        ...prev,
+        ...(preset.mode ? { mode: preset.mode } : {}),
+        ...(preset.casting ? { casting: preset.casting } : {}),
+        ...(preset.univers ? { univers: preset.univers } : {}),
+        ...(preset.secret ? { secret: preset.secret } : {}),
+        ...(preset.lieu ? { lieu: preset.lieu } : {}),
+      }));
+      setScreen("mix");
+    } catch {}
+  }, [customerId]);
+
   const logout = () => { localStorage.removeItem("vs_customer"); localStorage.removeItem("vs_plan"); setCustomerId(null); setPlan("standard"); };
 
   const openPortal = async () => {

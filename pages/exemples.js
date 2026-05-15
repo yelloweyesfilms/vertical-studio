@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 const RED = "#E85C3A";
 const VIO = "#a855f7";
@@ -12,6 +13,7 @@ const SERIES = [
   {
     mode: "fast",
     platform: "TikTok",
+    mixeurParams: { mode: "fast", casting: "1 Femme + 1 Homme", univers: "Hôpital privé", secret: "Double vie", lieu: "Couloir vide" },
     bible: {
       titre: "Le Mensonge",
       logline: "Une infirmière cache une erreur médicale jusqu'au jour où la victime revient comme interne.",
@@ -50,6 +52,7 @@ const SERIES = [
   {
     mode: "premium",
     platform: "Reels",
+    mixeurParams: { mode: "premium", casting: "1 Femme + 1 Homme", univers: "Finance internationale", secret: "Complot financier", lieu: "Cabinet privé" },
     bible: {
       titre: "Héritage",
       logline: "Un directeur financier cache un détournement jusqu'au jour où sa propre fille rejoint le cabinet d'audit.",
@@ -88,6 +91,7 @@ const SERIES = [
   {
     mode: "fast",
     platform: "Shorts",
+    mixeurParams: { mode: "fast", casting: "1 Femme + 1 Homme", univers: "Famille recomposée", secret: "Double vie", lieu: "Salle d'attente" },
     bible: {
       titre: "Deux Vies",
       logline: "Une mère de famille cache une double vie jusqu'au jour où son fils trouve son second téléphone.",
@@ -194,8 +198,14 @@ function PlatformBadge({ platform }) {
 }
 
 function SerieCard({ serie }) {
-  const { bible, episodes, script, mode, platform } = serie;
+  const { bible, episodes, script, mode, platform, mixeurParams } = serie;
   const [showScript, setShowScript] = useState(false);
+  const router = useRouter();
+
+  const handleGenerate = () => {
+    try { sessionStorage.setItem("vs_preset", JSON.stringify(mixeurParams)); } catch {}
+    router.push("/app");
+  };
 
   return (
     <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 24, overflow: "hidden", marginBottom: 28, backdropFilter: "blur(12px)" }}>
@@ -260,6 +270,20 @@ function SerieCard({ serie }) {
             </div>
           ))}
         </div>
+
+        {/* CTA — Générer une série similaire */}
+        <button
+          onClick={handleGenerate}
+          style={{
+            width: "100%", padding: "15px 20px", borderRadius: 14, fontSize: 14, fontWeight: 700,
+            background: `linear-gradient(135deg, ${mode === "fast" ? RED : VIO}, ${mode === "fast" ? "rgba(232,92,58,0.7)" : "rgba(168,85,247,0.7)"})`,
+            border: "none", color: "#fff", cursor: "pointer",
+            fontFamily: "'Space Grotesk', sans-serif",
+            boxShadow: `0 0 24px ${mode === "fast" ? "rgba(232,92,58,0.3)" : "rgba(168,85,247,0.3)"}`,
+            marginBottom: 12, letterSpacing: -0.3,
+          }}>
+          ✦ Générer une série similaire →
+        </button>
 
         {/* Script toggle */}
         <button
