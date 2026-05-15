@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const RED = "#E85C3A";
 const VIO = "#a855f7";
@@ -338,7 +339,33 @@ function SerieCard({ serie }) {
 }
 
 export default function Exemples() {
+  const SITE = "https://studiovertical.app";
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Exemples de micro-dramas générés par Studio Vertical",
+    "url": `${SITE}/exemples`,
+    "numberOfItems": SERIES.length,
+    "itemListElement": SERIES.map((s, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": s.bible.titre,
+      "description": s.bible.logline,
+      "url": `${SITE}/exemples`,
+    })),
+  };
+
   return (
+    <>
+    <Head>
+      <title>Exemples de micro-dramas — Studio Vertical</title>
+      <meta name="description" content={`Découvrez ${SERIES.length} exemples complets de micro-dramas 9:16 générés par l'IA : bible, scripts, hooks et cliffhangers prêts à tourner sur TikTok, Reels et Shorts.`} />
+      <link rel="canonical" href={`${SITE}/exemples`} />
+      <meta property="og:url" content={`${SITE}/exemples`} />
+      <meta property="og:title" content="Exemples de micro-dramas — Studio Vertical" />
+      <meta property="og:description" content={`${SERIES.length} séries complètes générées par l'IA : suspense médical, drame familial, thriller financier. Scripts prêts à tourner en 9:16.`} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+    </Head>
     <div style={{ minHeight: "100vh", background: DARK, color: TEXT, fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
@@ -446,5 +473,6 @@ export default function Exemples() {
         </p>
       </footer>
     </div>
+    </>
   );
 }

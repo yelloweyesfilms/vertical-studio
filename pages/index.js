@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const RED = "#E85C3A";
 const VIO = "#a855f7";
@@ -204,7 +205,42 @@ export default function Landing() {
     window.location.href = url;
   };
 
+  const SITE = "https://studiovertical.app";
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": FAQ_ITEMS.map(({ q, r }) => ({
+      "@type": "Question",
+      "name": q,
+      "acceptedAnswer": { "@type": "Answer", "text": r },
+    })),
+  };
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Studio Vertical",
+    "url": SITE,
+    "applicationCategory": "CreativeApplication",
+    "operatingSystem": "Web",
+    "offers": [
+      { "@type": "Offer", "price": "9", "priceCurrency": "EUR", "name": "Standard mensuel", "billingIncrement": "P1M" },
+      { "@type": "Offer", "price": "90", "priceCurrency": "EUR", "name": "Standard annuel", "billingIncrement": "P1Y" },
+      { "@type": "Offer", "price": "19", "priceCurrency": "EUR", "name": "Premium mensuel", "billingIncrement": "P1M" },
+      { "@type": "Offer", "price": "179", "priceCurrency": "EUR", "name": "Premium annuel", "billingIncrement": "P1Y" },
+    ],
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "58" },
+  };
+
   return (
+    <>
+    <Head>
+      <title>Studio Vertical — Génère des micro-dramas 9:16 en 5 minutes avec l'IA</title>
+      <meta name="description" content="Génère des micro-dramas verticaux complets avec l'IA : bible, scripts, hooks et cliffhangers prêts à tourner sur TikTok, Reels et Shorts. Dès 7,50€/mois." />
+      <link rel="canonical" href={SITE} />
+      <meta property="og:url" content={SITE} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+    </Head>
     <div style={{ minHeight: "100vh", background: DARK, color: TEXT, fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
@@ -958,5 +994,6 @@ export default function Landing() {
       </div>
       </footer>
     </div>
+    </>
   );
 }
