@@ -2,6 +2,7 @@ import { stripe } from "../../lib/stripe";
 import { buffer } from "micro";
 import { Redis } from "@upstash/redis";
 import { sendWelcomeEmail, sendReferralRewardEmail, sendCancelEmail } from "../../lib/email";
+import * as Sentry from "@sentry/nextjs";
 
 export const config = { api: { bodyParser: false } };
 
@@ -55,9 +56,28 @@ export default async function handler(req, res) {
     case "checkout.session.completed": {
       const email = obj.customer_details?.email || obj.customer_email;
       const plan = obj.metadata?.plan || "standard";
+      const billing = obj.metadata?.billing || "monthly";
 
       // Email de bienvenue
       await sendWelcomeEmail({ email, plan });
+
+      // Analytics
+      try {
+        const redis = getRedis();
+        if (redis) {
+          const date = new Date().toISOString().slice(0, 10);
+          const suffix = plan === "premium" ? "_premium" : "_standard";
+          const bSuffix = billing === "annual" ? "_annual" : "_monthly";
+          await Promise.all([
+            redis.incr(`analytics:total:checkout_success`),
+            redis.hincrby(`analytics:${date}`, "checkout_success", 1),
+            redis.incr(`analytics:total:checkout_success${suffix}`),
+            redis.incr(`analytics:total:checkout_success${bSuffix}`),
+          ]);
+        }
+      } catch (e) {
+        console.error("[analytics] webhook:", e.message);
+      }
 
       // Parrainage en attente
       const redis = getRedis();
@@ -69,7 +89,7 @@ export default async function handler(req, res) {
           await redis.del(`ref:pending:${obj.id}`);
         }
       }
-      console.log("[stripe] checkout complété:", obj.customer, email);
+      console.log("[stripe] checkout complété:", obj.customer, email, plan, billing);
       break;
     }
     case "customer.subscription.deleted": {

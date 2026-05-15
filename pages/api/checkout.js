@@ -42,9 +42,10 @@ export default async function handler(req, res) {
       payment_method_types: ["card"],
       customer_email: email || undefined,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${url}/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
+      success_url: `${url}/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}${trial ? "&trial=1" : ""}`,
       cancel_url: `${url}/?canceled=1`,
       allow_promotion_codes: true,
+      metadata: { plan, billing },
     };
 
     // Trial priorité : parrainage (30j) > essai gratuit (1j)
@@ -53,7 +54,7 @@ export default async function handler(req, res) {
         trial_period_days: 30,
         metadata: { ref_code: validRef.code, referrer_id: validRef.referrerId },
       };
-      sessionParams.metadata = { ref_code: validRef.code, referrer_id: validRef.referrerId };
+      sessionParams.metadata = { plan, billing, ref_code: validRef.code, referrer_id: validRef.referrerId };
     } else if (trial) {
       sessionParams.subscription_data = { trial_period_days: 1 };
     }
