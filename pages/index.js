@@ -905,13 +905,9 @@ export default function Landing() {
                   </div>
                 ))}
               </div>
-              <GlowBtn onClick={() => startCheckout("standard", "pricing")} disabled={loading} style={{ width: "100%", fontSize: 15, padding: 16, marginBottom: 10 }}>
+              <GlowBtn onClick={() => startCheckout("standard", "pricing")} disabled={loading} style={{ width: "100%", fontSize: 15, padding: 16 }}>
                 {loading ? "Redirection…" : "Commencer →"}
               </GlowBtn>
-              <button onClick={() => startCheckout("standard", "pricing_trial", { trial: true })} disabled={loading}
-                style={{ width: "100%", background: "none", border: `1px solid ${BORDER}`, color: MUTED, padding: "12px 0", borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif" }}>
-                Essayer 24h gratuitement →
-              </button>
             </div>
 
             {/* Premium */}
@@ -934,13 +930,9 @@ export default function Landing() {
                   </div>
                 ))}
               </div>
-              <GlowBtn onClick={() => startCheckout("premium", "pricing")} disabled={loading} gradient style={{ width: "100%", fontSize: 15, padding: 16, marginBottom: 10 }}>
+              <GlowBtn onClick={() => startCheckout("premium", "pricing")} disabled={loading} gradient style={{ width: "100%", fontSize: 15, padding: 16 }}>
                 {loading ? "Redirection…" : "Commencer Premium →"}
               </GlowBtn>
-              <button onClick={() => startCheckout("premium", "pricing_trial", { trial: true })} disabled={loading}
-                style={{ width: "100%", background: "none", border: `1px solid rgba(168,85,247,0.25)`, color: VIO, padding: "12px 0", borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif" }}>
-                Essayer 24h gratuitement →
-              </button>
             </div>
           </div>
 
@@ -958,7 +950,7 @@ export default function Landing() {
             ))}
           </div>
           <p style={{ textAlign: "center", fontSize: 12, color: MUTED, marginTop: 16 }}>
-            Essai 24h : carte bancaire requise, pas de débit pendant l'essai. Annulable avant minuit.
+            Teste gratuitement dans les <a href="/exemples" style={{ color: VIO, fontWeight: 600 }}>Exemples</a> avant de t'abonner.
           </p>
         </div>
       </div>
