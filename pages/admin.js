@@ -126,6 +126,7 @@ export default function Admin() {
           { val: `${stats.mrr.toFixed(0)} €`, label: "MRR", color: stats.mrr > 500 ? "#4ade80" : stats.mrr > 100 ? "#facc15" : RED },
           { val: `${(stats.arr || 0).toFixed(0)} €`, label: "ARR", color: stats.arr > 6000 ? "#4ade80" : stats.arr > 1200 ? "#facc15" : MUTED },
           { val: totaux.activeToday || 0, label: "Actifs aujourd'hui", color: "#60a5fa" },
+          { val: stats.newsletter?.count || 0, label: "Newsletter", color: "#4ade80" },
         ].map(({ val, label, color }) => (
           <div key={label} style={{ ...s.card, textAlign: "center", padding: "20px 16px" }}>
             <div style={{ fontFamily: "var(--serif)", fontSize: 34, fontWeight: 900, color, lineHeight: 1 }}>{val}</div>
@@ -169,6 +170,28 @@ export default function Admin() {
           </div>
         </div>
       </div>
+
+      {/* Newsletter emails */}
+      {stats.newsletter?.emails?.length > 0 && (
+        <div style={{ margin: "20px 32px 0" }}>
+          <div style={{ ...s.card, padding: 0, overflow: "hidden" }}>
+            <div style={{ padding: "16px 20px", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <p style={{ fontWeight: 700, fontSize: 14 }}>Newsletter — {stats.newsletter.count} inscrits</p>
+              <button onClick={() => {
+                const csv = stats.newsletter.emails.join("\n");
+                const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/plain" })); a.download = "newsletter.txt"; a.click();
+              }} style={{ background: "none", border: `1px solid ${BORDER}`, color: MUTED, padding: "5px 12px", borderRadius: 7, cursor: "pointer", fontSize: 11, fontFamily: "var(--sans)" }}>
+                ↓ Exporter
+              </button>
+            </div>
+            <div style={{ padding: "12px 20px", display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 200, overflowY: "auto" }}>
+              {stats.newsletter.emails.map((e, i) => (
+                <span key={i} style={{ fontSize: 12, color: MUTED, background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, padding: "4px 10px", borderRadius: 6 }}>{e}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* A/B Test panel */}
       {stats.ab && (() => {

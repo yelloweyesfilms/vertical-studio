@@ -964,7 +964,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
             <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>VERTICAL STUDIO</h1>
             <p style={{ fontSize: 12, color: "#3a5040", marginTop: 2 }}>Micro-dramas · 1 à 2 min · 9:16</p>
           </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div className="header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <button onClick={onShowOnboarding} style={{ background: "#1a2a1e", border: "1px solid #2a3a2e", color: "#3a5040", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
             <div style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--r)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ color: "#fff", fontSize: 9, fontWeight: 800, letterSpacing: 0.5 }}>REC</span>
@@ -1004,7 +1004,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
             {PACKS.map(p => {
               const locked = p.mode === "premium" && plan === "standard";
               return (
-                <button key={p.label}
+                <button key={p.label} className="pack-pill"
                   onClick={() => { if (!locked) set({ mode: p.mode, casting: p.casting, univers: p.univers, secret: p.secret, format: p.mode === "fast" ? 10 : state.format }); }}
                   style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 12px", borderRadius: 20, border: `1.5px solid ${p.mode === "premium" ? "var(--n)" : "var(--bo)"}`, background: p.mode === "premium" ? "var(--n)" : "var(--card)", color: p.mode === "premium" ? "#fff" : "var(--tx)", fontSize: 12, fontWeight: 600, cursor: locked ? "not-allowed" : "pointer", fontFamily: "var(--sans)", whiteSpace: "nowrap", opacity: locked ? 0.45 : 1 }}>
                   <span>{p.emoji}</span><span>{p.label}</span>
@@ -2066,7 +2066,22 @@ export default function App() {
         @media (max-width: 380px) {
           .edit-row button { font-size: 12px !important; padding: 11px 4px !important; }
         }
+        @media (max-width: 430px) {
+          .pack-pill { padding: 6px 10px !important; font-size: 11px !important; }
+          .mode-btn { font-size: 12px !important; padding: 9px 8px !important; }
+          .section-label { font-size: 10px !important; letter-spacing: 1px !important; }
+          .bible-ep-row { padding: 14px 14px !important; }
+          .bible-ep-title { font-size: 14px !important; }
+          .script-line { font-size: 14px !important; line-height: 1.6 !important; }
+          .studio-header { padding: 18px 16px 14px !important; }
+          .studio-header h2 { font-size: 20px !important; }
+          .kpi-grid { grid-template-columns: 1fr 1fr !important; }
+        }
         input, textarea, select { font-size: 16px !important; }
+        @media (max-width: 390px) {
+          .header-actions { gap: 6px !important; }
+          .header-actions button { width: 30px !important; height: 30px !important; font-size: 12px !important; }
+        }
       `}</style>
 
       {showOnboarding && <OnboardingModal onClose={dismissOnboarding} onLaunch={launchOnboarding} />}

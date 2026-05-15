@@ -129,6 +129,13 @@ export default async function handler(req, res) {
       ab = { ...abTotals, jours: abJours };
     }
 
+    // Newsletter
+    let newsletter = { count: 0, emails: [] };
+    if (redis) {
+      newsletter.count = (await redis.scard("newsletter:emails")) || 0;
+      newsletter.emails = (await redis.smembers("newsletter:emails")) || [];
+    }
+
     return res.json({
       total: subs.data.length, standard, premium, annuel, mensuel,
       mrr: Math.round(mrr * 100) / 100,
@@ -136,6 +143,7 @@ export default async function handler(req, res) {
       abonnes: abonnes.slice(0, 50),
       analytics,
       ab,
+      newsletter,
     });
   } catch (e) {
     return res.status(500).json({ error: e.message });
