@@ -129,6 +129,7 @@ export default function Landing() {
   const [loading, setLoading] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [variant, setVariant] = useState("A");
+  const [billing, setBilling] = useState("monthly");
   const [demoPhase, setDemoPhase] = useState(0);
   const [demoText, setDemoText] = useState("");
   const demoRef = useRef(null);
@@ -191,11 +192,13 @@ export default function Landing() {
     } catch { setRefValid(false); }
   };
 
-  const startCheckout = async (plan = "standard", position = "unknown") => {
+  const startCheckout = async (plan = "standard", position = "unknown", opts = {}) => {
     if (!email) { alert("Entre ton email pour continuer"); return; }
-    track("checkout_started", { variant, position, plan });
+    const { trial = false, billingOverride } = opts;
+    const b = billingOverride || billing;
+    track("checkout_started", { variant, position, plan, billing: b, trial });
     setLoading(true);
-    const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, plan, refCode: refValid ? refCode : undefined }) });
+    const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, plan, refCode: refValid ? refCode : undefined, billing: b, trial }) });
     const { url, error } = await res.json();
     if (error) { alert(error); setLoading(false); return; }
     window.location.href = url;
@@ -777,14 +780,48 @@ export default function Landing() {
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
           <Label color={VIO}>Tarifs</Label>
           <Title>Choisissez votre plan.</Title>
-          <p style={{ textAlign: "center", color: MUTED, marginBottom: 36, fontSize: 15 }}>Annulable à tout moment · Sans engagement</p>
+
+          {/* Billing toggle */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 36 }}>
+            <div style={{ display: "inline-flex", background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 4, gap: 4 }}>
+              {[
+                { k: "monthly", l: "Mensuel" },
+                { k: "annual",  l: "Annuel", badge: "-17%" },
+              ].map(({ k, l, badge }) => (
+                <button key={k} onClick={() => setBilling(k)} style={{
+                  padding: "9px 20px", borderRadius: 10, border: "none", fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all .2s",
+                  background: billing === k ? TEXT : "transparent",
+                  color: billing === k ? DARK : MUTED,
+                  display: "flex", alignItems: "center", gap: 7,
+                }}>
+                  {l}
+                  {badge && <span style={{ fontSize: 10, fontWeight: 800, background: billing === k ? `linear-gradient(135deg,${RED},${VIO})` : BORDER, WebkitBackgroundClip: "text", WebkitTextFillColor: billing === k ? "transparent" : MUTED, backgroundClip: "text", letterSpacing: 0.5 }}>{badge}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+          {billing === "annual" && (
+            <p style={{ textAlign: "center", fontSize: 13, color: "#4ade80", fontWeight: 600, marginBottom: 24, marginTop: -20 }}>
+              🎉 2 mois offerts par rapport au mensuel
+            </p>
+          )}
+
           <input type="email" placeholder="ton@email.com" value={email} onChange={e => setEmail(e.target.value)}
             style={{ width: "100%", maxWidth: 400, display: "block", margin: "0 auto 32px", padding: "14px 18px", borderRadius: 12, border: `1px solid ${BORDER}`, background: SURFACE, color: TEXT, fontSize: 15, outline: "none" }} />
+
           <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
-            <div className="glass" style={{ borderRadius: 24, padding: "36px 32px" }}>
+            {/* Standard */}
+            <div className="glass" style={{ borderRadius: 24, padding: "36px 32px", position: "relative" }}>
               <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, color: MUTED, textTransform: "uppercase", marginBottom: 12 }}>Standard</p>
-              <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 58, fontWeight: 900, color: TEXT, lineHeight: 1, letterSpacing: -2, marginBottom: 4 }}>9€</div>
-              <p style={{ color: MUTED, fontSize: 13, marginBottom: 28 }}>/mois</p>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 6, marginBottom: 4 }}>
+                <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 58, fontWeight: 900, color: TEXT, lineHeight: 1, letterSpacing: -2 }}>
+                  {billing === "annual" ? "7.5€" : "9€"}
+                </div>
+                {billing === "annual" && <span style={{ fontSize: 14, color: MUTED, marginBottom: 10, textDecoration: "line-through" }}>9€</span>}
+              </div>
+              <p style={{ color: MUTED, fontSize: 13, marginBottom: billing === "annual" ? 6 : 28 }}>/mois</p>
+              {billing === "annual" && <p style={{ fontSize: 12, color: "#4ade80", fontWeight: 600, marginBottom: 22 }}>facturé 90€/an</p>}
               <div style={{ marginBottom: 28 }}>
                 {["⚡ Fast Drama uniquement", "10 épisodes par série", "Scripts 1 à 2 min", "Mode Tournage + Téléprompteur", "🌍 Traduction en 8 langues", "☁️ Sauvegarde cloud", "📄 Export PDF"].map((item, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
@@ -793,15 +830,27 @@ export default function Landing() {
                   </div>
                 ))}
               </div>
-              <GlowBtn onClick={() => startCheckout("standard", "pricing")} disabled={loading} style={{ width: "100%", fontSize: 15, padding: 16 }}>
+              <GlowBtn onClick={() => startCheckout("standard", "pricing")} disabled={loading} style={{ width: "100%", fontSize: 15, padding: 16, marginBottom: 10 }}>
                 {loading ? "Redirection…" : "Commencer →"}
               </GlowBtn>
+              <button onClick={() => startCheckout("standard", "pricing_trial", { trial: true })} disabled={loading}
+                style={{ width: "100%", background: "none", border: `1px solid ${BORDER}`, color: MUTED, padding: "12px 0", borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif" }}>
+                Essayer 24h gratuitement →
+              </button>
             </div>
+
+            {/* Premium */}
             <div style={{ borderRadius: 24, padding: "36px 32px", position: "relative", background: "rgba(168,85,247,0.05)", border: "1px solid rgba(168,85,247,0.25)", boxShadow: "0 0 48px rgba(168,85,247,0.08)" }}>
               <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${RED}, ${VIO})`, color: "#fff", fontSize: 10, fontWeight: 800, padding: "4px 16px", borderRadius: 20, letterSpacing: 1.5, whiteSpace: "nowrap" }}>⭐ RECOMMANDÉ</div>
               <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, color: VIO, textTransform: "uppercase", marginBottom: 12 }}>Premium</p>
-              <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 58, fontWeight: 900, color: TEXT, lineHeight: 1, letterSpacing: -2, marginBottom: 4 }}>19€</div>
-              <p style={{ color: MUTED, fontSize: 13, marginBottom: 28 }}>/mois</p>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 6, marginBottom: 4 }}>
+                <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 58, fontWeight: 900, color: TEXT, lineHeight: 1, letterSpacing: -2 }}>
+                  {billing === "annual" ? "14.9€" : "19€"}
+                </div>
+                {billing === "annual" && <span style={{ fontSize: 14, color: MUTED, marginBottom: 10, textDecoration: "line-through" }}>19€</span>}
+              </div>
+              <p style={{ color: MUTED, fontSize: 13, marginBottom: billing === "annual" ? 6 : 28 }}>/mois</p>
+              {billing === "annual" && <p style={{ fontSize: 12, color: "#4ade80", fontWeight: 600, marginBottom: 22 }}>facturé 179€/an</p>}
               <div style={{ marginBottom: 28 }}>
                 {["⚡ Fast Drama + 🎭 Premium Suspense", "Jusqu'à 90 épisodes par série", "Scripts 1 à 2 min", "Mode Tournage + Téléprompteur", "🎲 3 variations par script", "🔥 Générateur de titres viraux", "🌍 Traduction en 8 langues", "🎬 Fiche technique de production", "☁️ Sauvegarde cloud", "📄 Export PDF"].map((item, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
@@ -810,11 +859,16 @@ export default function Landing() {
                   </div>
                 ))}
               </div>
-              <GlowBtn onClick={() => startCheckout("premium", "pricing")} disabled={loading} gradient style={{ width: "100%", fontSize: 15, padding: 16 }}>
+              <GlowBtn onClick={() => startCheckout("premium", "pricing")} disabled={loading} gradient style={{ width: "100%", fontSize: 15, padding: 16, marginBottom: 10 }}>
                 {loading ? "Redirection…" : "Commencer Premium →"}
               </GlowBtn>
+              <button onClick={() => startCheckout("premium", "pricing_trial", { trial: true })} disabled={loading}
+                style={{ width: "100%", background: "none", border: `1px solid rgba(168,85,247,0.25)`, color: VIO, padding: "12px 0", borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif" }}>
+                Essayer 24h gratuitement →
+              </button>
             </div>
           </div>
+
           <div className="trust-row" style={{ display: "flex", justifyContent: "center", gap: 28, flexWrap: "wrap", marginTop: 28 }}>
             {[
               { icon: "🔒", label: "Stripe · Paiement sécurisé" },
@@ -828,6 +882,9 @@ export default function Landing() {
               </div>
             ))}
           </div>
+          <p style={{ textAlign: "center", fontSize: 12, color: MUTED, marginTop: 16 }}>
+            Essai 24h : carte bancaire requise, pas de débit pendant l'essai. Annulable avant minuit.
+          </p>
         </div>
       </div>
 

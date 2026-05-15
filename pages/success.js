@@ -53,7 +53,7 @@ const STEPS = [
 
 export default function Success() {
   const router = useRouter();
-  const { session_id, plan } = router.query;
+  const { session_id, plan, trial } = router.query;
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -113,8 +113,21 @@ export default function Success() {
         {/* Content */}
         <div style={{ flex: 1, maxWidth: 720, margin: "0 auto", padding: "80px 40px", width: "100%", position: "relative", zIndex: 1 }}>
 
+          {/* Trial notice */}
+          {trial === "1" && (
+            <div className="fade" style={{ animationDelay: "0s", background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.25)", borderRadius: 14, padding: "14px 20px", marginBottom: 28, display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <span style={{ fontSize: 20, flexShrink: 0 }}>⏱</span>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "#fbbf24", marginBottom: 4 }}>Essai 24h en cours</p>
+                <p style={{ fontSize: 13, color: "#92400e", color: "#fcd34d", lineHeight: 1.6, opacity: 0.8 }}>
+                  Aucun débit avant demain. Si tu veux annuler, va dans l'app → <strong>Mon compte → Gérer l'abonnement</strong> avant minuit.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Success badge */}
-          <div className="fade" style={{ animationDelay: "0s", textAlign: "center", marginBottom: 40 }}>
+          <div className="fade" style={{ animationDelay: trial === "1" ? "0.1s" : "0s", textAlign: "center", marginBottom: 40 }}>
             <div style={{ display: "inline-flex", width: 72, height: 72, borderRadius: "50%", background: "rgba(74,222,128,0.1)", border: "2px solid rgba(74,222,128,0.3)", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />

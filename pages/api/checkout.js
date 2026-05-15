@@ -7,12 +7,21 @@ function getRedis() {
   return new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN });
 }
 
+const PRICE_MAP = {
+  standard:         () => process.env.STRIPE_PRICE_ID,
+  premium:          () => process.env.STRIPE_PRICE_ID_PREMIUM,
+  standard_annual:  () => process.env.STRIPE_PRICE_ID_STANDARD_ANNUAL,
+  premium_annual:   () => process.env.STRIPE_PRICE_ID_PREMIUM_ANNUAL,
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const { email, plan, refCode } = req.body;
+  const { email, plan = "standard", refCode, billing = "monthly", trial = false } = req.body;
   const url = process.env.NEXT_PUBLIC_URL;
-  const priceId = plan === "premium" ? process.env.STRIPE_PRICE_ID_PREMIUM : process.env.STRIPE_PRICE_ID;
+
+  const planKey = billing === "annual" ? `${plan}_annual` : plan;
+  const priceId = PRICE_MAP[planKey]?.() || PRICE_MAP[plan]?.();
 
   if (!priceId) return res.status(500).json({ error: "Plan non configuré" });
 
@@ -33,15 +42,21 @@ export default async function handler(req, res) {
       payment_method_types: ["card"],
       customer_email: email || undefined,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${url}/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan || "standard"}`,
+      success_url: `${url}/success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}${trial ? "&trial=1" : ""}`,
       cancel_url: `${url}/?canceled=1`,
       allow_promotion_codes: true,
+      metadata: { plan, billing },
     };
 
-    // 30 jours offerts si code parrainage valide
+    // Trial priorité : parrainage (30j) > essai gratuit (1j)
     if (validRef) {
-      sessionParams.subscription_data = { trial_period_days: 30 };
-      sessionParams.metadata = { ref_code: validRef.code, referrer_id: validRef.referrerId };
+      sessionParams.subscription_data = {
+        trial_period_days: 30,
+        metadata: { ref_code: validRef.code, referrer_id: validRef.referrerId },
+      };
+      sessionParams.metadata = { plan, billing, ref_code: validRef.code, referrer_id: validRef.referrerId };
+    } else if (trial) {
+      sessionParams.subscription_data = { trial_period_days: 1 };
     }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
