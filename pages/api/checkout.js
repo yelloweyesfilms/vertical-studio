@@ -56,7 +56,11 @@ export default async function handler(req, res) {
       };
       sessionParams.metadata = { plan, billing, ref_code: validRef.code, referrer_id: validRef.referrerId };
     } else if (trial) {
-      sessionParams.subscription_data = { trial_period_days: 1 };
+      sessionParams.subscription_data = {
+        trial_period_days: 1,
+        trial_settings: { end_behavior: { missing_payment_method: "cancel" } },
+      };
+      sessionParams.payment_method_collection = "always";
     }
 
     const session = await stripe.checkout.sessions.create(sessionParams);

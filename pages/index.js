@@ -215,6 +215,7 @@ export default function Landing() {
   const [refCode, setRefCode] = useState("");
   const [refValid, setRefValid] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [billing, setBilling] = useState("monthly");
   const router = useRouter();
@@ -236,15 +237,26 @@ export default function Landing() {
   };
 
   const startCheckout = async (plan = "standard", position = "unknown", opts = {}) => {
-    if (!email) { alert("Entre ton email pour continuer"); return; }
+    if (!email || !email.includes("@")) {
+      setEmailError(true);
+      setTimeout(() => setEmailError(false), 3000);
+      document.querySelector("input[type=email]")?.focus();
+      return;
+    }
+    setEmailError(false);
     const { trial = false, billingOverride } = opts;
     const b = billingOverride || billing;
     track("checkout_started", { position, plan, billing: b, trial });
     setLoading(true);
-    const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, plan, refCode: refValid ? refCode : undefined, billing: b, trial }) });
-    const { url, error } = await res.json();
-    if (error) { alert(error); setLoading(false); return; }
-    window.location.href = url;
+    try {
+      const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, plan, refCode: refValid ? refCode : undefined, billing: b, trial }) });
+      const { url, error } = await res.json();
+      if (error) { alert(error); setLoading(false); return; }
+      window.location.href = url;
+    } catch {
+      alert("Erreur réseau. Réessaie.");
+      setLoading(false);
+    }
   };
 
   const SITE = "https://studiovertical.app";
@@ -378,13 +390,14 @@ export default function Landing() {
 
           {canceled && <p style={{ color: RED, marginBottom: 16, fontSize: 14 }}>Paiement annulé. Réessaie quand tu veux.</p>}
 
-          <div className="hero-row" style={{ display: "flex", gap: 10, justifyContent: "center", alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
-            <input type="email" placeholder="ton@email.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && startCheckout()}
-              style={{ padding: "16px 20px", borderRadius: 14, border: `1px solid ${BORDER}`, background: SURFACE, color: TEXT, fontSize: 15, width: 240, outline: "none", backdropFilter: "blur(8px)" }} />
+          <div className="hero-row" style={{ display: "flex", gap: 10, justifyContent: "center", alignItems: "center", flexWrap: "wrap", marginBottom: emailError ? 6 : 14 }}>
+            <input type="email" placeholder="ton@email.com" value={email} onChange={e => { setEmail(e.target.value); setEmailError(false); }} onKeyDown={e => e.key === "Enter" && startCheckout()}
+              style={{ padding: "16px 20px", borderRadius: 14, border: `1px solid ${emailError ? RED : BORDER}`, background: SURFACE, color: TEXT, fontSize: 15, width: 240, outline: "none", backdropFilter: "blur(8px)", transition: "border-color .2s" }} />
             <GlowBtn onClick={() => startCheckout("standard", "hero")} disabled={loading} gradient>
               {loading ? "Redirection…" : "Commencer →"}
             </GlowBtn>
           </div>
+          {emailError && <p style={{ textAlign: "center", color: RED, fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Entre ton email pour continuer</p>}
 
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
             <div className="ref-input" style={{ position: "relative", width: 220 }}>
@@ -868,8 +881,9 @@ export default function Landing() {
             </p>
           )}
 
-          <input type="email" placeholder="ton@email.com" value={email} onChange={e => setEmail(e.target.value)}
-            style={{ width: "100%", maxWidth: 400, display: "block", margin: "0 auto 32px", padding: "14px 18px", borderRadius: 12, border: `1px solid ${BORDER}`, background: SURFACE, color: TEXT, fontSize: 15, outline: "none" }} />
+          <input type="email" placeholder="ton@email.com" value={email} onChange={e => { setEmail(e.target.value); setEmailError(false); }}
+            style={{ width: "100%", maxWidth: 400, display: "block", margin: `0 auto ${emailError ? "6px" : "32px"}`, padding: "14px 18px", borderRadius: 12, border: `1px solid ${emailError ? RED : BORDER}`, background: SURFACE, color: TEXT, fontSize: 15, outline: "none", transition: "border-color .2s" }} />
+          {emailError && <p style={{ textAlign: "center", color: RED, fontSize: 13, fontWeight: 600, marginBottom: 26 }}>Entre ton email pour continuer</p>}
 
           <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
             {/* Standard */}
