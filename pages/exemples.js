@@ -303,7 +303,29 @@ export default function Exemples() {
       </div>
 
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "0 32px 8px" }} className="examples-grid">
-        {SERIES.map((serie, i) => <SerieCard key={serie.bible.titre} serie={serie} />)}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingBottom: 24 }}>
+          {[
+            { label: "Tous", color: TEXT },
+            { label: "⚡ Fast Drama", color: RED },
+            { label: "🎭 Premium", color: VIO },
+            { label: "♪ TikTok", color: "#69C9D0" },
+            { label: "◈ Reels", color: VIO },
+            { label: "▶ Shorts", color: RED },
+            { label: "Médical", color: MUTED },
+          ].map(({ label, color }, i) => (
+            <button key={label} disabled style={{
+              padding: "7px 16px", borderRadius: 100, fontSize: 12, fontWeight: 700,
+              background: i === 0 ? `${TEXT}12` : "transparent",
+              border: `1px solid ${i === 0 ? TEXT : BORDER}`,
+              color: i === 0 ? TEXT : "rgba(100,116,139,0.4)",
+              cursor: "default", fontFamily: "'Space Grotesk', sans-serif",
+              letterSpacing: 0.3, opacity: i === 0 ? 1 : 0.4,
+            }}>
+              {label}
+            </button>
+          ))}
+        </div>
+        {SERIES.map((serie) => <SerieCard key={serie.bible.titre} serie={serie} />)}
 
 
         {/* CTA */}
