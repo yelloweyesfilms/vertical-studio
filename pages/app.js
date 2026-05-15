@@ -11,6 +11,7 @@ const OPTS = {
   genre: ["Romance", "Revenge Story", "Thriller Social", "Teen Drama", "Fantasy", "Soap Premium"],
   lieu_fast: ["Ascenseur", "Chambre d'hôtel", "Voiture la nuit", "Couloir vide", "Toit d'immeuble", "Salle d'attente"],
   lieu_prem: ["Cabinet privé", "Parking souterrain", "Loge d'artiste", "Jet privé", "Bibliothèque fermée", "Terrasse au crépuscule"],
+  ambiance: ["⚡ Intense & Direct", "💜 Émotionnel & Poétique", "🧠 Psychologique & Lent"],
 };
 const DUR_LABEL = { 60: "1 min", 90: "1 min 30", 120: "2 min" };
 const DUR_SCENES = { 60: 5, 90: 7, 120: 10 };
@@ -154,6 +155,24 @@ function deleteSerie(id) {
 function renameSerieLocal(id, titre) {
   const updated = loadSaved().map(s => s.id === id ? { ...s, bible: { ...s.bible, titre } } : s);
   localStorage.setItem(SAVE_KEY, JSON.stringify(updated));
+}
+
+// ── STATS & REPRISE ──────────────────────────────────────────
+const STATS_KEY = "vs_stats";
+function getStats() {
+  try { return JSON.parse(localStorage.getItem(STATS_KEY) || '{"series":0,"scripts":0,"minutes":0}'); } catch { return { series: 0, scripts: 0, minutes: 0 }; }
+}
+function incStats(patch) {
+  const s = getStats();
+  Object.keys(patch).forEach(k => s[k] = (s[k] || 0) + patch[k]);
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch {}
+}
+const LAST_KEY = "vs_last";
+function saveLastOpen(bible, episodes, state) {
+  try { localStorage.setItem(LAST_KEY, JSON.stringify({ bible, episodes, state })); } catch {}
+}
+function loadLastOpen() {
+  try { return JSON.parse(localStorage.getItem(LAST_KEY) || "null"); } catch { return null; }
 }
 
 // ── ONBOARDING ───────────────────────────────────────────────
@@ -668,7 +687,7 @@ function AfficheView({ bible, episodes, mode, onBack }) {
 
 const CUSTOM_PREFIX = "__custom__";
 
-function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage, darkMode, onDarkMode, onLogout, onUpgrade }) {
+function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage, darkMode, onDarkMode, onLogout, onUpgrade, stats, lastSerie, onResume }) {
   const univOpts = state.mode === "fast" ? OPTS.univers_fast : OPTS.univers_prem;
   const secOpts = state.mode === "fast" ? OPTS.secret_fast : OPTS.secret_prem;
   const totalMin = Math.round(state.format * state.duree / 60);
@@ -751,6 +770,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
           { label: "Secret central", opts: secOpts, key: "secret" },
           { label: "Genre", opts: OPTS.genre, key: "genre" },
           { label: "Lieu unique", opts: state.mode === "fast" ? OPTS.lieu_fast : OPTS.lieu_prem, key: "lieu" },
+          { label: "Ambiance narrative", opts: OPTS.ambiance, key: "ambiance" },
         ].map(({ label, opts, key }) => (
           <div key={key} style={{ marginBottom: 22 }}>
             <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>{label}</p>
@@ -805,6 +825,16 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
         <p style={{ fontSize: 12, color: "var(--mt)", textAlign: "center", marginTop: 12 }}>
           {state.format} épisodes · {DUR_LABEL[state.duree]} · {totalMin} min de contenu
         </p>
+        {lastSerie && (
+          <button onClick={onResume} style={{ background: "var(--card)", border: "1.5px solid var(--r)", color: "var(--r)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 700, cursor: "pointer", marginTop: 10, fontFamily: "var(--sans)" }}>
+            ▶ Reprendre — {lastSerie.bible?.titre}
+          </button>
+        )}
+        {stats?.series > 0 && (
+          <p style={{ fontSize: 11, color: "var(--mt)", textAlign: "center", marginTop: 10 }}>
+            🎬 {stats.series} série{stats.series > 1 ? "s" : ""} · {stats.scripts} script{stats.scripts > 1 ? "s" : ""} · {stats.minutes} min générés
+          </p>
+        )}
         {hasSeries && (
           <button onClick={onMesSeries} style={{ background: "none", border: "1.5px solid var(--bo)", color: "var(--tx)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 10, fontFamily: "var(--sans)" }}>
             📂 Mes séries sauvegardées
@@ -828,6 +858,8 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
   const [loadingTitres, setLoadingTitres] = useState(false);
   const [prod, setProd] = useState(null);
   const [loadingProd, setLoadingProd] = useState(false);
+  const [checked, setChecked] = useState({});
+  const toggle = (key) => setChecked(p => ({ ...p, [key]: !p[key] }));
 
   const exportSerie = () => {
     const lines = [];
@@ -922,7 +954,16 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
             ⏱ {DUR_LABEL[duree]}/ép.
           </span>
         </div>
-        <h1 style={{ fontFamily: "var(--serif)", fontSize: 28, fontWeight: 900, letterSpacing: -1, lineHeight: 1.1, marginBottom: 10 }}>{bible.titre}</h1>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
+          <h1 style={{ fontFamily: "var(--serif)", fontSize: 28, fontWeight: 900, letterSpacing: -1, lineHeight: 1.1, flex: 1, margin: 0 }}>{bible.titre}</h1>
+          <button onClick={() => {
+            const txt = `🎬 ${bible.titre}\n« ${bible.logline} »\n\nGénéré avec Vertical Studio — studiovertical.app`;
+            if (navigator.share) { navigator.share({ title: bible.titre, text: txt }).catch(() => {}); }
+            else { navigator.clipboard?.writeText(txt).then(() => alert("Copié !")); }
+          }} style={{ background: "var(--card)", border: "1.5px solid var(--bo)", borderRadius: 10, padding: "8px 12px", fontSize: 13, cursor: "pointer", flexShrink: 0, fontFamily: "var(--sans)" }} title="Partager">
+            🔗 Partager
+          </button>
+        </div>
         <p style={{ fontFamily: "var(--serif)", fontSize: 15, fontStyle: "italic", color: "var(--mt)", lineHeight: 1.5, marginBottom: 12 }}>« {bible.logline} »</p>
         <p style={{ fontSize: 14, lineHeight: 1.7, marginBottom: 16 }}>{bible.pitch}</p>
         <div style={{ display: "flex", borderBottom: "2px solid var(--bo)", marginBottom: 0 }}>
@@ -1001,18 +1042,30 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
             </div>
           ) : prod ? (
             <>
+              {/* Checklist plateau */}
+              <div style={{ background: "var(--tx)", borderRadius: 12, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", margin: 0 }}>✅ Checklist plateau</p>
+                <p style={{ fontSize: 11, color: "#3a5040", margin: 0 }}>{Object.values(checked).filter(Boolean).length}/{(prod.decors||[]).length + (prod.costumes||[]).length + (prod.lieux||[]).length} préparés</p>
+              </div>
+
               {/* Décors */}
               {(prod.decors || []).length > 0 && (
                 <>
                   <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>🏗 Décors</p>
-                  {(prod.decors || []).map((d, i) => (
-                    <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: 14, borderLeft: "4px solid var(--n)", marginBottom: 10 }}>
-                      <p style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{d.nom}</p>
-                      <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5, marginBottom: 4 }}>{d.description}</p>
-                      {d.ambiance && <p style={{ fontSize: 12, fontStyle: "italic", color: "var(--r)" }}>Ambiance : {d.ambiance}</p>}
-                      {d.conseil_tournage && <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 4 }}>💡 {d.conseil_tournage}</p>}
-                    </div>
-                  ))}
+                  {(prod.decors || []).map((d, i) => {
+                    const k = `d${i}`;
+                    return (
+                      <div key={i} onClick={() => toggle(k)} style={{ background: "var(--card)", borderRadius: 12, padding: 14, borderLeft: `4px solid ${checked[k] ? "#4ade80" : "var(--n)"}`, marginBottom: 10, cursor: "pointer", opacity: checked[k] ? 0.6 : 1, transition: "all .15s" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                          <span style={{ fontSize: 16 }}>{checked[k] ? "✅" : "⬜"}</span>
+                          <p style={{ fontSize: 14, fontWeight: 700, margin: 0 }}>{d.nom}</p>
+                        </div>
+                        <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5, marginBottom: 4, marginLeft: 26 }}>{d.description}</p>
+                        {d.ambiance && <p style={{ fontSize: 12, fontStyle: "italic", color: "var(--r)", marginLeft: 26 }}>Ambiance : {d.ambiance}</p>}
+                        {d.conseil_tournage && <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 4, marginLeft: 26 }}>💡 {d.conseil_tournage}</p>}
+                      </div>
+                    );
+                  })}
                 </>
               )}
 
@@ -1020,16 +1073,20 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
               {(prod.costumes || []).length > 0 && (
                 <>
                   <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", margin: "20px 0 10px" }}>👗 Costumes</p>
-                  {(prod.costumes || []).map((c, i) => (
-                    <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: 14, borderLeft: `4px solid ${i === 0 ? "var(--r)" : "var(--n)"}`, marginBottom: 10 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                        <p style={{ fontSize: 14, fontWeight: 700 }}>{c.personnage}</p>
-                        {c.couleurs && <span style={{ fontSize: 11, color: "var(--mt)", fontStyle: "italic" }}>{c.couleurs}</span>}
+                  {(prod.costumes || []).map((c, i) => {
+                    const k = `c${i}`;
+                    return (
+                      <div key={i} onClick={() => toggle(k)} style={{ background: "var(--card)", borderRadius: 12, padding: 14, borderLeft: `4px solid ${checked[k] ? "#4ade80" : i === 0 ? "var(--r)" : "var(--n)"}`, marginBottom: 10, cursor: "pointer", opacity: checked[k] ? 0.6 : 1, transition: "all .15s" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                          <span style={{ fontSize: 16 }}>{checked[k] ? "✅" : "⬜"}</span>
+                          <p style={{ fontSize: 14, fontWeight: 700, margin: 0 }}>{c.personnage}</p>
+                          {c.couleurs && <span style={{ fontSize: 11, color: "var(--mt)", fontStyle: "italic" }}>{c.couleurs}</span>}
+                        </div>
+                        <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5, marginBottom: c.symbolique ? 4 : 0, marginLeft: 26 }}>{c.look}</p>
+                        {c.symbolique && <p style={{ fontSize: 12, color: "var(--r)", fontStyle: "italic", marginLeft: 26 }}>🎭 {c.symbolique}</p>}
                       </div>
-                      <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5, marginBottom: c.symbolique ? 4 : 0 }}>{c.look}</p>
-                      {c.symbolique && <p style={{ fontSize: 12, color: "var(--r)", fontStyle: "italic" }}>🎭 {c.symbolique}</p>}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </>
               )}
 
@@ -1037,16 +1094,22 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
               {(prod.lieux || []).length > 0 && (
                 <>
                   <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", margin: "20px 0 10px" }}>📍 Lieux de tournage</p>
-                  {(prod.lieux || []).map((l, i) => (
-                    <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: 14, marginBottom: 10, border: "1.5px solid var(--bo)" }}>
-                      <p style={{ fontSize: 13, fontWeight: 700, color: "var(--r)", marginBottom: 6 }}>{l.type}</p>
-                      {(l.exemples || []).map((e, j) => (
-                        <p key={j} style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.4, marginBottom: 2 }}>· {e}</p>
-                      ))}
-                      {l.lumiere && <p style={{ fontSize: 12, marginTop: 6, color: "var(--tx)" }}>☀️ Lumière : {l.lumiere}</p>}
-                      {l.heure_ideale && <p style={{ fontSize: 12, color: "var(--mt)" }}>🕐 Idéal : {l.heure_ideale}</p>}
-                    </div>
-                  ))}
+                  {(prod.lieux || []).map((l, i) => {
+                    const k = `l${i}`;
+                    return (
+                      <div key={i} onClick={() => toggle(k)} style={{ background: "var(--card)", borderRadius: 12, padding: 14, marginBottom: 10, border: `1.5px solid ${checked[k] ? "#4ade80" : "var(--bo)"}`, cursor: "pointer", opacity: checked[k] ? 0.6 : 1, transition: "all .15s" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                          <span style={{ fontSize: 16 }}>{checked[k] ? "✅" : "⬜"}</span>
+                          <p style={{ fontSize: 13, fontWeight: 700, color: "var(--r)", margin: 0 }}>{l.type}</p>
+                        </div>
+                        {(l.exemples || []).map((e, j) => (
+                          <p key={j} style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.4, marginBottom: 2, marginLeft: 26 }}>· {e}</p>
+                        ))}
+                        {l.lumiere && <p style={{ fontSize: 12, marginTop: 6, color: "var(--tx)", marginLeft: 26 }}>☀️ Lumière : {l.lumiere}</p>}
+                        {l.heure_ideale && <p style={{ fontSize: 12, color: "var(--mt)", marginLeft: 26 }}>🕐 Idéal : {l.heure_ideale}</p>}
+                      </div>
+                    );
+                  })}
                 </>
               )}
             </>
@@ -1165,9 +1228,14 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
                 <span style={{ display: "inline-block", background: "var(--r)", borderRadius: 6, padding: "6px 12px", fontSize: 12, fontWeight: 800, color: "#fff", letterSpacing: 1, textTransform: "uppercase" }}>{displayScript.cliffhanger_scene.label}</span>
               )}
             </div>
-            <div className="edit-row" style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+            <div className="edit-row" style={{ display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
               {[["pimenter", "🌶 Pimenter"], ["subtil", "🤫 Subtil"], ["simplifier", "🎬 Simple"]].map(([k, l]) => (
                 <button key={k} onClick={() => onEdit(k)} disabled={loading} style={{ flex: 1, minWidth: 80, padding: "12px 6px", borderRadius: 10, border: "1.5px solid var(--bo)", background: "var(--card)", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "var(--sans)", transition: "all .15s" }}>{l}</button>
+              ))}
+            </div>
+            <div className="edit-row" style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+              {[["rewrite_hook", "⚡ Nouveau hook"], ["rewrite_ending", "🔚 Nouvelle fin"]].map(([k, l]) => (
+                <button key={k} onClick={() => onEdit(k)} disabled={loading} style={{ flex: 1, minWidth: 100, padding: "12px 6px", borderRadius: 10, border: "1.5px solid var(--bo)", background: "var(--card)", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "var(--sans)", transition: "all .15s" }}>{l}</button>
               ))}
             </div>
             <button onClick={plan === "standard" ? () => alert("Les variations sont réservées au plan Premium.") : onVariations} disabled={loading} style={{ background: "var(--card)", color: plan === "standard" ? "var(--mt)" : "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: plan === "standard" ? "not-allowed" : "pointer", marginBottom: 10, fontFamily: "var(--sans)", opacity: plan === "standard" ? 0.6 : 1 }}>{plan === "standard" ? "🔒 Générer 4 versions" : "🎲 Générer 4 versions"}</button>
@@ -1347,6 +1415,8 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [stats, setStats] = useState({ series: 0, scripts: 0, minutes: 0 });
+  const [lastSerie, setLastSerie] = useState(null);
 
   // Streaming & loading
   const [loadProgress, setLoadProgress] = useState(0);
@@ -1360,6 +1430,8 @@ export default function App() {
       const storedPlan = localStorage.getItem("vs_plan");
       if (storedPlan) setPlan(storedPlan);
       if (!localStorage.getItem("vs_onboarded")) setShowOnboarding(true);
+      setStats(getStats());
+      setLastSerie(loadLastOpen());
     } catch {}
   }, []);
 
@@ -1379,7 +1451,7 @@ export default function App() {
     setTimeout(() => generate(pack), 50);
   };
 
-  const [state, setState] = useState({ mode: "fast", casting: OPTS.casting[0], univers: OPTS.univers_fast[0], secret: OPTS.secret_fast[0], genre: OPTS.genre[0], lieu: OPTS.lieu_fast[0], format: 10, duree: 60 });
+  const [state, setState] = useState({ mode: "fast", casting: OPTS.casting[0], univers: OPTS.univers_fast[0], secret: OPTS.secret_fast[0], genre: OPTS.genre[0], lieu: OPTS.lieu_fast[0], ambiance: OPTS.ambiance[0], format: 10, duree: 60 });
   const [bible, setBible] = useState(null);
   const [episodes, setEpisodes] = useState([]);
   const [epIdx, setEpIdx] = useState(0);
@@ -1504,7 +1576,11 @@ export default function App() {
       setEpisodes(eps);
 
       saveSerie(b, eps, activeState);
+      saveLastOpen(b, eps, activeState);
+      incStats({ series: 1, minutes: Math.round(activeState.format * activeState.duree / 60) });
       setSavedCount(loadSaved().length);
+      setStats(getStats());
+      setLastSerie({ bible: b, episodes: eps, state: activeState });
       // Sync cloud (fire and forget)
       cloudSave(b, eps, activeState, customerId);
 
@@ -1518,6 +1594,8 @@ export default function App() {
     setBible(s.bible);
     setEpisodes(s.episodes);
     setState(prev => ({ ...prev, ...s.state }));
+    saveLastOpen(s.bible, s.episodes, s.state);
+    setLastSerie(s);
     setScript(null);
     setScreen("bible");
   };
@@ -1529,8 +1607,11 @@ export default function App() {
     setLoading(true);
     setErr(null);
     try {
-      const s = await gen("script", { ep: episodes[idx], bible, mode: state.mode, duree: state.duree }, customerId);
+      const prevEps = episodes.slice(0, idx).map(e => ({ numero: e.numero, titre: e.titre, cliffhanger: e.cliffhanger }));
+      const s = await gen("script", { ep: episodes[idx], bible, mode: state.mode, duree: state.duree, prevEps }, customerId);
       setScript(s);
+      incStats({ scripts: 1 });
+      setStats(getStats());
     } catch (e) {
       console.error(e);
       setErr(e.message);
@@ -1717,7 +1798,7 @@ export default function App() {
         </div>
       )}
 
-      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} onUpgrade={openPortal} />}
+      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} onUpgrade={openPortal} stats={stats} lastSerie={lastSerie} onResume={() => lastSerie && loadSerie(lastSerie)} />}
       {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} onAffiche={() => setScreen("affiche")} customerId={customerId} plan={plan} />}

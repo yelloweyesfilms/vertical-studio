@@ -45,7 +45,7 @@ const VALID_ACTIONS = ["bible", "episodes", "script", "edit", "titres", "variati
 const VALID_MODES = ["fast", "premium"];
 const VALID_DUREES = [60, 90, 120];
 const VALID_FORMATS = [10, 20, 40, 90];
-const VALID_EDIT_TYPES = ["pimenter", "subtil", "simplifier"];
+const VALID_EDIT_TYPES = ["pimenter", "subtil", "simplifier", "rewrite_hook", "rewrite_ending"];
 
 function validatePayload(action, payload) {
   if (!payload || typeof payload !== "object") return "Payload invalide";
@@ -60,6 +60,7 @@ function validatePayload(action, payload) {
     if (typeof secret !== "string" || secret.length > 100) return "Secret invalide";
     if (genre !== undefined && (typeof genre !== "string" || genre.length > 100)) return "Genre invalide";
     if (lieu !== undefined && (typeof lieu !== "string" || lieu.length > 100)) return "Lieu invalide";
+    if (payload.ambiance !== undefined && (typeof payload.ambiance !== "string" || payload.ambiance.length > 100)) return "Ambiance invalide";
   } else if (action === "episodes") {
     const { titre, logline, mode, from, to, total } = payload;
     if (!VALID_MODES.includes(mode)) return "Mode invalide";
@@ -147,8 +148,8 @@ export default async function handler(req, res) {
 
   try {
     if (action === "bible") {
-      const { mode, casting, univers, secret, format, duree, genre, lieu } = payload;
-      const ck = `bible:${mode}:${casting}:${univers}:${secret}:${format}:${duree}:${genre || ""}:${lieu || ""}`;
+      const { mode, casting, univers, secret, format, duree, genre, lieu, ambiance } = payload;
+      const ck = `bible:${mode}:${casting}:${univers}:${secret}:${format}:${duree}:${genre || ""}:${lieu || ""}:${ambiance || ""}`;
       const cached = getCached(ck);
       if (cached) return res.json(cached);
       const md = mode === "fast"
@@ -156,10 +157,13 @@ export default async function handler(req, res) {
         : "Premium Suspense: tension psychologique, sous-texte riche, silences éloquents, réalisme brut";
       const genreInstr = genre ? `Genre: ${genre} — respecte les codes émotionnels et narratifs de ce genre.` : "";
       const lieuInstr = lieu ? `Lieu principal: "${lieu}" — les scènes se déroulent dans ce lieu limité, exploite l'espace pour créer la tension et la claustrophobie dramatique.` : "";
+      const ambianceMap = { "⚡ Intense & Direct": "Ton INTENSE ET DIRECT: dialogues percutants, confrontations frontales, émotions à fleur de peau, rythme rapide.", "💜 Émotionnel & Poétique": "Ton ÉMOTIONNEL ET POÉTIQUE: dialogues touchants, métaphores, profondeur des sentiments, moments de vulnérabilité.", "🧠 Psychologique & Lent": "Ton PSYCHOLOGIQUE ET LENT: sous-texte riche, silences significatifs, manipulation subtile, tension qui monte sans éclater." };
+      const ambianceInstr = ambiance && ambianceMap[ambiance] ? ambianceMap[ambiance] : "";
       const result = await callClaude(
         `Tu es showrunner de micro-dramas 9:16 (TikTok, Reels, Shorts). ${md}. ${DUR_INSTR[duree]}
 ${genreInstr}
 ${lieuInstr}
+${ambianceInstr}
 Titre: 2-4 mots, mystérieux, crée l'envie immédiate — jamais de sous-titre explicatif.
 Logline: "[Personnage] cache [secret] jusqu'au jour où [déclencheur]" — 15 mots max, formule respectée.
 Pitch: 3 lignes qui hookent un ado de 17 ans — commence par l'émotion, pas l'intrigue.
@@ -211,12 +215,15 @@ JSON: {"episodes":[{"numero":${from},"titre":"","cliffhanger":"","tension":${tFr
     }
 
     if (action === "script") {
-      const { ep, bible, mode, duree } = payload;
+      const { ep, bible, mode, duree, prevEps } = payload;
       const md = mode === "fast"
         ? "Fast Drama: émotions explosives, confrontations directes, cliffhangers choc"
         : "Premium Suspense: sous-texte intense, silences signifiants, tension qui monte progressivement";
       const maxS = duree <= 60 ? 5 : duree <= 90 ? 7 : 10;
       const persos = (bible.personnages || []).map(p => `${p.nom} (${p.role}${p.secret ? `, secret: ${p.secret}` : ""})`).join(", ");
+      const prevEpsInstr = prevEps && prevEps.length > 0
+        ? `\nCONTINUITÉ: Les épisodes précédents se sont terminés ainsi — ${prevEps.map(e => `ép.${e.numero} "${e.titre}": ${e.cliffhanger}`).join(" / ")}. Assure la cohérence narrative et fais des références implicites aux événements passés.`
+        : "";
       const result = await callClaude(
         `Tu es scénariste de micro-dramas 9:16. ${DUR_INSTR[duree]} Mode: ${md}.
 RÈGLES ABSOLUES:
@@ -230,7 +237,7 @@ RÈGLES ABSOLUES:
 JSON uniquement.`,
         `Script ép.${ep.numero} "${ep.titre}". Série: "${bible.titre}". Personnages: ${persos}.
 Tension de la série: ${bible.tension_centrale || ""}.
-Cliffhanger à atteindre: ${ep.cliffhanger}.
+Cliffhanger à atteindre: ${ep.cliffhanger}.${prevEpsInstr}
 JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue":"","jeu":"","visuel_916":""}],"cliffhanger_scene":{"texte":"","visuel_916":"","label":""},"checklist":[""]}`,
         2400
       );
@@ -245,6 +252,8 @@ JSON: {"hook_scene":{"texte":"","visuel_916":""},"scenes":[{"perso":"","dialogue
         pimenter: `INTENSIFIE ce script au maximum. Remplace chaque réplique ordinaire par une révélation, une accusation ou une menace. Interdit: hésitations, politesse, questions vagues. Chaque ligne doit blesser ou exposer un secret. Max ${maxS} échanges. Retourne exactement la même structure JSON.`,
         subtil: `RENDS ce script subtil et psychologique. Aucun personnage ne dit ce qu'il veut vraiment — tout passe par le sous-texte, les silences (indique "(silence)" dans jeu), les métaphores et les regards. Remplace les confrontations directes par des non-dits lourds. Max ${maxS} échanges. Même structure JSON.`,
         simplifier: `SIMPLIFIE radicalement ce script. Un seul lieu. Une seule révélation centrale. Répliques 5-8 mots max, chaque mot compte. Supprime tout ce qui n'est pas essentiel à la tension principale. Max ${maxS} échanges. Même structure JSON.`,
+        rewrite_hook: `RÉÉCRIS UNIQUEMENT le hook d'ouverture (hook_scene). Crée une nouvelle scène d'ouverture complètement différente — autre situation, autre dynamique, mais même tension et mêmes personnages. Le reste du script reste identique. Même structure JSON.`,
+        rewrite_ending: `RÉÉCRIS UNIQUEMENT la fin (cliffhanger_scene). Crée un nouveau cliffhanger inattendu, plus choquant ou plus ambigu. Le hook et les scènes du milieu restent identiques. Même structure JSON.`,
       };
       const result = await callClaude(
         "Tu es scénariste expert en micro-dramas 9:16. JSON uniquement, structure identique à l'original.",
