@@ -28,12 +28,22 @@ const Cross = () => (
 const Logo = () => (
   <div style={{ display: "flex", alignItems: "center", gap: 10, userSelect: "none" }}>
     <svg width="26" height="37" viewBox="0 0 26 37" fill="none">
-      <rect x="0.5" y="0.5" width="25" height="36" rx="5.5" fill={RED} />
-      <rect x="0.5" y="0.5" width="25" height="36" rx="5.5" stroke="rgba(255,255,255,0.15)" />
-      <rect x="4" y="4" width="18" height="29" rx="3" fill="rgba(0,0,0,0.25)" />
+      <defs>
+        <linearGradient id="logo-grad" x1="0" y1="0" x2="26" y2="37" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#E85C3A" />
+          <stop offset="100%" stopColor="#a855f7" />
+        </linearGradient>
+        <clipPath id="logo-clip">
+          <rect x="0.5" y="0.5" width="25" height="36" rx="5.5" />
+        </clipPath>
+      </defs>
+      <rect x="0.5" y="0.5" width="25" height="36" rx="5.5" fill="url(#logo-grad)" />
+      <rect x="0.5" y="0.5" width="25" height="36" rx="5.5" stroke="rgba(255,255,255,0.18)" />
+      <rect x="4" y="4" width="18" height="29" rx="3" fill="rgba(0,0,0,0.22)" />
       <polygon points="10,13 10,24 20,18.5" fill="white" />
       <rect x="4" y="31" width="6" height="1.5" rx="0.75" fill="rgba(255,255,255,0.4)" />
       <rect x="12" y="31" width="10" height="1.5" rx="0.75" fill="rgba(255,255,255,0.2)" />
+      <polygon points="0.5,0.5 25.5,0.5 25.5,12 0.5,20" fill="rgba(255,255,255,0.13)" clipPath="url(#logo-clip)" />
     </svg>
     <div style={{ lineHeight: 1 }}>
       <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 2 }}>Studio</div>
