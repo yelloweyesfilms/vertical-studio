@@ -27,11 +27,11 @@ const SERIES = [
     ],
     script: {
       hook_scene: {
-        texte: "Clara tient le dossier. Ses mains tremblent. Le nom sur la couverture : JULIEN MOREAU.",
+        texte: "Clara tient le dossier. Ses mains tremblent. Le nom sur la couverture : JULIEN MOREAU.",
         visuel_916: "Gros plan mains crispées sur dossier, bague qui claque contre le carton",
       },
       scenes: [
-        { perso: "JULIEN", dialogue: "Infirmière Bertin. On se connaît ?", jeu: "sourire innocent, regard qui cherche", visuel_916: "Plan américain, couloir désert derrière lui" },
+        { perso: "JULIEN", dialogue: "Infirmière Bertin. On se connaît ?", jeu: "sourire innocent, regard qui cherche", visuel_916: "Plan américain, couloir désert derrière lui" },
         { perso: "CLARA", dialogue: "Non. Bienvenue dans le service.", jeu: "voix trop calme, yeux qui fuient", visuel_916: "Contre-champ serré, elle tourne le dos" },
         { perso: "JULIEN", dialogue: "Bizarre. J'ai l'impression qu'on s'est déjà vus.", jeu: "penche la tête, observe", visuel_916: "Zoom lent sur son visage" },
         { perso: "CLARA", dialogue: "On voit beaucoup de monde ici.", jeu: "force un sourire, repart vite", visuel_916: "Plan large, elle s'éloigne dans le couloir" },
@@ -39,9 +39,8 @@ const SERIES = [
       cliffhanger_scene: {
         texte: "Clara referme la porte de la réserve. Julien est de l'autre côté — il tient un dossier de 2021.",
         visuel_916: "Cut brutal profil Clara, porte qui se ferme, silence",
-        label: "Il sait ?",
+        label: "Il sait ?",
       },
-      checklist: ["Hook percutant ✓", "Tension qui monte ✓", "Cliffhanger inattendu ✓", "Max 2 acteurs ✓"],
     },
   },
   {
@@ -49,8 +48,8 @@ const SERIES = [
     bible: {
       titre: "Héritage",
       logline: "Un directeur financier cache un détournement jusqu'au jour où sa propre fille rejoint le cabinet d'audit.",
-      pitch: "Dans les hauteurs de la finance parisienne, Marc Delorme a tout construit sur un mensonge. Quand Chloé, sa fille, débarque comme auditrice mandatée par le conseil, le silence entre eux devient plus dangereux que les chiffres. Qui trahira l'autre en premier ?",
-      tension_centrale: "Va-t-elle sacrifier son père pour sa carrière ?",
+      pitch: "Dans les hauteurs de la finance parisienne, Marc Delorme a tout construit sur un mensonge. Quand Chloé, sa fille, débarque comme auditrice mandatée par le conseil, le silence entre eux devient plus dangereux que les chiffres. Qui trahira l'autre en premier ?",
+      tension_centrale: "Va-t-elle sacrifier son père pour sa carrière ?",
       accroche: "Il a volé pour elle. Elle est là pour le trouver.",
       personnages: [
         { nom: "Marc", age: 52, role: "Directeur financier", secret: "Détourne 2M€ depuis 4 ans pour payer les études de sa fille" },
@@ -60,7 +59,7 @@ const SERIES = [
     episodes: [
       { numero: 1, titre: "L'auditrice", cliffhanger: "Marc reconnaît l'écriture dans le rapport. C'est la sienne.", tension: 4 },
       { numero: 2, titre: "Le silence", cliffhanger: "Chloé laisse volontairement une page blanche dans son rapport.", tension: 6 },
-      { numero: 3, titre: "Le conseil", cliffhanger: "Marc comprend : elle le protège. Mais pourquoi maintenant ?", tension: 8 },
+      { numero: 3, titre: "Le conseil", cliffhanger: "Marc comprend : elle le protège. Mais pourquoi maintenant ?", tension: 8 },
       { numero: 4, titre: "La vérité", cliffhanger: "Chloé pose sa démission sur le bureau. Et une clé USB.", tension: 10 },
     ],
     script: {
@@ -71,7 +70,7 @@ const SERIES = [
       scenes: [
         { perso: "MARC", dialogue: "Tu aurais pu me prévenir.", jeu: "voix basse, mâchoire serrée", visuel_916: "Gros plan profil, regard vers la fenêtre" },
         { perso: "CHLOÉ", dialogue: "C'est exactement pour ça que je ne l'ai pas fait.", jeu: "calme absolu, ouvre son ordinateur", visuel_916: "Plan poitrine, doigts sur clavier" },
-        { perso: "MARC", dialogue: "Tu sais ce que tu fais ?", jeu: "s'approche, baisse la voix", visuel_916: "Deux shot serré, très peu d'espace entre eux" },
+        { perso: "MARC", dialogue: "Tu sais ce que tu fais ?", jeu: "s'approche, baisse la voix", visuel_916: "Deux shot serré, très peu d'espace entre eux" },
         { perso: "CHLOÉ", dialogue: "Mon travail.", jeu: "lève les yeux, soutient son regard", visuel_916: "Contre-plongée légère sur elle" },
       ],
       cliffhanger_scene: {
@@ -79,7 +78,6 @@ const SERIES = [
         visuel_916: "Insert écran, curseur qui s'immobilise, reflet de Chloé dans le moniteur",
         label: "Elle savait.",
       },
-      checklist: ["Hook percutant ✓", "Tension qui monte ✓", "Cliffhanger inattendu ✓", "Max 2 acteurs ✓"],
     },
   },
   {
@@ -87,8 +85,8 @@ const SERIES = [
     bible: {
       titre: "Deux Vies",
       logline: "Une mère de famille cache une double vie jusqu'au jour où son fils trouve son second téléphone.",
-      pitch: "En apparence, Sophie est la mère parfaite. Mais depuis 2 ans, elle mène une autre vie le mercredi soir. Quand Lucas, 19 ans, trouve le téléphone qu'elle croyait bien caché, il doit choisir : protéger sa mère ou la vérité.",
-      tension_centrale: "Va-t-il parler à son père avant qu'elle ne lui avoue ?",
+      pitch: "En apparence, Sophie est la mère parfaite. Mais depuis 2 ans, elle mène une autre vie le mercredi soir. Quand Lucas, 19 ans, trouve le téléphone qu'elle croyait bien caché, il doit choisir : protéger sa mère ou la vérité.",
+      tension_centrale: "Va-t-il parler à son père avant qu'elle ne lui avoue ?",
       accroche: "Mercredi soir, elle ment. Il l'a su ce matin.",
       personnages: [
         { nom: "Sophie", age: 43, role: "Mère / Directrice RH", secret: "Mène une seconde vie comme entrepreneuse sous fausse identité" },
@@ -98,12 +96,12 @@ const SERIES = [
     episodes: [
       { numero: 1, titre: "Le téléphone", cliffhanger: "Lucas répond à un message à la place de sa mère.", tension: 4 },
       { numero: 2, titre: "Mercredi", cliffhanger: "Sophie rentre à 23h. Lucas l'attend dans le noir.", tension: 6 },
-      { numero: 3, titre: "La question", cliffhanger: "Lucas demande : 'C'est qui Emma ?' Sophie pâlit.", tension: 8 },
+      { numero: 3, titre: "La question", cliffhanger: "Lucas demande : 'C'est qui Emma ?' Sophie pâlit.", tension: 8 },
       { numero: 4, titre: "Tout dire", cliffhanger: "Sophie avoue tout. Lucas sort son propre téléphone — il a tout enregistré.", tension: 10 },
     ],
     script: {
       hook_scene: {
-        texte: "Le téléphone vibre sous le coussin du canapé. Lucas le retourne. Le contact s'appelle 'Emma'. Photo : sa mère, cheveux courts.",
+        texte: "Le téléphone vibre sous le coussin du canapé. Lucas le retourne. Le contact s'appelle 'Emma'. Photo : sa mère, cheveux courts.",
         visuel_916: "Gros plan écran qui s'allume, visage de Lucas dans le reflet",
       },
       scenes: [
@@ -115,9 +113,8 @@ const SERIES = [
       cliffhanger_scene: {
         texte: "Sophie tend la main pour prendre le téléphone. Lucas le referme. Il ne le lâche pas.",
         visuel_916: "Deux mains sur le téléphone, plan serré, ni l'un ni l'autre ne cède",
-        label: "Il veut quoi ?",
+        label: "Il veut quoi ?",
       },
-      checklist: ["Hook percutant ✓", "Tension qui monte ✓", "Cliffhanger inattendu ✓", "Max 2 acteurs ✓"],
     },
   },
 ];
@@ -140,21 +137,16 @@ function Dots({ t = 0 }) {
   );
 }
 
-function SerieCard({ serie, expanded, onToggle }) {
+function SerieCard({ serie }) {
   const { bible, episodes, script, mode } = serie;
   const [showScript, setShowScript] = useState(false);
 
   return (
     <div style={{ background: "#fff", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,.08)", marginBottom: 32 }}>
-      {/* Header */}
       <div style={{ background: DARK, padding: "28px 32px" }}>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-          <div>
-            <ModeBadge mode={mode} />
-            <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(24px, 5vw, 36px)", fontWeight: 900, color: "#fff", letterSpacing: -1, marginTop: 10, marginBottom: 8 }}>{bible.titre}</h2>
-            <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 15, fontStyle: "italic", color: "#6a7a6e", lineHeight: 1.5 }}>« {bible.logline} »</p>
-          </div>
-        </div>
+        <ModeBadge mode={mode} />
+        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(24px, 5vw, 36px)", fontWeight: 900, color: "#fff", letterSpacing: -1, marginTop: 10, marginBottom: 8 }}>{bible.titre}</h2>
+        <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 15, fontStyle: "italic", color: "#6a7a6e", lineHeight: 1.5 }}>« {bible.logline} »</p>
         <div style={{ marginTop: 20, background: "#1a2a1e", borderRadius: 12, padding: "14px 18px" }}>
           <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: RED, marginBottom: 6 }}>Accroche TikTok</p>
           <p style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>{bible.accroche}</p>
@@ -162,10 +154,8 @@ function SerieCard({ serie, expanded, onToggle }) {
       </div>
 
       <div style={{ padding: "28px 32px" }}>
-        {/* Pitch */}
         <p style={{ fontSize: 15, lineHeight: 1.75, color: GRAY, marginBottom: 24 }}>{bible.pitch}</p>
 
-        {/* Personnages */}
         <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: GRAY, marginBottom: 12 }}>Personnages</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12, marginBottom: 24 }}>
           {bible.personnages.map((p, i) => (
@@ -180,13 +170,11 @@ function SerieCard({ serie, expanded, onToggle }) {
           ))}
         </div>
 
-        {/* Question centrale */}
         <div style={{ background: DARK, borderRadius: 12, padding: 16, marginBottom: 24 }}>
           <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: RED, marginBottom: 6 }}>Question centrale</p>
           <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 15, fontStyle: "italic", color: "#fff" }}>« {bible.tension_centrale} »</p>
         </div>
 
-        {/* Épisodes */}
         <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: GRAY, marginBottom: 12 }}>{episodes.length} épisodes</p>
         <div style={{ marginBottom: 24 }}>
           {episodes.map((ep, i) => (
@@ -203,9 +191,8 @@ function SerieCard({ serie, expanded, onToggle }) {
           ))}
         </div>
 
-        {/* Script du 1er épisode */}
         <button onClick={() => setShowScript(s => !s)}
-          style={{ background: showScript ? DARK : "none", color: showScript ? "#fff" : DARK, border: `1.5px solid ${showScript ? DARK : "#DDD8D0"}`, padding: "12px 20px", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "var(--sans)", marginBottom: showScript ? 20 : 0, width: "100%" }}>
+          style={{ background: showScript ? DARK : "none", color: showScript ? "#fff" : DARK, border: `1.5px solid ${showScript ? DARK : "#DDD8D0"}`, padding: "12px 20px", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", marginBottom: showScript ? 20 : 0, width: "100%" }}>
           {showScript ? "Masquer le script" : "📝 Voir le script de l'épisode 1 →"}
         </button>
 
@@ -216,19 +203,17 @@ function SerieCard({ serie, expanded, onToggle }) {
               <p style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.4, marginBottom: 8 }}>{script.hook_scene.texte}</p>
               <p style={{ fontSize: 12, color: RED, fontStyle: "italic" }}>[9:16] {script.hook_scene.visuel_916}</p>
             </div>
-
             <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: GRAY, marginBottom: 10 }}>Script · {script.scenes.length} répliques</p>
-            {script.scenes.map((s, i) => (
+            {script.scenes.map((sc, i) => (
               <div key={i} style={{ background: LIGHT, borderRadius: 12, padding: 14, borderLeft: "3px solid #DDD8D0", marginBottom: 10 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#0F2236" }}>{s.perso}</p>
-                  {s.jeu && <span style={{ fontSize: 10, background: "#e8edf2", color: "#0F2236", padding: "2px 8px", borderRadius: 20, fontStyle: "italic" }}>{s.jeu}</span>}
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#0F2236" }}>{sc.perso}</p>
+                  {sc.jeu && <span style={{ fontSize: 10, background: "#e8edf2", color: "#0F2236", padding: "2px 8px", borderRadius: 20, fontStyle: "italic" }}>{sc.jeu}</span>}
                 </div>
-                <p style={{ fontSize: 14, lineHeight: 1.55, marginBottom: 6, fontWeight: 500 }}>{s.dialogue}</p>
-                <p style={{ fontSize: 12, color: GRAY, fontStyle: "italic" }}>[9:16] {s.visuel_916}</p>
+                <p style={{ fontSize: 14, lineHeight: 1.55, marginBottom: 6, fontWeight: 500 }}>{sc.dialogue}</p>
+                <p style={{ fontSize: 12, color: GRAY, fontStyle: "italic" }}>[9:16] {sc.visuel_916}</p>
               </div>
             ))}
-
             <div style={{ background: DARK, borderRadius: 14, padding: 18 }}>
               <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: RED, marginBottom: 8 }}>🎬 Cliffhanger</p>
               <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 8, lineHeight: 1.4 }}>{script.cliffhanger_scene.texte}</p>
@@ -244,34 +229,32 @@ function SerieCard({ serie, expanded, onToggle }) {
 
 export default function Exemples() {
   return (
-    <div style={{ minHeight: "100vh", background: LIGHT, fontFamily: "var(--sans)" }}>
+    <div style={{ minHeight: "100vh", background: LIGHT, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         a { text-decoration: none; color: inherit; }
-        button { cursor: pointer; font-family: 'DM Sans', system-ui, sans-serif; }
+        button { cursor: pointer; }
         @media (max-width: 640px) {
           .examples-grid { padding: 20px 16px !important; }
           .hero-examples { padding: 48px 20px 32px !important; }
         }
       `}</style>
 
-      {/* Nav */}
       <div style={{ background: "#fff", borderBottom: "1px solid #E8E4DC", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "14px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <a href="/" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 14, fontWeight: 900, letterSpacing: -0.3 }}>
             STUDIO <span style={{ color: RED }}>VERTICAL</span>
           </a>
-          <a href="/app" style={{ background: RED, color: "#fff", padding: "10px 20px", borderRadius: 10, fontSize: 14, fontWeight: 700 }}>
+          <a href="/" style={{ background: RED, color: "#fff", padding: "10px 20px", borderRadius: 10, fontSize: 14, fontWeight: 700 }}>
             Créer ma série →
           </a>
         </div>
       </div>
 
-      {/* Hero */}
       <div style={{ background: DARK, padding: "64px 32px 48px", textAlign: "center" }} className="hero-examples">
         <div style={{ display: "inline-block", background: "rgba(232,92,58,0.15)", border: "1px solid rgba(232,92,58,0.3)", color: RED, padding: "6px 14px", borderRadius: 100, fontSize: 13, fontWeight: 600, marginBottom: 24 }}>
-          📽 Exemples générés avec Studio Vertical
+          🃽 Exemples générés avec Studio Vertical
         </div>
         <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(32px, 6vw, 56px)", fontWeight: 900, color: "#fff", letterSpacing: -2, lineHeight: 1.05, marginBottom: 16 }}>
           Ce que l'IA<br />peut créer <span style={{ color: RED }}>en 5 minutes</span>
@@ -281,13 +264,11 @@ export default function Exemples() {
         </p>
       </div>
 
-      {/* Series */}
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "48px 32px" }} className="examples-grid">
         {SERIES.map((serie, i) => (
           <SerieCard key={i} serie={serie} />
         ))}
 
-        {/* CTA */}
         <div style={{ background: DARK, borderRadius: 24, padding: "48px 32px", textAlign: "center" }}>
           <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(28px, 5vw, 42px)", fontWeight: 900, color: "#fff", letterSpacing: -1, marginBottom: 16 }}>
             Crée ta propre série.<br /><span style={{ color: RED }}>En 5 minutes.</span>

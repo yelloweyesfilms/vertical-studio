@@ -17,10 +17,7 @@ export default async function handler(req) {
   return new ImageResponse(
     (
       <div style={{ width: 1200, height: 630, display: "flex", position: "relative" }}>
-        {/* Image originale en fond */}
         <img src={dataUrl} width={1200} height={630} style={{ position: "absolute", top: 0, left: 0 }} />
-
-        {/* CTA rouge en bas à gauche */}
         <div style={{
           position: "absolute",
           bottom: 52,
