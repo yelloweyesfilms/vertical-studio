@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }) {
         <meta name="google" content="notranslate" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="theme-color" content="#0F1A12" />
+        <meta name="theme-color" content="#09090f" />
 
         <title>{TITLE}</title>
         <meta name="description" content={DESC} />
@@ -39,7 +39,8 @@ export default function App({ Component, pageProps }) {
         <meta name="twitter:image" content={OG_IMAGE} />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet" />
       </Head>
       <Script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" strategy="afterInteractive" />
       <Component {...pageProps} />

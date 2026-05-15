@@ -1,21 +1,21 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --r: #E85C3A;
-  --n: #0F2236;
-  --bg: #F2EDE6;
-  --card: #FFFFFF;
-  --tx: #0F1A12;
-  --mt: #8A8880;
-  --bo: #DDD8D0;
+  --n: #6d28d9;
+  --bg: #f8f8fc;
+  --card: #ffffff;
+  --tx: #0f0f1a;
+  --mt: #71717a;
+  --bo: #e4e4e7;
   --serif: 'Playfair Display', Georgia, serif;
-  --sans: 'DM Sans', system-ui, sans-serif;
+  --sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
 }
 [data-theme="dark"] {
-  --bg: #0F1A12;
-  --card: #1a2720;
-  --tx: #E8E0D5;
-  --mt: #6a7a6e;
-  --bo: #2a3a2e;
+  --bg: #09090f;
+  --card: #12121c;
+  --tx: #f1f5f9;
+  --mt: #71717a;
+  --bo: #1e1e2e;
 }
 html { scroll-behavior: smooth; }
 body { font-family: var(--sans); background: var(--bg); color: var(--tx); -webkit-tap-highlight-color: transparent; }
