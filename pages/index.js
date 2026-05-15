@@ -283,7 +283,9 @@ export default function Landing() {
           .feat-strip-item { width: 50% !important; border-right: none !important; border-bottom: 1px solid ${BORDER} !important; }
           .platform-row { gap: 20px !important; }
           .stats-bar { gap: 28px !important; padding: 28px 20px !important; }
-          .footer-inner { padding: 28px 20px !important; }
+          .footer-inner { padding: 40px 20px 32px !important; }
+          .footer-inner > div:first-child { grid-template-columns: 1fr 1fr !important; }
+          @media (max-width: 480px) { .footer-inner > div:first-child { grid-template-columns: 1fr !important; } }
           .trust-row { gap: 12px !important; }
           .hero-v { display: none !important; }
         }
@@ -1010,18 +1012,77 @@ export default function Landing() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: `1px solid ${BORDER}` }}>
-      <div className="footer-inner" style={{ padding: "32px 40px", textAlign: "center" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-          <Logo size="sm" />
+      <footer style={{ borderTop: `1px solid ${BORDER}`, background: "rgba(255,255,255,0.01)" }}>
+        <div className="footer-inner" style={{ maxWidth: 1100, margin: "0 auto", padding: "56px 40px 40px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
+
+            {/* Colonne marque */}
+            <div>
+              <Logo size="sm" />
+              <p style={{ color: MUTED, fontSize: 13, lineHeight: 1.75, marginTop: 16, maxWidth: 240 }}>
+                Le studio IA pour créateurs de micro-dramas verticaux. De l'idée à la série complète en 5 minutes.
+              </p>
+              <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
+                {[
+                  { href: "https://tiktok.com/@studiovertical", label: "TikTok" },
+                  { href: "https://instagram.com/studiovertical", label: "Instagram" },
+                ].map(({ href, label }) => (
+                  <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize: 12, color: MUTED, fontWeight: 600, background: SURFACE, border: `1px solid ${BORDER}`, padding: "6px 12px", borderRadius: 8 }}>
+                    {label}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Colonne produit */}
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, marginBottom: 16 }}>Produit</p>
+              {[
+                { href: "/app", label: "Studio →" },
+                { href: "/tarifs", label: "Tarifs" },
+                { href: "/exemples", label: "Exemples" },
+                { href: "/parrainage", label: "Parrainage" },
+              ].map(({ href, label }) => (
+                <a key={href} href={href} style={{ display: "block", fontSize: 13, color: MUTED, marginBottom: 10, fontWeight: 500 }}>{label}</a>
+              ))}
+            </div>
+
+            {/* Colonne ressources */}
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, marginBottom: 16 }}>Ressources</p>
+              {[
+                { href: "/blog", label: "Blog" },
+                { href: "/blog/qu-est-ce-qu-un-micro-drama", label: "Guide micro-drama" },
+                { href: "/blog/comment-ecrire-un-hook-tiktok", label: "Écrire un hook" },
+                { href: "/blog/monetiser-micro-drama-dramabox-reelshort", label: "Monétiser sa série" },
+              ].map(({ href, label }) => (
+                <a key={href} href={href} style={{ display: "block", fontSize: 13, color: MUTED, marginBottom: 10, fontWeight: 500 }}>{label}</a>
+              ))}
+            </div>
+
+            {/* Colonne légal */}
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, marginBottom: 16 }}>Légal</p>
+              {[
+                { href: "/cgu", label: "CGU" },
+                { href: "/confidentialite", label: "Confidentialité" },
+                { href: "mailto:hello@studiovertical.app", label: "Contact" },
+              ].map(({ href, label }) => (
+                <a key={href} href={href} style={{ display: "block", fontSize: 13, color: MUTED, marginBottom: 10, fontWeight: 500 }}>{label}</a>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+            <p style={{ color: MUTED, fontSize: 12 }}>© 2026 Studio Vertical — Tous droits réservés</p>
+            <div style={{ display: "flex", gap: 6 }}>
+              {["TikTok", "Reels", "Shorts", "DramaBox", "ReelShort"].map(p => (
+                <span key={p} style={{ fontSize: 10, color: MUTED, background: SURFACE, border: `1px solid ${BORDER}`, padding: "3px 8px", borderRadius: 6, fontWeight: 500 }}>{p}</span>
+              ))}
+            </div>
+          </div>
         </div>
-        <p style={{ color: MUTED, fontSize: 13 }}>
-          © 2026 Studio Vertical · Tous droits réservés ·{" "}
-          <a href="mailto:hello@studiovertical.app" style={{ color: MUTED }}>Contact</a> ·{" "}
-          <a href="/cgu" style={{ color: MUTED }}>CGU</a> ·{" "}
-          <a href="/confidentialite" style={{ color: MUTED }}>Confidentialité</a>
-        </p>
-      </div>
       </footer>
     </div>
     </>
