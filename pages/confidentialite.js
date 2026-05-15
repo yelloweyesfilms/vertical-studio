@@ -1,78 +1,144 @@
 import Head from "next/head";
 
-const s = {
-  page: { minHeight: "100vh", background: "#fff", fontFamily: "'DM Sans', system-ui, sans-serif", color: "#1A1A18" },
-  nav: { borderBottom: "1px solid #E8E4DC", padding: "16px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" },
-  logo: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: 15, fontWeight: 900, color: "#1A1A18", textDecoration: "none" },
-  container: { maxWidth: 720, margin: "0 auto", padding: "60px 40px 80px" },
-  h1: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: 36, fontWeight: 900, marginBottom: 12, letterSpacing: -1 },
-  date: { fontSize: 13, color: "#888", marginBottom: 40 },
-  h2: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 700, marginTop: 40, marginBottom: 12 },
-  p: { fontSize: 15, lineHeight: 1.8, color: "#444", marginBottom: 16 },
-  footer: { borderTop: "1px solid #E8E4DC", padding: "20px 40px", textAlign: "center", fontSize: 12, color: "#888" },
-};
+const RED = "#E85C3A";
+const VIO = "#a855f7";
+const DARK = "#09090f";
+
+const Logo = () => (
+  <svg width="120" height="28" viewBox="0 0 120 28" fill="none">
+    <defs>
+      <linearGradient id="lg-conf" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor={RED} />
+        <stop offset="100%" stopColor={VIO} />
+      </linearGradient>
+    </defs>
+    <rect width="28" height="28" rx="7" fill="url(#lg-conf)" />
+    <text x="14" y="20" textAnchor="middle" fontFamily="Georgia,serif" fontSize="15" fontWeight="900" fill="#fff">▶</text>
+    <text x="38" y="20" fontFamily="Georgia,serif" fontSize="17" fontWeight="900" fill="#f1f5f9" letterSpacing="-0.5">Vertical</text>
+  </svg>
+);
+
+function Section({ title, children }) {
+  return (
+    <div style={{ marginBottom: 32 }}>
+      <h2 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 18, fontWeight: 700, color: "#f1f5f9", margin: "0 0 12px", letterSpacing: -0.3 }}>
+        {title}
+      </h2>
+      {children}
+    </div>
+  );
+}
+
+function P({ children }) {
+  return <p style={{ fontSize: 15, lineHeight: 1.8, color: "#94a3b8", margin: "0 0 10px" }}>{children}</p>;
+}
 
 export default function Confidentialite() {
   return (
     <>
-      <Head><title>Politique de confidentialité — Studio Vertical</title></Head>
-      <div style={s.page}>
-        <nav style={s.nav}>
-          <a href="/" style={s.logo}>STUDIO VERTICAL</a>
-          <span style={{ fontSize: 11, fontWeight: 800, color: "#E85C3A", letterSpacing: 2 }}>● REC</span>
+      <Head>
+        <title>Politique de confidentialité — Studio Vertical</title>
+        <meta name="robots" content="noindex" />
+      </Head>
+      <div style={{ minHeight: "100vh", background: DARK, color: "#f1f5f9", fontFamily: "'Space Grotesk',system-ui,sans-serif" }}>
+        {/* Nav */}
+        <nav style={{ borderBottom: "1px solid #1e1e2e", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <a href="/" style={{ textDecoration: "none" }}><Logo /></a>
+          <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+            <a href="/tarifs" style={{ fontSize: 13, color: "#64748b", textDecoration: "none" }}>Tarifs</a>
+            <a href="/app" style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9", background: RED, padding: "7px 18px", borderRadius: 8, textDecoration: "none" }}>Studio →</a>
+          </div>
         </nav>
-        <div style={s.container}>
-          <h1 style={s.h1}>Politique de confidentialité</h1>
-          <p style={s.date}>Dernière mise à jour : 4 mai 2026</p>
 
-          <h2 style={s.h2}>1. Responsable du traitement</h2>
-          <p style={s.p}>Le responsable du traitement des données personnelles est Sophie Attelann, éditrice de Studio Vertical (studiovertical.app). Contact : <a href="mailto:hello@studiovertical.app" style={{ color: "#E85C3A" }}>hello@studiovertical.app</a></p>
+        {/* Content */}
+        <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 24px 100px" }}>
+          {/* Header */}
+          <div style={{ marginBottom: 48 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: RED }}>Légal</span>
+            <h1 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 36, fontWeight: 900, color: "#f1f5f9", margin: "10px 0 8px", letterSpacing: -1 }}>
+              Politique de confidentialité
+            </h1>
+            <p style={{ fontSize: 13, color: "#475569" }}>Dernière mise à jour : 4 mai 2026</p>
+          </div>
 
-          <h2 style={s.h2}>2. Données collectées</h2>
-          <p style={s.p}>Studio Vertical collecte les données suivantes :</p>
-          <p style={s.p}><strong>Données de compte :</strong> adresse email, fournies lors de l'inscription.</p>
-          <p style={s.p}><strong>Données de paiement :</strong> gérées exclusivement par Stripe. Studio Vertical ne stocke aucune donnée bancaire.</p>
-          <p style={s.p}><strong>Données d'utilisation :</strong> contenus générés via l'IA (scripts, bibles). Ces données sont traitées en temps réel et ne sont pas conservées sur nos serveurs.</p>
+          <Section title="1. Responsable du traitement">
+            <P>
+              Le responsable du traitement des données personnelles est Sophie Attelann, éditrice de Studio Vertical (studiovertical.app).
+              Contact : <a href="mailto:hello@studiovertical.app" style={{ color: RED, textDecoration: "none" }}>hello@studiovertical.app</a>
+            </P>
+          </Section>
 
-          <h2 style={s.h2}>3. Finalités du traitement</h2>
-          <p style={s.p}>Vos données sont utilisées pour :</p>
-          <p style={s.p}>— Gérer votre abonnement et accès au service</p>
-          <p style={s.p}>— Traiter vos paiements via Stripe</p>
-          <p style={s.p}>— Vous envoyer des communications relatives au service</p>
+          <Section title="2. Données collectées">
+            <P><strong style={{ color: "#f1f5f9" }}>Données de compte :</strong> adresse email, fournie lors de l'abonnement via Stripe.</P>
+            <P><strong style={{ color: "#f1f5f9" }}>Données de paiement :</strong> gérées exclusivement par Stripe. Studio Vertical ne stocke aucune donnée bancaire.</P>
+            <P><strong style={{ color: "#f1f5f9" }}>Données d'utilisation :</strong> compteurs anonymes d'utilisation des fonctionnalités (via Upstash Redis). Aucun contenu généré n'est conservé sur nos serveurs au-delà de la session.</P>
+            <P><strong style={{ color: "#f1f5f9" }}>Séries sauvegardées :</strong> si vous activez la sauvegarde cloud, vos bibles et scripts sont stockés de façon chiffrée et associés à votre identifiant Stripe.</P>
+          </Section>
 
-          <h2 style={s.h2}>4. Base légale</h2>
-          <p style={s.p}>Le traitement de vos données est fondé sur l'exécution du contrat d'abonnement que vous avez souscrit avec Studio Vertical.</p>
+          <Section title="3. Finalités du traitement">
+            <P>Vos données sont utilisées pour :</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Gérer votre abonnement et accès au service</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Traiter vos paiements via Stripe</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Vous envoyer des emails transactionnels liés au service (bienvenue, rappels, résiliation)</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Améliorer le service via des métriques d'usage anonymes</P>
+          </Section>
 
-          <h2 style={s.h2}>5. Durée de conservation</h2>
-          <p style={s.p}>Vos données sont conservées pendant la durée de votre abonnement et 3 ans après sa résiliation, conformément aux obligations légales.</p>
+          <Section title="4. Base légale">
+            <P>Le traitement de vos données est fondé sur l'exécution du contrat d'abonnement souscrit avec Studio Vertical (art. 6.1.b RGPD). L'envoi d'emails marketing repose sur votre intérêt légitime et/ou votre consentement.</P>
+          </Section>
 
-          <h2 style={s.h2}>6. Partage des données</h2>
-          <p style={s.p}>Vos données sont partagées avec :</p>
-          <p style={s.p}><strong>Stripe</strong> — pour le traitement des paiements.</p>
-          <p style={s.p}><strong>Anthropic</strong> — pour la génération de contenu par IA. Les données sont traitées conformément à leur politique de confidentialité.</p>
-          <p style={s.p}>Studio Vertical ne vend aucune donnée personnelle à des tiers.</p>
+          <Section title="5. Durée de conservation">
+            <P>Vos données sont conservées pendant la durée de votre abonnement et 3 ans après sa résiliation, conformément aux obligations légales comptables et fiscales.</P>
+          </Section>
 
-          <h2 style={s.h2}>7. Vos droits (RGPD)</h2>
-          <p style={s.p}>Conformément au RGPD, vous disposez des droits suivants :</p>
-          <p style={s.p}>— Droit d'accès à vos données personnelles</p>
-          <p style={s.p}>— Droit de rectification</p>
-          <p style={s.p}>— Droit à l'effacement (droit à l'oubli)</p>
-          <p style={s.p}>— Droit à la portabilité</p>
-          <p style={s.p}>— Droit d'opposition</p>
-          <p style={s.p}>Pour exercer ces droits, contactez-nous à : <a href="mailto:hello@studiovertical.app" style={{ color: "#E85C3A" }}>hello@studiovertical.app</a></p>
+          <Section title="6. Partage des données">
+            <P><strong style={{ color: "#f1f5f9" }}>Stripe</strong> — pour le traitement des paiements et la gestion des abonnements.</P>
+            <P><strong style={{ color: "#f1f5f9" }}>Anthropic</strong> — pour la génération de contenu par IA (Claude). Les prompts sont traités sans être conservés conformément à leur politique enterprise.</P>
+            <P><strong style={{ color: "#f1f5f9" }}>Resend</strong> — pour l'envoi d'emails transactionnels.</P>
+            <P>Studio Vertical ne vend aucune donnée personnelle à des tiers.</P>
+          </Section>
 
-          <h2 style={s.h2}>8. Cookies</h2>
-          <p style={s.p}>Studio Vertical utilise uniquement des cookies techniques nécessaires au fonctionnement du service. Aucun cookie publicitaire ou de tracking n'est utilisé.</p>
+          <Section title="7. Vos droits (RGPD)">
+            <P>Conformément au RGPD, vous disposez des droits suivants :</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Droit d'accès à vos données personnelles</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Droit de rectification</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Droit à l'effacement (droit à l'oubli)</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Droit à la portabilité</P>
+            <P style={{ paddingLeft: 16 }}><span style={{ color: RED, marginRight: 8 }}>—</span>Droit d'opposition</P>
+            <P>
+              Pour exercer ces droits :{" "}
+              <a href="mailto:hello@studiovertical.app" style={{ color: RED, textDecoration: "none" }}>hello@studiovertical.app</a>
+            </P>
+          </Section>
 
-          <h2 style={s.h2}>9. Sécurité</h2>
-          <p style={s.p}>Studio Vertical met en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données contre tout accès non autorisé, perte ou destruction.</p>
+          <Section title="8. Cookies">
+            <P>Studio Vertical utilise uniquement des cookies techniques nécessaires au fonctionnement du service (session, préférences). Aucun cookie publicitaire ou de tracking tiers n'est déposé.</P>
+          </Section>
 
-          <h2 style={s.h2}>10. Contact et réclamations</h2>
-          <p style={s.p}>Pour toute question relative à vos données : <a href="mailto:hello@studiovertical.app" style={{ color: "#E85C3A" }}>hello@studiovertical.app</a></p>
-          <p style={s.p}>Vous avez également le droit d'introduire une réclamation auprès de la CNIL (Commission Nationale de l'Informatique et des Libertés) : <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" style={{ color: "#E85C3A" }}>www.cnil.fr</a></p>
+          <Section title="9. Sécurité">
+            <P>Studio Vertical met en œuvre des mesures techniques appropriées : HTTPS, chiffrement des données au repos, accès restreints aux bases de données. Les incidents de sécurité sont notifiés à la CNIL dans les 72h si requis.</P>
+          </Section>
+
+          <Section title="10. Contact et réclamations">
+            <P>
+              Pour toute question :{" "}
+              <a href="mailto:hello@studiovertical.app" style={{ color: RED, textDecoration: "none" }}>hello@studiovertical.app</a>
+            </P>
+            <P>
+              Vous avez le droit d'introduire une réclamation auprès de la CNIL :{" "}
+              <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" style={{ color: RED, textDecoration: "none" }}>www.cnil.fr</a>
+            </P>
+          </Section>
         </div>
-        <footer style={s.footer}>
-          <p>© 2026 Studio Vertical · Tous droits réservés · <a href="/cgu" style={{ color: "#888" }}>CGU</a></p>
+
+        {/* Footer */}
+        <footer style={{ borderTop: "1px solid #1e1e2e", padding: "24px 32px", textAlign: "center" }}>
+          <p style={{ fontSize: 12, color: "#475569", margin: 0 }}>
+            © 2026 Studio Vertical ·{" "}
+            <a href="/cgu" style={{ color: "#475569", textDecoration: "none" }}>CGU</a>
+            {" "}·{" "}
+            <a href="mailto:hello@studiovertical.app" style={{ color: "#475569", textDecoration: "none" }}>Contact</a>
+          </p>
         </footer>
       </div>
     </>

@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /admin
+Disallow: /app
 Disallow: /success
 
 Sitemap: https://studiovertical.app/sitemap.xml
