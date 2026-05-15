@@ -1,10 +1,13 @@
+import { SERIES } from "../lib/series";
+
 export default function Sitemap() { return null; }
 
 export async function getServerSideProps({ res }) {
   const pages = [
     { path: "/", freq: "weekly", priority: "1.0" },
-    { path: "/app", freq: "monthly", priority: "0.8" },
-    { path: "/exemples", freq: "monthly", priority: "0.7" },
+    { path: "/exemples", freq: "weekly", priority: "0.9" },
+    ...SERIES.map(s => ({ path: `/exemples/${s.slug}`, freq: "monthly", priority: "0.8" })),
+    { path: "/app", freq: "monthly", priority: "0.7" },
     { path: "/cgu", freq: "yearly", priority: "0.3" },
     { path: "/confidentialite", freq: "yearly", priority: "0.3" },
   ];

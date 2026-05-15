@@ -254,6 +254,31 @@ function OnboardingModal({ onClose, onLaunch }) {
   );
 }
 
+// ── TOUR BEACON ──────────────────────────────────────────────
+function TourBeacon({ text, side = "bottom", onDismiss }) {
+  const sideStyle = {
+    bottom: { top: "calc(100% + 10px)", left: "50%", transform: "translateX(-50%)" },
+    top:    { bottom: "calc(100% + 10px)", left: "50%", transform: "translateX(-50%)" },
+    right:  { left: "calc(100% + 10px)", top: "50%", transform: "translateY(-50%)" },
+    left:   { right: "calc(100% + 10px)", top: "50%", transform: "translateY(-50%)" },
+  }[side] || {};
+
+  return (
+    <div style={{ position: "relative", display: "inline-flex" }}>
+      <div style={{ position: "relative", zIndex: 10 }}>
+        <div style={{ width: 14, height: 14, borderRadius: "50%", background: "var(--r)", boxShadow: "0 0 0 4px rgba(232,92,58,0.2)", animation: "tour-pulse 1.5s ease-in-out infinite" }} />
+      </div>
+      <div style={{ position: "absolute", ...sideStyle, zIndex: 200, width: 220, background: "var(--bg)", border: "1.5px solid var(--r)", borderRadius: 12, padding: "12px 14px", boxShadow: "0 8px 32px rgba(0,0,0,0.4)", pointerEvents: "auto" }}>
+        <div style={{ position: "absolute", ...(side === "bottom" ? { bottom: "100%", left: "50%", transform: "translateX(-50%)", borderBottom: "6px solid var(--r)", borderLeft: "6px solid transparent", borderRight: "6px solid transparent" } : side === "top" ? { top: "100%", left: "50%", transform: "translateX(-50%)", borderTop: "6px solid var(--r)", borderLeft: "6px solid transparent", borderRight: "6px solid transparent" } : {}) }} />
+        <p style={{ fontSize: 13, fontWeight: 600, color: "var(--tx)", lineHeight: 1.5, marginBottom: 8 }}>{text}</p>
+        <button onClick={onDismiss} style={{ fontSize: 11, color: "var(--mt)", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "var(--sans)" }}>
+          Compris ✓
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── COMPONENTS ───────────────────────────────────────────────
 function Dots({ t = 0 }) {
   return (
@@ -1098,7 +1123,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
   );
 }
 
-function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, customerId, plan, onUpsell }) {
+function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, customerId, plan, onUpsell, tourStep, onTourDismiss }) {
   const [tab, setTab] = useState("bible");
   const [titres, setTitres] = useState(null);
   const [loadingTitres, setLoadingTitres] = useState(false);
@@ -1256,9 +1281,12 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
             <button onClick={exportSerie} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)", marginBottom: 10 }}>
               ↓ Télécharger la série (.txt)
             </button>
-            <button onClick={onAffiche} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)" }}>
-              🎬 Générer l'affiche
-            </button>
+            <div style={{ position: "relative" }}>
+              <button onClick={onAffiche} style={{ background: tourStep === 1 ? "rgba(232,92,58,0.06)" : "var(--card)", color: "var(--tx)", border: `1.5px solid ${tourStep === 1 ? "var(--r)" : "var(--bo)"}`, padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)", transition: "all .2s" }}>
+                🎨 Générer l'affiche IA
+              </button>
+              {tourStep === 1 && <div style={{ position: "absolute", top: 8, right: -8 }}><TourBeacon text="L'IA génère une affiche cinématique 9:16 pour ta série (DALL-E 3)" side="left" onDismiss={() => {}} /></div>}
+            </div>
           </>
         ) : tab === "titres" ? (
           <>
@@ -1362,9 +1390,9 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
           ) : null
         ) : (
           (episodes || []).map((ep, i) => (
-            <div key={i} onClick={() => onEp(i)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 14, background: "var(--card)", cursor: "pointer", border: "1.5px solid transparent", marginBottom: 8, transition: "all .15s" }}
+            <div key={i} onClick={() => onEp(i)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 14, background: "var(--card)", cursor: "pointer", border: `1.5px solid ${tourStep === 1 && i === 0 ? "var(--r)" : "transparent"}`, marginBottom: 8, transition: "all .15s", position: "relative" }}
               onMouseEnter={e => e.currentTarget.style.borderColor = "var(--r)"}
-              onMouseLeave={e => e.currentTarget.style.borderColor = "transparent"}>
+              onMouseLeave={e => e.currentTarget.style.borderColor = tourStep === 1 && i === 0 ? "var(--r)" : "transparent"}>
               <div style={{ width: 36, height: 36, borderRadius: 9, flexShrink: 0, background: "var(--r)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontFamily: "var(--serif)", fontSize: 14, fontWeight: 900, color: "#fff" }}>{ep.numero}</span>
               </div>
@@ -1373,7 +1401,10 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
                 <Dots t={ep.tension} />
                 <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 4, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>🎬 {ep.cliffhanger}</p>
               </div>
-              <span style={{ color: "var(--mt)", fontSize: 18, flexShrink: 0 }}>→</span>
+              {tourStep === 1 && i === 0
+                ? <div style={{ position: "relative" }} onClick={e => e.stopPropagation()}><TourBeacon text="Clique pour générer le script de cet épisode →" side="left" onDismiss={onTourDismiss} /></div>
+                : <span style={{ color: "var(--mt)", fontSize: 18, flexShrink: 0 }}>→</span>
+              }
             </div>
           ))
         )}
@@ -1382,7 +1413,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
   );
 }
 
-function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onBack, onExport, onVariations, plan, customerId, onUpsell }) {
+function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onBack, onExport, onVariations, plan, customerId, onUpsell, tourStep, onTourDismiss }) {
   const [showTrad, setShowTrad] = useState(false);
   const [tradLoading, setTradLoading] = useState(false);
   const [tradScript, setTradScript] = useState(null);
@@ -1485,7 +1516,10 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
               ))}
             </div>
             <button onClick={plan === "standard" ? () => onUpsell?.("variations") : onVariations} disabled={loading} style={{ background: plan === "standard" ? "rgba(168,85,247,0.06)" : "var(--card)", color: plan === "standard" ? "#a855f7" : "var(--tx)", border: `1.5px solid ${plan === "standard" ? "rgba(168,85,247,0.25)" : "var(--bo)"}`, padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", marginBottom: 10, fontFamily: "var(--sans)" }}>{plan === "standard" ? "✦ Générer 4 versions — Premium" : "🎲 Générer 4 versions"}</button>
-            <button onClick={onTournage} style={{ background: "var(--n)", color: "#fff", border: "none", padding: 15, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 10, fontFamily: "var(--sans)" }}>📱 Mode Tournage</button>
+            <div style={{ position: "relative" }}>
+              <button onClick={onTournage} style={{ background: "var(--n)", color: "#fff", border: `2px solid ${tourStep === 3 ? "var(--r)" : "transparent"}`, padding: 15, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 10, fontFamily: "var(--sans)", transition: "border-color .2s" }}>📱 Mode Tournage</button>
+              {tourStep === 3 && <div style={{ position: "absolute", top: 8, right: -8 }}><TourBeacon text="Tourne avec le téléprompteur auto-scroll →" side="left" onDismiss={onTourDismiss} /></div>}
+            </div>
             <button onClick={onExport} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 12, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)" }}>📄 Exporter en PDF</button>
           </>
         ) : null}
@@ -1661,6 +1695,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [tourStep, setTourStep] = useState(0);
   const [stats, setStats] = useState({ series: 0, scripts: 0, minutes: 0 });
   const [lastSerie, setLastSerie] = useState(null);
   const [upsell, setUpsell] = useState(null);
@@ -1852,6 +1887,8 @@ export default function App() {
       cloudSave(b, eps, activeState, customerId);
 
       setScreen("bible");
+      // Tour : montrer le tip "ouvre un épisode" si première génération
+      try { if (!localStorage.getItem("vs_tour_done")) setTourStep(1); } catch {}
     } catch (e) {
       setErr(e.message);
     }
@@ -1879,6 +1916,8 @@ export default function App() {
       setScript(s);
       incStats({ scripts: 1 });
       setStats(getStats());
+      // Tour : avancer au tip "mode tournage" après le premier script
+      setTourStep(t => t === 2 ? 3 : t);
     } catch (e) {
       console.error(e);
       setErr(e.message);
@@ -2023,6 +2062,7 @@ export default function App() {
     <div style={{ display: "flex", flexDirection: "column", height: "100dvh", overflow: "hidden", background: "var(--bg)" }}>
       <style>{`
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+        @keyframes tour-pulse{0%,100%{box-shadow:0 0 0 4px rgba(232,92,58,0.25)}50%{box-shadow:0 0 0 8px rgba(232,92,58,0.08)}}
         @media (max-width: 380px) {
           .edit-row button { font-size: 12px !important; padding: 11px 4px !important; }
         }
@@ -2068,9 +2108,9 @@ export default function App() {
       {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} onUpgrade={openPortal} onUpsell={setUpsell} stats={stats} lastSerie={lastSerie} onResume={() => lastSerie && loadSerie(lastSerie)} />}
       {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
-      {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} onAffiche={() => setScreen("affiche")} customerId={customerId} plan={plan} onUpsell={setUpsell} />}
+      {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={(idx) => { setTourStep(t => t === 1 ? 2 : t); openEp(idx); }} onBack={() => setScreen("mix")} onAffiche={() => setScreen("affiche")} customerId={customerId} plan={plan} onUpsell={setUpsell} tourStep={tourStep} onTourDismiss={() => setTourStep(0)} />}
       {screen === "affiche" && bible && <AfficheView bible={bible} episodes={episodes} mode={state.mode} onBack={() => setScreen("bible")} customerId={customerId} />}
-      {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => setScreen("tour")} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} customerId={customerId} onUpsell={setUpsell} />}
+      {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => { setTourStep(t => t === 3 ? 4 : t); try { localStorage.setItem("vs_tour_done","1"); } catch {} setScreen("tour"); }} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} customerId={customerId} onUpsell={setUpsell} tourStep={tourStep} onTourDismiss={() => setTourStep(0)} />}
       {screen === "variations" && <VariationsView variations={variations} loading={loadingVariations} ep={episodes[epIdx]} onSelect={selectVariation} onBack={() => setScreen("studio")} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
 
