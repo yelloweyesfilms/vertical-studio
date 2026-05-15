@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     // Analytics Redis
     let analytics = { totaux: {}, jours: [] };
     if (redis) {
-      const ACTIONS = ["bible", "script", "episodes", "traduction", "variations", "titres"];
+      const ACTIONS = ["bible", "script", "episodes", "traduction", "variations", "titres", "poster"];
 
       // Totaux
       const totalKeys = ACTIONS.map(a => `analytics:total:${a}`);

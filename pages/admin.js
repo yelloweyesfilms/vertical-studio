@@ -16,8 +16,8 @@ const s = {
   td: { padding: "11px 16px", borderBottom: `1px solid #0f1a12`, fontSize: 13 },
 };
 
-const LABEL = { bible: "Séries", script: "Scripts", episodes: "Épisodes", traduction: "Traductions", variations: "Variations", titres: "Titres viraux" };
-const COLOR = { bible: RED, script: "#4ade80", episodes: "#60a5fa", traduction: "#f59e0b", variations: "#c084fc", titres: "#fb7185" };
+const LABEL = { bible: "Séries", script: "Scripts", episodes: "Épisodes", traduction: "Traductions", variations: "Variations", titres: "Titres viraux", poster: "Affiches IA" };
+const COLOR = { bible: RED, script: "#4ade80", episodes: "#60a5fa", traduction: "#f59e0b", variations: "#c084fc", titres: "#fb7185", poster: "#e879f9" };
 
 function MiniBar({ value, max, color }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0;
@@ -138,7 +138,7 @@ export default function Admin() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <p style={{ fontWeight: 700, fontSize: 14 }}>Activité — {days} derniers jours</p>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {["total", "bible", "script", "traduction"].map(m => (
+              {["total", "bible", "script", "poster", "traduction"].map(m => (
                 <button key={m} onClick={() => setChartMetric(m)}
                   style={{ padding: "4px 10px", borderRadius: 6, border: `1px solid ${BORDER}`, background: chartMetric === m ? BORDER : "none", color: chartMetric === m ? "#e8e4dc" : MUTED, cursor: "pointer", fontSize: 11, fontFamily: "var(--sans)" }}>
                   {m === "total" ? "Total" : LABEL[m]}

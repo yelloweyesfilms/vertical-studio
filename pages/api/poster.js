@@ -1,7 +1,18 @@
 import * as Sentry from "@sentry/nextjs";
+import { requireSub } from "../../lib/auth";
+import { Redis } from "@upstash/redis";
+
+function getRedis() {
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
+  return new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN });
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
+
+  const sub = await requireSub(req, res);
+  if (!sub) return;
+  const { customerId } = sub;
 
   const { titre, logline, ambiance, personnages, mode, accroche, tension_centrale } = req.body || {};
 
@@ -57,6 +68,17 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     const b64 = data.data[0].b64_json;
+
+    // Track usage
+    const redis = getRedis();
+    if (redis) {
+      const today = new Date().toISOString().slice(0, 10);
+      await Promise.all([
+        redis.incr(`analytics:daily:${today}:poster`),
+        redis.incr(`analytics:total:poster`),
+        redis.sadd(`analytics:users:${today}`, customerId),
+      ]);
+    }
 
     res.setHeader("Content-Type", "image/png");
     res.setHeader("Cache-Control", "no-store");

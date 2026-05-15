@@ -651,7 +651,7 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function AfficheView({ bible, episodes, mode, onBack }) {
+function AfficheView({ bible, episodes, mode, onBack, customerId }) {
   const canvasRef = useRef(null);
   const [tab, setTab] = useState("canvas");
   const [aiState, setAiState] = useState("idle"); // idle | loading | done | error
@@ -687,7 +687,7 @@ function AfficheView({ bible, episodes, mode, onBack }) {
     try {
       const res = await fetch("/api/poster", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${customerId}` },
         body: JSON.stringify({
           titre: bible.titre,
           logline: bible.logline,
@@ -1945,7 +1945,7 @@ export default function App() {
       {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={openEp} onBack={() => setScreen("mix")} onAffiche={() => setScreen("affiche")} customerId={customerId} plan={plan} />}
-      {screen === "affiche" && bible && <AfficheView bible={bible} episodes={episodes} mode={state.mode} onBack={() => setScreen("bible")} />}
+      {screen === "affiche" && bible && <AfficheView bible={bible} episodes={episodes} mode={state.mode} onBack={() => setScreen("bible")} customerId={customerId} />}
       {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => setScreen("tour")} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} customerId={customerId} />}
       {screen === "variations" && <VariationsView variations={variations} loading={loadingVariations} ep={episodes[epIdx]} onSelect={selectVariation} onBack={() => setScreen("studio")} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
