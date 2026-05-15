@@ -168,6 +168,92 @@ export default function Admin() {
         </div>
       </div>
 
+      {/* A/B Test panel */}
+      {stats.ab && (() => {
+        const ab = stats.ab;
+        const pv = ab.page_view || 0;
+        const pvA = ab.page_view_A || 0;
+        const pvB = ab.page_view_B || 0;
+        const cs = ab.checkout_started || 0;
+        const csA = ab.checkout_started_A || 0;
+        const csB = ab.checkout_started_B || 0;
+        const csuc = ab.checkout_success || 0;
+
+        const rateA = pvA > 0 ? ((csA / pvA) * 100).toFixed(1) : "—";
+        const rateB = pvB > 0 ? ((csB / pvB) * 100).toFixed(1) : "—";
+        const winnerColor = (rateA === "—" || rateB === "—") ? MUTED
+          : parseFloat(rateA) >= parseFloat(rateB) ? "#4ade80" : "#facc15";
+        const winner = (rateA === "—" || rateB === "—") ? "—"
+          : parseFloat(rateA) >= parseFloat(rateB) ? "A" : "B";
+
+        return (
+          <div style={{ margin: "20px 32px 0" }}>
+            <div style={s.card}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                <p style={{ fontWeight: 700, fontSize: 14 }}>A/B Test — Hero headline</p>
+                {winner !== "—" && (
+                  <span style={{ background: winnerColor + "22", color: winnerColor, border: `1px solid ${winnerColor}44`, borderRadius: 6, padding: "4px 10px", fontSize: 11, fontWeight: 700 }}>
+                    Variante {winner} en tête
+                  </span>
+                )}
+              </div>
+
+              {/* Funnel */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 20 }}>
+                {[
+                  { label: "Vues (total)", val: pv, color: "#60a5fa" },
+                  { label: "Checkout démarré", val: cs, color: "#f59e0b" },
+                  { label: "Paiements", val: csuc, color: "#4ade80" },
+                ].map(({ label, val, color }) => (
+                  <div key={label} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 10, padding: "14px 16px", textAlign: "center" }}>
+                    <div style={{ fontFamily: "var(--serif)", fontSize: 32, fontWeight: 900, color, lineHeight: 1 }}>{val}</div>
+                    <div style={{ fontSize: 11, color: MUTED, marginTop: 5, fontWeight: 600 }}>{label}</div>
+                    {pv > 0 && <div style={{ fontSize: 10, color: BORDER, marginTop: 3 }}>{((val / pv) * 100).toFixed(1)}% des vues</div>}
+                  </div>
+                ))}
+              </div>
+
+              {/* Variants comparison */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {[
+                  { v: "A", label: "De l'idée au cliffhanger.", views: pvA, checkouts: csA, rate: rateA },
+                  { v: "B", label: "Ta série, prête à tourner.", views: pvB, checkouts: csB, rate: rateB },
+                ].map(({ v, label, views, checkouts, rate }) => {
+                  const isWinner = winner === v;
+                  return (
+                    <div key={v} style={{ borderRadius: 10, padding: "16px 18px", border: `1px solid ${isWinner ? winnerColor + "55" : BORDER}`, background: isWinner ? winnerColor + "08" : "transparent" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                        <span style={{ background: isWinner ? winnerColor : BORDER, color: isWinner ? "#000" : MUTED, borderRadius: 5, padding: "2px 8px", fontSize: 11, fontWeight: 800 }}>V.{v}</span>
+                        <span style={{ fontSize: 12, color: MUTED, fontStyle: "italic" }}>"{label}"</span>
+                      </div>
+                      <div style={{ display: "flex", gap: 18 }}>
+                        <div>
+                          <div style={{ fontFamily: "var(--serif)", fontSize: 24, fontWeight: 900, color: "#60a5fa" }}>{views}</div>
+                          <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>vues</div>
+                        </div>
+                        <div>
+                          <div style={{ fontFamily: "var(--serif)", fontSize: 24, fontWeight: 900, color: "#f59e0b" }}>{checkouts}</div>
+                          <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>clics checkout</div>
+                        </div>
+                        <div>
+                          <div style={{ fontFamily: "var(--serif)", fontSize: 24, fontWeight: 900, color: isWinner ? winnerColor : "#e8e4dc" }}>{rate}%</div>
+                          <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>conversion</div>
+                        </div>
+                      </div>
+                      {views > 0 && (
+                        <div style={{ marginTop: 10, height: 4, background: BORDER, borderRadius: 2, overflow: "hidden" }}>
+                          <div style={{ height: "100%", width: `${Math.min(100, checkouts / views * 100 * 10)}%`, background: isWinner ? winnerColor : MUTED, borderRadius: 2, transition: "width .5s" }} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Table abonnés */}
       <div style={{ margin: "20px 32px 0" }}>
         <div style={{ ...s.card, padding: 0, overflow: "hidden" }}>

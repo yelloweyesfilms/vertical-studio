@@ -87,11 +87,41 @@ export default async function handler(req, res) {
       analytics = { totaux, jours: joursData };
     }
 
+    // A/B test analytics from analytics:{YYYY-MM-DD} hashes
+    let ab = { page_view: 0, page_view_A: 0, page_view_B: 0, checkout_started: 0, checkout_started_A: 0, checkout_started_B: 0, checkout_success: 0, jours: [] };
+    if (redis) {
+      const today2 = new Date();
+      const abFields = ["page_view", "page_view:A", "page_view:B", "checkout_started", "checkout_started:A", "checkout_started:B", "checkout_success"];
+      const abDates = [];
+      for (let i = Number(days) - 1; i >= 0; i--) {
+        const d = new Date(today2);
+        d.setDate(d.getDate() - i);
+        abDates.push(d.toISOString().slice(0, 10));
+      }
+
+      const abTotals = { page_view: 0, page_view_A: 0, page_view_B: 0, checkout_started: 0, checkout_started_A: 0, checkout_started_B: 0, checkout_success: 0 };
+      const abJours = [];
+
+      for (const dateStr of abDates) {
+        const vals = await redis.hmget(`analytics:${dateStr}`, ...abFields);
+        const entry = { date: dateStr };
+        abFields.forEach((f, i) => {
+          const key = f.replace(":", "_");
+          entry[key] = Number(vals[i] || 0);
+          abTotals[key] = (abTotals[key] || 0) + entry[key];
+        });
+        abJours.push(entry);
+      }
+
+      ab = { ...abTotals, jours: abJours };
+    }
+
     return res.json({
       total: subs.data.length, standard, premium,
       mrr: Math.round(mrr * 100) / 100,
       abonnes: abonnes.slice(0, 50),
       analytics,
+      ab,
     });
   } catch (e) {
     return res.status(500).json({ error: e.message });
