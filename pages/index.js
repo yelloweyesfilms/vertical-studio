@@ -757,69 +757,6 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* AVANT / APRÈS */}
-      <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <Label color={VIO}>La transformation</Label>
-          <Title>Avant. <span style={{ fontStyle: "italic", color: MUTED }}>Après.</span></Title>
-          <p style={{ textAlign: "center", color: MUTED, marginBottom: 56, fontSize: 15 }}>Ce que tu écrivais. Ce que l'IA génère.</p>
-          <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-            {/* AVANT */}
-            <div style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${BORDER}`, borderRadius: 20, padding: "28px 28px", position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "rgba(255,255,255,0.06)" }} />
-              <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 20 }}>✗ Sans Studio Vertical</p>
-              <div style={{ fontFamily: "monospace", fontSize: 13, lineHeight: 2, color: MUTED }}>
-                {[
-                  { t: "idée : infirmière qui cache un secret", strike: false },
-                  { t: "le gars revient ? ou la fille ?", strike: true },
-                  { t: "→ faut un truc fort au début", strike: false },
-                  { t: "genre elle cache qqchose", strike: true },
-                  { t: "épisode 1... faire quoi ?", strike: false },
-                  { t: "hook = lui montrer le dossier ??", strike: false },
-                  { t: "ou il arrive et elle flippe", strike: true },
-                  { t: "fin episode = cliffhanger... lequel", strike: false },
-                ].map((l, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, opacity: l.strike ? 0.35 : 0.6 }}>
-                    {l.strike && <span style={{ position: "absolute", left: 28, width: "calc(100% - 56px)", height: 1, background: MUTED, opacity: 0.4 }} />}
-                    <span style={{ textDecoration: l.strike ? "line-through" : "none" }}>{l.t}</span>
-                  </div>
-                ))}
-              </div>
-              <div style={{ marginTop: 24, display: "flex", alignItems: "center", gap: 8 }}>
-                <ClockIcon size={14} />
-                <span style={{ fontSize: 12, color: MUTED }}>3 à 8 heures de travail</span>
-              </div>
-            </div>
-
-            {/* APRÈS */}
-            <div style={{ background: "rgba(168,85,247,0.04)", border: `1px solid rgba(168,85,247,0.2)`, borderRadius: 20, padding: "28px 28px", position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${RED}, ${VIO})` }} />
-              <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: VIO, marginBottom: 20 }}>✓ Avec Studio Vertical</p>
-              <div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 10 }}>
-                <div style={{ background: "rgba(232,92,58,0.08)", border: `1px solid rgba(232,92,58,0.18)`, borderRadius: 10, padding: "10px 14px" }}>
-                  <p style={{ fontSize: 9, fontWeight: 800, color: RED, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>⚡ Hook — 3 sec</p>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: TEXT, lineHeight: 1.5 }}>Clara tient le dossier. Le nom sur la couverture : JULIEN MOREAU.</p>
-                  <p style={{ fontSize: 10, color: MUTED, fontStyle: "italic", marginTop: 4 }}>[9:16] Gros plan mains crispées, bague qui claque</p>
-                </div>
-                <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 14px" }}>
-                  <p style={{ fontSize: 9, fontWeight: 800, color: VIO, letterSpacing: 2, marginBottom: 6 }}>JULIEN</p>
-                  <p style={{ fontSize: 13, color: TEXT, lineHeight: 1.5 }}>Infirmière Bertin. On se connaît ?</p>
-                  <p style={{ fontSize: 10, color: MUTED, fontStyle: "italic", marginTop: 4 }}>sourire innocent, regard qui cherche</p>
-                </div>
-                <div style={{ background: "rgba(232,92,58,0.06)", border: `1px solid rgba(232,92,58,0.15)`, borderRadius: 10, padding: "10px 14px" }}>
-                  <p style={{ fontSize: 9, fontWeight: 800, color: RED, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>🎬 Cliffhanger</p>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: TEXT, lineHeight: 1.5 }}>Julien tient un dossier de 2021. Il sait.</p>
-                </div>
-              </div>
-              <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 8 }}>
-                <BoltIcon size={14} />
-                <span style={{ fontSize: 12, color: VIO, fontWeight: 700 }}>Généré en 10 secondes</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
 
 
       {/* POUR QUI */}
