@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { POSTS } from "../lib/posts";
 
 const RED = "#E85C3A";
 const VIO = "#a855f7";
@@ -950,36 +949,6 @@ export default function Landing() {
                 {openFaq === i && <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, paddingBottom: 20 }}>{item.r}</p>}
               </div>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* BLOG PREVIEW */}
-      <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Label color={VIO}>Le blog</Label>
-          <Title>Apprendre à créer<br /><span style={{ fontStyle: "italic", color: MUTED }}>des micro-dramas.</span></Title>
-          <p style={{ textAlign: "center", color: MUTED, marginBottom: 56, fontSize: 15 }}>Guides, techniques d'écriture et stratégies de distribution</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, marginBottom: 40 }}>
-            {POSTS.slice(-3).reverse().map((post) => (
-              <a key={post.slug} href={`/blog/${post.slug}`} style={{ textDecoration: "none" }}>
-                <div className="glass" style={{ borderRadius: 20, padding: "28px 24px", height: "100%", display: "flex", flexDirection: "column", gap: 14, transition: "border-color .2s", borderTop: `2px solid ${post.categoryColor}` }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: post.categoryColor }}>{post.category}</span>
-                    <span style={{ color: BORDER, fontSize: 10 }}>·</span>
-                    <span style={{ fontSize: 11, color: MUTED }}>{post.readTime}</span>
-                  </div>
-                  <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 18, fontWeight: 700, color: TEXT, lineHeight: 1.35, letterSpacing: -0.3, flex: 1 }}>{post.title}</h3>
-                  <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{post.description}</p>
-                  <p style={{ fontSize: 12, fontWeight: 700, color: post.categoryColor, letterSpacing: 0.5 }}>Lire l'article →</p>
-                </div>
-              </a>
-            ))}
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <a href="/blog" style={{ display: "inline-block", fontSize: 14, fontWeight: 700, color: TEXT, background: SURFACE, border: `1px solid ${BORDER}`, padding: "12px 28px", borderRadius: 12 }}>
-              Voir tous les articles →
-            </a>
           </div>
         </div>
       </div>
