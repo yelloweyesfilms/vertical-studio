@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
 const RED = "#E85C3A";
@@ -128,8 +128,45 @@ export default function Landing() {
   const [refValid, setRefValid] = useState(null);
   const [loading, setLoading] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+  const [demoPhase, setDemoPhase] = useState(0);
+  const [demoText, setDemoText] = useState("");
+  const demoRef = useRef(null);
   const router = useRouter();
   const canceled = router.query.canceled;
+
+  const DEMO_SEQUENCES = [
+    { label: "TITRE", full: "Le Mensonge", color: TEXT },
+    { label: "LOGLINE", full: "Une infirmière cache une erreur médicale jusqu'au jour où la victime revient comme interne.", color: MUTED },
+    { label: "ACCROCHE", full: "Elle l'a presque tué. Il ne sait pas encore.", color: RED },
+    { label: "ÉP. 1", full: "Première garde · Tension ●●●○○○○○○○", color: VIO },
+    { label: "ÉP. 2", full: "Il sait · Tension ●●●●●●○○○○", color: VIO },
+    { label: "ÉP. 3", full: "Le chef de service · Tension ●●●●●●●●○○", color: VIO },
+    { label: "ÉP. 4", full: "Trop tard · Tension ●●●●●●●●●●", color: RED },
+  ];
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { obs.disconnect(); runDemo(0, 0); }
+    }, { threshold: 0.3 });
+    if (demoRef.current) obs.observe(demoRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  function runDemo(phaseIdx, charIdx) {
+    if (phaseIdx >= DEMO_SEQUENCES.length) {
+      setTimeout(() => { setDemoPhase(0); setDemoText(""); runDemo(0, 0); }, 3000);
+      return;
+    }
+    const seq = DEMO_SEQUENCES[phaseIdx];
+    if (charIdx <= seq.full.length) {
+      setDemoPhase(phaseIdx);
+      setDemoText(seq.full.slice(0, charIdx));
+      const delay = charIdx === 0 ? 600 : 28;
+      setTimeout(() => runDemo(phaseIdx, charIdx + 1), delay);
+    } else {
+      setTimeout(() => runDemo(phaseIdx + 1, 0), 300);
+    }
+  }
 
   const checkRefCode = async (code) => {
     setRefCode(code);
@@ -159,6 +196,9 @@ export default function Landing() {
         @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
         @keyframes lineGrow { from{width:0} to{width:100%} }
         @keyframes nodePop { from{transform:scale(0.6);opacity:0} to{transform:scale(1);opacity:1} }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+        .cursor::after { content: '|'; animation: blink .7s infinite; color: ${VIO}; margin-left: 1px; }
+        @media (max-width:640px) { .avant-apres { grid-template-columns:1fr !important; } .roi-grid { grid-template-columns:1fr !important; } }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         input { font-size: 16px !important; }
         input::placeholder { color: ${MUTED}; }
@@ -245,7 +285,19 @@ export default function Landing() {
             </div>
           </div>
           {refValid === true && <p style={{ color: "#4ade80", fontSize: 13, marginBottom: 8, fontWeight: 600 }}>Code valide — 30 jours offerts !</p>}
-          <p style={{ color: MUTED, fontSize: 13 }}>9€/mois · Annulable à tout moment · Aucun engagement</p>
+          <p style={{ color: MUTED, fontSize: 13, marginBottom: 20 }}>9€/mois · Annulable à tout moment · Aucun engagement</p>
+          <div style={{ display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap" }}>
+            {[
+              { icon: "🔒", label: "Paiement sécurisé Stripe" },
+              { icon: "✓", label: "Sans carte bancaire requise" },
+              { icon: "⚡", label: "Accès immédiat" },
+            ].map(({ icon, label }) => (
+              <div key={label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: MUTED }}>
+                <span style={{ color: "#4ade80" }}>{icon}</span>
+                {label}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -438,6 +490,56 @@ export default function Landing() {
         </div>
       </div>
 
+      {/* LIVE DEMO */}
+      <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }} ref={demoRef}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Label color={VIO}>En direct</Label>
+          <Title>Regarde l'IA écrire<br /><span style={{ fontStyle: "italic" }}>ta série en temps réel.</span></Title>
+          <p style={{ textAlign: "center", color: MUTED, marginBottom: 48, fontSize: 15 }}>C'est exactement ce que tu vois dans l'app</p>
+
+          <div style={{ background: "#0a0a14", border: `1px solid rgba(168,85,247,0.25)`, borderRadius: 24, overflow: "hidden", boxShadow: `0 0 60px rgba(168,85,247,0.08)` }}>
+            {/* Terminal header */}
+            <div style={{ padding: "14px 20px", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ display: "flex", gap: 6 }}>
+                {["#E85C3A", "#f59e0b", "#22c55e"].map((c, i) => <div key={i} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />)}
+              </div>
+              <span style={{ fontSize: 12, color: MUTED, fontFamily: "monospace", marginLeft: 8 }}>Studio Vertical · Génération en cours…</span>
+              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: RED, animation: "pulse 1.5s infinite" }} />
+                <span style={{ fontSize: 10, fontWeight: 800, color: RED, letterSpacing: 2 }}>REC</span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div style={{ padding: "28px 28px", minHeight: 280 }}>
+              {DEMO_SEQUENCES.map((seq, i) => {
+                const done = i < demoPhase;
+                const active = i === demoPhase;
+                if (i > demoPhase) return null;
+                return (
+                  <div key={i} style={{ display: "flex", gap: 16, marginBottom: 18, opacity: done ? 0.6 : 1, transition: "opacity .3s" }}>
+                    <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: done ? MUTED : seq.color, fontFamily: "monospace", flexShrink: 0, paddingTop: 2, minWidth: 60 }}>{seq.label}</span>
+                    <p style={{ fontSize: 15, color: done ? MUTED : seq.color, lineHeight: 1.6, fontFamily: i < 2 ? "'Playfair Display', Georgia, serif" : "'Space Grotesk', sans-serif", fontWeight: i < 2 ? 700 : 500 }} className={active ? "cursor" : ""}>
+                      {active ? demoText : seq.full}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Footer bar */}
+            <div style={{ padding: "14px 28px", borderTop: `1px solid ${BORDER}`, display: "flex", gap: 24 }}>
+              {[["Univers", "Hôpital"], ["Secret", "Erreur médicale"], ["Mode", "Fast Drama"], ["Épisodes", "10"]].map(([k, v]) => (
+                <div key={k}>
+                  <span style={{ fontSize: 10, color: MUTED, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>{k} </span>
+                  <span style={{ fontSize: 11, color: TEXT, fontWeight: 700 }}>{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* POUR QUI */}
       <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -552,6 +654,68 @@ export default function Landing() {
       </div>
 
       {/* TESTIMONIALS */}
+      {/* ROI */}
+      <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Label color={RED}>Gain de temps</Label>
+          <Title>8 heures.<br /><span style={{ fontStyle: "italic", background: `linear-gradient(135deg, ${RED}, ${VIO})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Réduit à 5 minutes.</span></Title>
+          <p style={{ textAlign: "center", color: MUTED, marginBottom: 48, fontSize: 15 }}>Chaque tâche d'écriture, accélérée ×96</p>
+
+          <div className="roi-grid" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 20, alignItems: "center" }}>
+            {/* Sans IA */}
+            <div style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${BORDER}`, borderRadius: 20, padding: "28px 28px" }}>
+              <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 20 }}>✗ Sans IA</p>
+              {[
+                ["Brainstorming", "2–3 heures"],
+                ["Bible complète", "3–4 heures"],
+                ["Script d'un épisode", "2 heures"],
+                ["Fiche de production", "1 heure"],
+              ].map(([task, time]) => (
+                <div key={task} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${BORDER}` }}>
+                  <span style={{ fontSize: 14, color: MUTED }}>{task}</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: MUTED, fontFamily: "monospace" }}>{time}</span>
+                </div>
+              ))}
+              <div style={{ marginTop: 20, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: MUTED }}>Total</span>
+                <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 28, fontWeight: 900, color: MUTED, letterSpacing: -1 }}>8h+</span>
+              </div>
+            </div>
+
+            {/* Arrow */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "0 8px" }}>
+              <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 28, fontWeight: 900, background: `linear-gradient(135deg, ${RED}, ${VIO})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>×96</div>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={VIO} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+              <span style={{ fontSize: 10, color: MUTED, letterSpacing: 1, textTransform: "uppercase", fontWeight: 700 }}>plus rapide</span>
+            </div>
+
+            {/* Avec Studio Vertical */}
+            <div style={{ background: "rgba(168,85,247,0.04)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 20, padding: "28px 28px", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${RED}, ${VIO})` }} />
+              <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: VIO, marginBottom: 20 }}>✓ Studio Vertical</p>
+              {[
+                ["Brainstorming", "10 sec"],
+                ["Bible complète", "30 sec"],
+                ["Script d'un épisode", "10 sec"],
+                ["Fiche de production", "20 sec"],
+              ].map(([task, time]) => (
+                <div key={task} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid rgba(168,85,247,0.1)` }}>
+                  <span style={{ fontSize: 14, color: TEXT }}>{task}</span>
+                  <span style={{ fontSize: 14, fontWeight: 800, color: RED, fontFamily: "monospace" }}>⚡ {time}</span>
+                </div>
+              ))}
+              <div style={{ marginTop: 20, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: TEXT }}>Total</span>
+                <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 28, fontWeight: 900, background: `linear-gradient(135deg, ${RED}, ${VIO})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: -1 }}>&lt; 5 min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Label color={VIO}>Témoignages</Label>
@@ -615,6 +779,19 @@ export default function Landing() {
               </GlowBtn>
             </div>
           </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 28, flexWrap: "wrap", marginTop: 28 }}>
+            {[
+              { icon: "🔒", label: "Stripe · Paiement sécurisé" },
+              { icon: "✓", label: "Annulable en 1 clic" },
+              { icon: "⚡", label: "Accès immédiat après paiement" },
+              { icon: "🛡️", label: "Données chiffrées" },
+            ].map(({ icon, label }) => (
+              <div key={label} style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 13, color: MUTED }}>
+                <span style={{ color: "#4ade80", fontSize: 14 }}>{icon}</span>
+                {label}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -658,7 +835,18 @@ export default function Landing() {
               {loading ? "Redirection…" : "Commencer →"}
             </GlowBtn>
           </div>
-          <p style={{ color: MUTED, fontSize: 13, marginTop: 16 }}>9€/mois · Annulable à tout moment</p>
+          <div style={{ marginTop: 20, display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap" }}>
+            {[
+              { icon: "🔒", label: "Paiement sécurisé Stripe" },
+              { icon: "✓", label: "Sans engagement" },
+              { icon: "⚡", label: "Accès immédiat" },
+            ].map(({ icon, label }) => (
+              <div key={label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: MUTED }}>
+                <span style={{ color: "#4ade80" }}>{icon}</span>
+                {label}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
