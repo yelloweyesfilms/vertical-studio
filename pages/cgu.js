@@ -66,7 +66,7 @@ export default function CGU() {
             <h1 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 36, fontWeight: 900, color: "#f1f5f9", margin: "10px 0 8px", letterSpacing: -1 }}>
               Conditions Générales d'Utilisation
             </h1>
-            <p style={{ fontSize: 13, color: "#475569" }}>Dernière mise à jour : 4 mai 2026</p>
+            <p style={{ fontSize: 13, color: "#475569" }}>Dernière mise à jour : 15 mai 2026</p>
           </div>
 
           <Section title="1. Objet">
@@ -79,7 +79,7 @@ export default function CGU() {
           </Section>
 
           <Section title="3. Accès au service">
-            <P>L'accès au service est conditionné à la souscription d'un abonnement mensuel (Standard à 14€/mois ou Premium à 29€/mois) ou annuel. L'abonnement est sans engagement et peut être résilié à tout moment.</P>
+            <P>L'accès au service est conditionné à la souscription d'un abonnement mensuel (Standard à 9€/mois ou Premium à 19€/mois) ou annuel (Standard à 90€/an ou Premium à 179€/an). L'abonnement est sans engagement et peut être résilié à tout moment.</P>
             <P>Vous devez être âgé(e) d'au moins 18 ans pour souscrire un abonnement.</P>
           </Section>
 

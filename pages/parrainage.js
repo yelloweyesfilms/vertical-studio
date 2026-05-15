@@ -88,7 +88,7 @@ function AppSection() {
   const [notLogged, setNotLogged] = useState(false);
 
   useEffect(() => {
-    const id = typeof window !== "undefined" ? localStorage.getItem("vs_customer_id") : null;
+    const id = typeof window !== "undefined" ? localStorage.getItem("vs_customer") : null;
     if (!id) { setNotLogged(true); setLoading(false); return; }
     setCustomerId(id);
     fetch("/api/referral", { headers: { Authorization: `Bearer ${id}` } })

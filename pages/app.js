@@ -938,7 +938,7 @@ function AfficheView({ bible, episodes, mode, onBack, customerId }) {
 
 const CUSTOM_PREFIX = "__custom__";
 
-function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, onParrainage, darkMode, onDarkMode, onLogout, onUpgrade, onUpsell, stats, lastSerie, onResume }) {
+function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboarding, darkMode, onDarkMode, onLogout, onUpgrade, onUpsell, stats, lastSerie, onResume }) {
   const univOpts = state.mode === "fast" ? OPTS.univers_fast : OPTS.univers_prem;
   const secOpts = state.mode === "fast" ? OPTS.secret_fast : OPTS.secret_prem;
   const totalMin = Math.round(state.format * state.duree / 60);
@@ -1111,9 +1111,6 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
             📂 Mes séries sauvegardées
           </button>
         )}
-        <button onClick={onParrainage} style={{ background: "none", border: "1.5px solid var(--bo)", color: "var(--tx)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 10, fontFamily: "var(--sans)" }}>
-          🎁 Parrainer un ami — 1 mois offert
-        </button>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 20, paddingTop: 16, borderTop: "1px solid var(--bo)" }}>
           <button onClick={onDarkMode} style={{ background: "none", border: "none", fontSize: 18, color: "var(--mt)", padding: "8px 4px", cursor: "pointer", lineHeight: 1 }} title={darkMode ? "Mode jour" : "Mode nuit"}>{darkMode ? "☀️" : "🌙"}</button>
           <button onClick={onLogout} style={{ background: "none", border: "none", fontSize: 12, color: "var(--mt)", cursor: "pointer", padding: "8px 0" }}>Déconnexion</button>
@@ -2120,8 +2117,7 @@ export default function App() {
         </div>
       )}
 
-      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} onParrainage={() => setScreen("parrainage")} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} onUpgrade={openPortal} onUpsell={setUpsell} stats={stats} lastSerie={lastSerie} onResume={() => lastSerie && loadSerie(lastSerie)} />}
-      {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
+      {screen === "mix" && <Mixeur state={state} set={set} onGen={generate} onMesSeries={() => setScreen("mes-series")} hasSeries={savedCount > 0} plan={plan} onShowOnboarding={() => setShowOnboarding(true)} darkMode={darkMode} onDarkMode={() => setDarkMode(d => !d)} onLogout={logout} onUpgrade={openPortal} onUpsell={setUpsell} stats={stats} lastSerie={lastSerie} onResume={() => lastSerie && loadSerie(lastSerie)} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={(idx) => { setTourStep(t => t === 1 ? 2 : t); openEp(idx); }} onBack={() => setScreen("mix")} onAffiche={() => setScreen("affiche")} customerId={customerId} plan={plan} onUpsell={setUpsell} tourStep={tourStep} onTourDismiss={() => setTourStep(0)} />}
       {screen === "affiche" && bible && <AfficheView bible={bible} episodes={episodes} mode={state.mode} onBack={() => setScreen("bible")} customerId={customerId} />}

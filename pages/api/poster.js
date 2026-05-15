@@ -21,6 +21,16 @@ export default async function handler(req, res) {
   }
   if (!titre || !logline) return res.status(400).json({ error: "titre et logline requis" });
 
+  // Rate limit : 5 affiches par utilisateur par jour
+  const redis = getRedis();
+  if (redis) {
+    const today = new Date().toISOString().slice(0, 10);
+    const rateKey = `poster:rate:${customerId}:${today}`;
+    const count = await redis.incr(rateKey);
+    if (count === 1) await redis.expire(rateKey, 86400);
+    if (count > 5) return res.status(429).json({ error: "Limite de 5 affiches par jour atteinte." });
+  }
+
   const genreLabel = mode === "fast"
     ? "intense emotional drama, raw performances, high tension"
     : "psychological suspense thriller, cold atmosphere, deep shadows";

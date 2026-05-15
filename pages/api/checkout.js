@@ -1,11 +1,5 @@
 import { stripe } from "../../lib/stripe";
-import { Redis } from "@upstash/redis";
 import * as Sentry from "@sentry/nextjs";
-
-function getRedis() {
-  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
-  return new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN });
-}
 
 const PRICE_MAP = {
   standard:         () => process.env.STRIPE_PRICE_ID,
@@ -25,17 +19,6 @@ export default async function handler(req, res) {
 
   if (!priceId) return res.status(500).json({ error: "Plan non configuré" });
 
-  // Valider le code parrainage si fourni
-  let validRef = null;
-  if (refCode) {
-    const redis = getRedis();
-    if (redis) {
-      const normalized = refCode.trim().toUpperCase();
-      const referrerId = await redis.get(`ref:code:${normalized}`);
-      if (referrerId) validRef = { code: normalized, referrerId };
-    }
-  }
-
   try {
     const sessionParams = {
       mode: "subscription",
@@ -48,14 +31,7 @@ export default async function handler(req, res) {
       metadata: { plan, billing },
     };
 
-    // Trial priorité : parrainage (30j) > essai gratuit (1j)
-    if (validRef) {
-      sessionParams.subscription_data = {
-        trial_period_days: 30,
-        metadata: { ref_code: validRef.code, referrer_id: validRef.referrerId },
-      };
-      sessionParams.metadata = { plan, billing, ref_code: validRef.code, referrer_id: validRef.referrerId };
-    } else if (trial) {
+    if (trial) {
       sessionParams.subscription_data = {
         trial_period_days: 1,
         trial_settings: { end_behavior: { missing_payment_method: "cancel" } },
@@ -64,15 +40,6 @@ export default async function handler(req, res) {
     }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
-
-    // Stocker le parrainage en attente
-    if (validRef) {
-      const redis = getRedis();
-      if (redis) {
-        await redis.set(`ref:pending:${session.id}`, JSON.stringify(validRef), { ex: 60 * 60 * 24 * 7 });
-      }
-    }
-
     res.json({ url: session.url });
   } catch (e) {
     Sentry.captureException(e);

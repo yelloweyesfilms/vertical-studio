@@ -212,8 +212,6 @@ const Title = ({ children, style = {} }) => (
 
 export default function Landing() {
   const [email, setEmail] = useState("");
-  const [refCode, setRefCode] = useState("");
-  const [refValid, setRefValid] = useState(null);
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
@@ -226,15 +224,6 @@ export default function Landing() {
   useEffect(() => {
     track("page_view");
   }, []);
-
-  const checkRefCode = async (code) => {
-    setRefCode(code);
-    if (code.length < 4) { setRefValid(null); return; }
-    try {
-      const res = await fetch("/api/referral", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
-      setRefValid(res.ok);
-    } catch { setRefValid(false); }
-  };
 
   const startCheckout = async (plan = "standard", position = "unknown", opts = {}) => {
     if (!email || !email.includes("@")) {
@@ -249,7 +238,7 @@ export default function Landing() {
     track("checkout_started", { position, plan, billing: b, trial });
     setLoading(true);
     try {
-      const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, plan, refCode: refValid ? refCode : undefined, billing: b, trial }) });
+      const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, plan, billing: b, trial }) });
       const { url, error } = await res.json();
       if (error) { alert(error); setLoading(false); return; }
       window.location.href = url;
@@ -398,16 +387,6 @@ export default function Landing() {
             </GlowBtn>
           </div>
           {emailError && <p style={{ textAlign: "center", color: RED, fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Entre ton email pour continuer</p>}
-
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-            <div className="ref-input" style={{ position: "relative", width: 220 }}>
-              <input type="text" placeholder="Code parrainage (optionnel)" value={refCode} onChange={e => checkRefCode(e.target.value.toUpperCase())} maxLength={12}
-                style={{ padding: "10px 36px 10px 14px", borderRadius: 10, border: `1.5px solid ${refValid === true ? "#4ade80" : refValid === false ? RED : BORDER}`, background: SURFACE, color: TEXT, fontSize: 13, width: "100%", outline: "none", fontFamily: "monospace", letterSpacing: 2 }} />
-              {refValid === true && <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", color: "#4ade80" }}>✓</span>}
-              {refValid === false && <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", color: RED }}>✗</span>}
-            </div>
-          </div>
-          {refValid === true && <p style={{ color: "#4ade80", fontSize: 13, marginBottom: 8, fontWeight: 600 }}>Code valide — 30 jours offerts !</p>}
           <p style={{ color: MUTED, fontSize: 13, marginBottom: 20 }}>9€/mois · Annulable à tout moment · Aucun engagement</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap" }}>
             {[
@@ -1074,7 +1053,6 @@ export default function Landing() {
                 { href: "/app", label: "Studio →" },
                 { href: "/tarifs", label: "Tarifs" },
                 { href: "/exemples", label: "Exemples" },
-                { href: "/parrainage", label: "Parrainage" },
               ].map(({ href, label }) => (
                 <a key={href} href={href} style={{ display: "block", fontSize: 13, color: MUTED, marginBottom: 10, fontWeight: 500 }}>{label}</a>
               ))}

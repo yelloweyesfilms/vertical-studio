@@ -10,7 +10,6 @@ export async function getServerSideProps({ res }) {
     ...SERIES.map(s => ({ path: `/exemples/${s.slug}`, freq: "monthly", priority: "0.8" })),
     { path: "/blog", freq: "weekly", priority: "0.8" },
     ...POSTS.map(p => ({ path: `/blog/${p.slug}`, freq: "monthly", priority: "0.7" })),
-    { path: "/parrainage", freq: "monthly", priority: "0.6" },
     { path: "/tarifs", freq: "weekly", priority: "0.9" },
     { path: "/app", freq: "monthly", priority: "0.7" },
     { path: "/cgu", freq: "yearly", priority: "0.3" },

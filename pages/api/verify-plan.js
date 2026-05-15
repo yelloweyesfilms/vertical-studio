@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const customerId = auth.replace("Bearer ", "").trim();
   if (!customerId) return res.status(400).json({ error: "customerId requis" });
 
-  const adminToken = process.env.JETON_ADMIN || process.env.NEXT_PUBLIC_JETON_ADMIN;
+  const adminToken = process.env.JETON_ADMIN;
   if (adminToken && customerId === adminToken) {
     return res.json({ plan: "premium", active: true });
   }
