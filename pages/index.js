@@ -361,13 +361,14 @@ export default function Landing() {
             Le studio IA des créateurs verticaux
           </div>
 
-          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(38px, 8vw, 96px)", fontWeight: 900, lineHeight: 0.95, letterSpacing: -3, marginBottom: 32, color: TEXT }}>
-            Ta série{" "}
-            <span style={{ background: `linear-gradient(135deg, ${RED} 30%, ${VIO})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontStyle: "italic" }}>
+          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 900, letterSpacing: -3, marginBottom: 32, color: TEXT, lineHeight: 1 }}>
+            <div style={{ fontSize: "clamp(52px, 10vw, 120px)", lineHeight: 0.95 }}>Ta série</div>
+            <div style={{ fontSize: "clamp(32px, 6vw, 76px)", lineHeight: 1.1, background: `linear-gradient(135deg, ${RED} 30%, ${VIO})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontStyle: "italic" }}>
               prête à tourner
-            </span>
-            .<br />
-            En 5 minutes.
+            </div>
+            <div style={{ fontSize: "clamp(18px, 3vw, 38px)", lineHeight: 1.4, color: MUTED, fontStyle: "normal", fontWeight: 500, fontFamily: "'Space Grotesk', sans-serif", letterSpacing: -1 }}>
+              en 5 minutes.
+            </div>
           </h1>
 
           <p style={{ fontSize: "clamp(15px, 2vw, 18px)", color: MUTED, maxWidth: 480, margin: "0 auto 52px", lineHeight: 1.7, fontWeight: 400 }}>
