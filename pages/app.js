@@ -31,6 +31,31 @@ const PACKS = [
   { emoji: "⚖️", label: "Au Tribunal",      mode: "premium", casting: "1 Femme + 1 Homme", univers: "Justice & Tribunal",         secret: "Corruption judiciaire" },
 ];
 
+const CASTING_DESC = {
+  "1 Femme + 1 Homme": "une femme et un homme",
+  "2 Femmes": "deux femmes",
+  "2 Hommes": "deux hommes",
+  "Trio mixte": "un trio",
+};
+
+function buildPreview(state) {
+  const raw = (key) => state[key]?.startsWith(CUSTOM_PREFIX) ? state[key].slice(CUSTOM_PREFIX.length) : state[key];
+  const cast = CASTING_DESC[state.casting] || raw("casting")?.toLowerCase() || "des personnages";
+  const univers = raw("univers")?.toLowerCase() || "un univers complexe";
+  const secret = raw("secret")?.toLowerCase() || "un secret";
+  const lieu = raw("lieu")?.toLowerCase();
+  const ambiance = raw("ambiance")?.replace(/^[^\s]+ /, "").toLowerCase() || "";
+
+  const templates = [
+    `${cast?.charAt(0).toUpperCase() + cast?.slice(1)} dans ${univers}. Le secret : ${secret}${lieu ? ` — tout se joue dans ${lieu}` : ""}.`,
+    `Un récit de ${secret} au cœur de ${univers}${lieu ? `, dans ${lieu}` : ""}. ${cast?.charAt(0).toUpperCase() + cast?.slice(1)}, face à face.`,
+    `${univers?.charAt(0).toUpperCase() + univers?.slice(1)}. ${secret?.charAt(0).toUpperCase() + secret?.slice(1)}. ${cast?.charAt(0).toUpperCase() + cast?.slice(1)}${lieu ? ` — ${lieu}` : ""}.`,
+  ];
+
+  const idx = (state.casting?.length || 0) % 3;
+  return { pitch: templates[idx], ambiance };
+}
+
 const LANGUES = [
   { code: "en", flag: "🇬🇧", label: "English" },
   { code: "es", flag: "🇪🇸", label: "Español" },
@@ -939,7 +964,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
           <div style={{ background: "var(--n)", borderRadius: 14, padding: "14px 16px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 2 }}>🎭 Passer à Premium</p>
-              <p style={{ fontSize: 12, color: "#8a9a8e", lineHeight: 1.4 }}>40 ép., 4 variations, titres viraux</p>
+              <p style={{ fontSize: 12, color: "#8a9a8e", lineHeight: 1.4 }}>90 ép., 4 variations, titres viraux</p>
             </div>
             <button onClick={onUpgrade} style={{ background: "var(--r)", color: "#fff", border: "none", padding: "10px 16px", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "var(--sans)", flexShrink: 0 }}>
               Upgrade →
@@ -1020,12 +1045,32 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
           </div>
         </div>
 
+        {/* PREVIEW CARD */}
+        {(() => {
+          const { pitch, ambiance } = buildPreview(state);
+          const modeLabel = state.mode === "fast" ? "Fast Drama" : "Premium Suspense";
+          const modeColor = state.mode === "fast" ? "var(--r)" : "var(--n)";
+          return (
+            <div style={{ background: "var(--card)", border: "1.5px solid var(--bo)", borderRadius: 16, padding: "18px 18px 16px", marginBottom: 16, position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: state.mode === "fast" ? "linear-gradient(90deg,var(--r),transparent)" : "linear-gradient(90deg,var(--n),transparent)" }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: modeColor, fontFamily: "monospace" }}>{modeLabel}</span>
+                <span style={{ width: 3, height: 3, borderRadius: "50%", background: "var(--bo)", display: "inline-block" }} />
+                <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--mt)" }}>{state.format} ép. · {DUR_LABEL[state.duree]} · {totalMin} min</span>
+              </div>
+              <p style={{ fontFamily: "var(--serif)", fontSize: 15, fontWeight: 700, color: "var(--tx)", lineHeight: 1.6, margin: "0 0 8px" }}>
+                {pitch}
+              </p>
+              {ambiance && (
+                <p style={{ fontSize: 11, color: "var(--mt)", fontStyle: "italic" }}>{ambiance}</p>
+              )}
+            </div>
+          );
+        })()}
+
         <button onClick={onGen} style={{ background: "var(--r)", color: "#fff", border: "none", padding: 18, borderRadius: 14, width: "100%", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
-          ▶ Générer la série
+          ▶ Générer cette série
         </button>
-        <p style={{ fontSize: 12, color: "var(--mt)", textAlign: "center", marginTop: 12 }}>
-          {state.format} épisodes · {DUR_LABEL[state.duree]} · {totalMin} min de contenu
-        </p>
         {lastSerie && (
           <button onClick={onResume} style={{ background: "var(--card)", border: "1.5px solid var(--r)", color: "var(--r)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 700, cursor: "pointer", marginTop: 10, fontFamily: "var(--sans)" }}>
             ▶ Reprendre — {lastSerie.bible?.titre}
