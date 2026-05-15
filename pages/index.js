@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -131,23 +131,10 @@ export default function Landing() {
   const [openFaq, setOpenFaq] = useState(null);
   const [variant, setVariant] = useState("A");
   const [billing, setBilling] = useState("monthly");
-  const [demoPhase, setDemoPhase] = useState(0);
-  const [demoText, setDemoText] = useState("");
-  const demoRef = useRef(null);
   const router = useRouter();
   const canceled = router.query.canceled;
 
   const track = (event, meta = {}) => fetch("/api/analytics", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event, meta }) }).catch(() => {});
-
-  const DEMO_SEQUENCES = [
-    { label: "TITRE", full: "Le Mensonge", color: TEXT },
-    { label: "LOGLINE", full: "Une infirmière cache une erreur médicale jusqu'au jour où la victime revient comme interne.", color: MUTED },
-    { label: "ACCROCHE", full: "Elle l'a presque tué. Il ne sait pas encore.", color: RED },
-    { label: "ÉP. 1", full: "Première garde · Tension ●●●○○○○○○○", color: VIO },
-    { label: "ÉP. 2", full: "Il sait · Tension ●●●●●●○○○○", color: VIO },
-    { label: "ÉP. 3", full: "Le chef de service · Tension ●●●●●●●●○○", color: VIO },
-    { label: "ÉP. 4", full: "Trop tard · Tension ●●●●●●●●●●", color: RED },
-  ];
 
   useEffect(() => {
     // A/B test variant assignment
@@ -159,30 +146,6 @@ export default function Landing() {
     setVariant(v);
     track("page_view", { variant: v });
   }, []);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { obs.disconnect(); runDemo(0, 0); }
-    }, { threshold: 0.3 });
-    if (demoRef.current) obs.observe(demoRef.current);
-    return () => obs.disconnect();
-  }, []);
-
-  function runDemo(phaseIdx, charIdx) {
-    if (phaseIdx >= DEMO_SEQUENCES.length) {
-      setTimeout(() => { setDemoPhase(0); setDemoText(""); runDemo(0, 0); }, 3000);
-      return;
-    }
-    const seq = DEMO_SEQUENCES[phaseIdx];
-    if (charIdx <= seq.full.length) {
-      setDemoPhase(phaseIdx);
-      setDemoText(seq.full.slice(0, charIdx));
-      const delay = charIdx === 0 ? 600 : 28;
-      setTimeout(() => runDemo(phaseIdx, charIdx + 1), delay);
-    } else {
-      setTimeout(() => runDemo(phaseIdx + 1, 0), 300);
-    }
-  }
 
   const checkRefCode = async (code) => {
     setRefCode(code);
@@ -271,7 +234,6 @@ export default function Landing() {
           .feat-strip-item { width: 50% !important; border-right: none !important; border-bottom: 1px solid ${BORDER} !important; }
           .platform-row { gap: 20px !important; }
           .stats-bar { gap: 28px !important; padding: 28px 20px !important; }
-          .demo-footer { flex-wrap: wrap !important; gap: 12px !important; }
           .footer-inner { padding: 28px 20px !important; }
           .trust-row { gap: 12px !important; }
           .hero-v { display: none !important; }
@@ -583,55 +545,7 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* LIVE DEMO */}
-      <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }} ref={demoRef}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <Label color={VIO}>En direct</Label>
-          <Title>Hook, dialogues, cadrage —<br /><span style={{ fontStyle: "italic" }}>scène par scène.</span></Title>
-          <p style={{ textAlign: "center", color: MUTED, marginBottom: 48, fontSize: 15 }}>C'est exactement ce que tu vois dans l'app</p>
 
-          <div style={{ background: "#0a0a14", border: `1px solid rgba(168,85,247,0.25)`, borderRadius: 24, overflow: "hidden", boxShadow: `0 0 60px rgba(168,85,247,0.08)` }}>
-            {/* Terminal header */}
-            <div style={{ padding: "14px 20px", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ display: "flex", gap: 6 }}>
-                {["#E85C3A", "#f59e0b", "#22c55e"].map((c, i) => <div key={i} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />)}
-              </div>
-              <span style={{ fontSize: 12, color: MUTED, fontFamily: "monospace", marginLeft: 8 }}>Studio Vertical · Génération en cours…</span>
-              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: RED, animation: "pulse 1.5s infinite" }} />
-                <span style={{ fontSize: 10, fontWeight: 800, color: RED, letterSpacing: 2 }}>REC</span>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div style={{ padding: "28px 28px", minHeight: 280 }}>
-              {DEMO_SEQUENCES.map((seq, i) => {
-                const done = i < demoPhase;
-                const active = i === demoPhase;
-                if (i > demoPhase) return null;
-                return (
-                  <div key={i} style={{ display: "flex", gap: 16, marginBottom: 18, opacity: done ? 0.6 : 1, transition: "opacity .3s" }}>
-                    <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: done ? MUTED : seq.color, fontFamily: "monospace", flexShrink: 0, paddingTop: 2, minWidth: 60 }}>{seq.label}</span>
-                    <p style={{ fontSize: 15, color: done ? MUTED : seq.color, lineHeight: 1.6, fontFamily: i < 2 ? "'Playfair Display', Georgia, serif" : "'Space Grotesk', sans-serif", fontWeight: i < 2 ? 700 : 500 }} className={active ? "cursor" : ""}>
-                      {active ? demoText : seq.full}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Footer bar */}
-            <div className="demo-footer" style={{ padding: "14px 28px", borderTop: `1px solid ${BORDER}`, display: "flex", gap: 24 }}>
-              {[["Univers", "Hôpital"], ["Secret", "Erreur médicale"], ["Mode", "Fast Drama"], ["Épisodes", "10"]].map(([k, v]) => (
-                <div key={k}>
-                  <span style={{ fontSize: 10, color: MUTED, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>{k} </span>
-                  <span style={{ fontSize: 11, color: TEXT, fontWeight: 700 }}>{v}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* POUR QUI */}
       <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}` }}>
