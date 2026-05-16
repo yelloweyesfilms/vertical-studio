@@ -46,16 +46,16 @@ export default function handler(req) {
               <span style={{ fontSize: 110, fontWeight: 900, color: "#ffffff", letterSpacing: -5, lineHeight: 0.85, display: "flex" }}>VERTICAL</span>
               <span style={{ fontSize: 110, fontWeight: 900, color: "#E85C3A", letterSpacing: -5, lineHeight: 0.85, display: "flex" }}>CLAP</span>
               <div style={{ width: 80, height: 3, background: "linear-gradient(to right, #E85C3A, #a855f7)", marginTop: 24, marginBottom: 20, display: "flex" }} />
-              <span style={{ fontSize: 26, fontWeight: 700, color: "#a855f7", letterSpacing: 0, display: "flex" }}>Micro-dramas 9:16 en 5 minutes</span>
+              <span style={{ fontSize: 26, fontWeight: 700, color: "#a855f7", letterSpacing: 0, display: "flex" }}>Génère tes scripts verticaux en 5 min</span>
             </div>
           )}
 
           {/* Bottom features */}
           <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
             {[
-              { icon: "⚡", label: "RAPIDE" },
-              { icon: "📱", label: "FORMAT 9:16" },
-              { icon: "🎬", label: "SCRIPTS PRÊTS" },
+              { icon: "✍️", label: "ÉCRITURE IA" },
+              { icon: "📖", label: "BIBLE + SCRIPTS" },
+              { icon: "🎬", label: "PRÊT À TOURNER" },
               { icon: "⏱", label: "5 MIN CHRONO" },
             ].map(({ icon, label }) => (
               <div key={label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
