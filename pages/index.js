@@ -959,7 +959,6 @@ export default function Landing() {
             <div>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, marginBottom: 16 }}>Produit</p>
               {[
-                { href: "/app", label: "Générateur →" },
                 { href: "/tarifs", label: "Tarifs" },
                 { href: "/exemples", label: "Exemples" },
               ].map(({ href, label }) => (
