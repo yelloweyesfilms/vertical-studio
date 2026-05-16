@@ -145,7 +145,7 @@ const Check = ({ color = RED }) => (
 
 function NewsletterSection() {
   const [nlEmail, setNlEmail] = useState("");
-  const [nlState, setNlState] = useState("idle"); // idle | loading | done | error
+  const [nlState, setNlState] = useState("idle");
 
   const submit = async () => {
     if (!nlEmail || !nlEmail.includes("@")) return;
@@ -342,18 +342,14 @@ export default function Landing() {
 
       {/* HERO */}
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "100px 40px 60px", position: "relative", overflow: "hidden" }} className="hero-pad">
-
-        {/* Decorative background elements */}
         <div style={{ position: "absolute", top: 40, left: "10%", width: 600, height: 600, background: `radial-gradient(circle, rgba(168,85,247,0.09) 0%, transparent 70%)`, pointerEvents: "none" }} />
         <div style={{ position: "absolute", top: 120, right: "5%", width: 350, height: 350, background: `radial-gradient(circle, rgba(232,92,58,0.08) 0%, transparent 70%)`, pointerEvents: "none" }} />
-        {/* Giant decorative V */}
         <div className="hero-v" style={{ position: "absolute", right: "-4%", top: "-8%", opacity: 0.035, pointerEvents: "none", userSelect: "none" }}>
           <svg width="520" height="620" viewBox="0 0 520 620" fill="none">
             <path d="M20 20 L260 600 L500 20" stroke={RED} strokeWidth="72" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </svg>
         </div>
 
-        {/* Hero content */}
         <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)", color: VIO, padding: "7px 18px", borderRadius: 100, fontSize: 12, fontWeight: 600, marginBottom: 40, animation: "glow 3s infinite", letterSpacing: 1 }}>
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: VIO, display: "inline-block" }} />
@@ -399,12 +395,14 @@ export default function Landing() {
           </div>
         </div>
       </div>
+
 {/* HERO VISUAL */}
 <div style={{ maxWidth: 900, margin: "0 auto 0", padding: "0 40px 80px" }}>
   <div style={{ position: "relative", borderRadius: 20, overflow: "hidden", boxShadow: "0 0 80px rgba(168,85,247,0.15), 0 0 40px rgba(232,92,58,0.1), 0 32px 80px rgba(0,0,0,0.5)", border: "1px solid rgba(168,85,247,0.2)" }}>
     <img src="/hero.png" alt="VerticalClap — Génère tes scripts verticaux en 5 min" style={{ width: "100%", display: "block", borderRadius: 20 }} />
   </div>
 </div>
+
       {/* FEATURE STRIP */}
       <div style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, background: "rgba(255,255,255,0.02)" }}>
         <div className="feat-strip" style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "center" }}>
@@ -529,73 +527,97 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* AFFICHES */}
+      {/* SÉRIES EXEMPLES */}
       <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}`, overflow: "hidden" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Label color={RED}>Exemples d'affiches</Label>
-          <Title>Des séries qui<br /><span style={{ fontStyle: "italic", color: MUTED }}>donnent envie de tourner.</span></Title>
-          <p style={{ textAlign: "center", color: MUTED, marginBottom: 56, fontSize: 15 }}>L'affiche typographique de ta série, générée en 1 clic.</p>
+          <Label color={RED}>Exemples de séries</Label>
+          <Title>De l'idée à la série<br /><span style={{ fontStyle: "italic", color: MUTED }}>en quelques secondes.</span></Title>
+          <p style={{ textAlign: "center", color: MUTED, marginBottom: 56, fontSize: 15 }}>Chaque série est générée avec titre, bible complète et scripts prêts à tourner.</p>
 
-          <div className="posters-row" style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap", alignItems: "flex-end" }}>
+          <div className="posters-row" style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap", alignItems: "flex-end" }}>
 
-            {/* Poster 1 — Le Mensonge */}
-            <div className="poster-side" style={{ width: 200, flexShrink: 0, borderRadius: 18, overflow: "hidden", boxShadow: "0 32px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(232,92,58,0.15)" }}>
-              <div style={{ background: "#09090f", aspectRatio: "9/16", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "22px 18px", position: "relative", overflow: "hidden" }}>
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "60%", background: "radial-gradient(ellipse at 50% 100%, rgba(232,92,58,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <div style={{ fontSize: 7, fontWeight: 800, color: "rgba(232,92,58,0.6)", letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 16 }}>Thriller médical · 8 ép.</div>
-                  <div style={{ width: 28, height: 2, background: RED, marginBottom: 20 }} />
-                  <div style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 48, fontWeight: 900, color: "#fff", lineHeight: 0.92, letterSpacing: -2 }}>Le<br />Men-<br />songe</div>
-                </div>
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, fontStyle: "italic", fontFamily: "'Playfair Display',Georgia,serif", marginBottom: 16 }}>
-                    "Il revient.<br />Il sait tout."
-                  </p>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 7, fontWeight: 800, color: "rgba(255,255,255,0.2)", letterSpacing: 1.5 }}>VERTICALCLAP</span>
-                    <span style={{ fontSize: 7, fontWeight: 800, color: RED, letterSpacing: 1 }}>9:16</span>
+            {/* Série 1 — Le Dernier Pacte */}
+            <div className="poster-side" style={{ width: 210, flexShrink: 0, borderRadius: 20, overflow: "hidden", boxShadow: "0 40px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(232,92,58,0.2)" }}>
+              <div style={{ background: "#0a0608", aspectRatio: "9/16", display: "flex", flexDirection: "column", padding: "20px 16px", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: -40, left: "50%", transform: "translateX(-50%)", width: 200, height: 200, background: "radial-gradient(circle, rgba(232,92,58,0.22) 0%, transparent 70%)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", bottom: -20, left: 0, right: 0, height: "50%", background: "linear-gradient(to top, rgba(232,92,58,0.12) 0%, transparent 100%)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", inset: 0, opacity: 0.03, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px" }} />
+
+                <div style={{ position: "relative", zIndex: 1, flex: 1, display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                    <span style={{ fontSize: 7, fontWeight: 800, color: RED, background: "rgba(232,92,58,0.12)", border: "1px solid rgba(232,92,58,0.25)", padding: "3px 8px", borderRadius: 4, letterSpacing: 1.5, textTransform: "uppercase" }}>Thriller</span>
+                    <span style={{ fontSize: 7, fontWeight: 700, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>8 ÉP.</span>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ width: 32, height: 2, background: RED, marginBottom: 16 }} />
+                    <div style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 52, fontWeight: 900, color: "#fff", lineHeight: 0.88, letterSpacing: -2, marginBottom: 20 }}>Le<br />Der-<br />nier<br />Pacte</div>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, fontStyle: "italic", fontFamily: "'Playfair Display',Georgia,serif", marginBottom: 14 }}>
+                      « Il a tout signé.<br />Il ne savait pas. »
+                    </p>
+                    <div style={{ height: 1, background: "rgba(232,92,58,0.15)", marginBottom: 10 }} />
+                    <div style={{ fontSize: 7, color: "rgba(255,255,255,0.15)", letterSpacing: 2, fontWeight: 700 }}>GÉNÉRÉ PAR VERTICALCLAP</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Poster 2 — Héritage */}
-            <div className="poster-center poster-center-w" style={{ width: 220, flexShrink: 0, borderRadius: 18, overflow: "hidden", boxShadow: "0 40px 100px rgba(168,85,247,0.3), 0 0 0 1px rgba(168,85,247,0.2)", transform: "translateY(-18px)" }}>
-              <div style={{ background: "#09090f", aspectRatio: "9/16", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "22px 18px", position: "relative", overflow: "hidden" }}>
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "60%", background: "radial-gradient(ellipse at 50% 100%, rgba(168,85,247,0.2) 0%, transparent 70%)", pointerEvents: "none" }} />
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <div style={{ fontSize: 7, fontWeight: 800, color: "rgba(168,85,247,0.7)", letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 16 }}>Drame familial · 10 ép.</div>
-                  <div style={{ width: 28, height: 2, background: VIO, marginBottom: 20 }} />
-                  <div style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 54, fontWeight: 900, color: "#fff", lineHeight: 0.90, letterSpacing: -2 }}>Héri-<br />tage</div>
-                </div>
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, fontStyle: "italic", fontFamily: "'Playfair Display',Georgia,serif", marginBottom: 16 }}>
-                    "Un testament.<br />Trois frères.<br />Un secret."
-                  </p>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 7, fontWeight: 800, color: "rgba(255,255,255,0.2)", letterSpacing: 1.5 }}>VERTICALCLAP</span>
-                    <span style={{ fontSize: 7, fontWeight: 800, color: VIO, letterSpacing: 1 }}>9:16</span>
+            {/* Série 2 — Héritage Maudit (centre) */}
+            <div className="poster-center poster-center-w" style={{ width: 230, flexShrink: 0, borderRadius: 20, overflow: "hidden", boxShadow: "0 48px 100px rgba(168,85,247,0.35), 0 0 60px rgba(168,85,247,0.1), 0 0 0 1px rgba(168,85,247,0.25)", transform: "translateY(-24px)" }}>
+              <div style={{ background: "#080610", aspectRatio: "9/16", display: "flex", flexDirection: "column", padding: "20px 16px", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: -40, left: "50%", transform: "translateX(-50%)", width: 240, height: 240, background: "radial-gradient(circle, rgba(168,85,247,0.25) 0%, transparent 70%)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", bottom: -20, left: 0, right: 0, height: "55%", background: "linear-gradient(to top, rgba(168,85,247,0.15) 0%, transparent 100%)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", inset: 0, opacity: 0.03, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px" }} />
+
+                <div style={{ position: "relative", zIndex: 1, flex: 1, display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                    <span style={{ fontSize: 7, fontWeight: 800, color: VIO, background: "rgba(168,85,247,0.12)", border: "1px solid rgba(168,85,247,0.3)", padding: "3px 8px", borderRadius: 4, letterSpacing: 1.5, textTransform: "uppercase" }}>Drame familial</span>
+                    <span style={{ fontSize: 7, fontWeight: 700, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>10 ÉP.</span>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ width: 32, height: 2, background: VIO, marginBottom: 16 }} />
+                    <div style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 56, fontWeight: 900, color: "#fff", lineHeight: 0.88, letterSpacing: -2, marginBottom: 20 }}>Héri-<br />tage<br />Mau-<br />dit</div>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, fontStyle: "italic", fontFamily: "'Playfair Display',Georgia,serif", marginBottom: 14 }}>
+                      « Un testament.<br />Trois frères.<br />Un seul survivra. »
+                    </p>
+                    <div style={{ height: 1, background: "rgba(168,85,247,0.2)", marginBottom: 10 }} />
+                    <div style={{ fontSize: 7, color: "rgba(255,255,255,0.15)", letterSpacing: 2, fontWeight: 700 }}>GÉNÉRÉ PAR VERTICALCLAP</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Poster 3 — Deux Vies */}
-            <div className="poster-side" style={{ width: 200, flexShrink: 0, borderRadius: 18, overflow: "hidden", boxShadow: "0 32px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(232,92,58,0.15)" }}>
-              <div style={{ background: "#09090f", aspectRatio: "9/16", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "22px 18px", position: "relative", overflow: "hidden" }}>
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "60%", background: "radial-gradient(ellipse at 30% 100%, rgba(232,92,58,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 100%, rgba(168,85,247,0.12) 0%, transparent 60%)", pointerEvents: "none" }} />
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <div style={{ fontSize: 7, fontWeight: 800, color: "rgba(232,92,58,0.6)", letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 16 }}>Thriller · Identité · 6 ép.</div>
-                  <div style={{ width: 28, height: 2, background: `linear-gradient(to right, ${RED}, ${VIO})`, marginBottom: 20 }} />
-                  <div style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 48, fontWeight: 900, color: "#fff", lineHeight: 0.92, letterSpacing: -2 }}>Deux<br />Vies</div>
-                </div>
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, fontStyle: "italic", fontFamily: "'Playfair Display',Georgia,serif", marginBottom: 16 }}>
-                    "L'une d'elles<br />va s'effondrer."
-                  </p>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 7, fontWeight: 800, color: "rgba(255,255,255,0.2)", letterSpacing: 1.5 }}>VERTICALCLAP</span>
-                    <span style={{ fontSize: 7, fontWeight: 800, color: RED, letterSpacing: 1 }}>9:16</span>
+            {/* Série 3 — Double Jeu */}
+            <div className="poster-side" style={{ width: 210, flexShrink: 0, borderRadius: 20, overflow: "hidden", boxShadow: "0 40px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(96,165,250,0.2)" }}>
+              <div style={{ background: "#060810", aspectRatio: "9/16", display: "flex", flexDirection: "column", padding: "20px 16px", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: -40, left: "50%", transform: "translateX(-50%)", width: 200, height: 200, background: "radial-gradient(circle, rgba(96,165,250,0.2) 0%, transparent 70%)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", bottom: -20, left: 0, right: 0, height: "50%", background: "linear-gradient(to top, rgba(96,165,250,0.1) 0%, transparent 100%)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", inset: 0, opacity: 0.03, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px" }} />
+
+                <div style={{ position: "relative", zIndex: 1, flex: 1, display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                    <span style={{ fontSize: 7, fontWeight: 800, color: "#60a5fa", background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.25)", padding: "3px 8px", borderRadius: 4, letterSpacing: 1.5, textTransform: "uppercase" }}>Suspense</span>
+                    <span style={{ fontSize: 7, fontWeight: 700, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>6 ÉP.</span>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ width: 32, height: 2, background: "#60a5fa", marginBottom: 16 }} />
+                    <div style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 52, fontWeight: 900, color: "#fff", lineHeight: 0.88, letterSpacing: -2, marginBottom: 20 }}>Dou-<br />ble<br />Jeu</div>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, fontStyle: "italic", fontFamily: "'Playfair Display',Georgia,serif", marginBottom: 14 }}>
+                      « Elle ment.<br />Mais pour<br />qui ? »
+                    </p>
+                    <div style={{ height: 1, background: "rgba(96,165,250,0.15)", marginBottom: 10 }} />
+                    <div style={{ fontSize: 7, color: "rgba(255,255,255,0.15)", letterSpacing: 2, fontWeight: 700 }}>GÉNÉRÉ PAR VERTICALCLAP</div>
                   </div>
                 </div>
               </div>
@@ -603,8 +625,8 @@ export default function Landing() {
 
           </div>
 
-          <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.2)", marginTop: 32, letterSpacing: 1 }}>
-            Affiche générée automatiquement · Format 9:16 prêt à publier
+          <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.18)", marginTop: 36, letterSpacing: 1 }}>
+            Présentation générée automatiquement · Bible + scripts inclus · Format 9:16
           </p>
         </div>
       </div>
@@ -622,7 +644,7 @@ export default function Landing() {
                 iconColor: "#69C9D0",
                 title: "Créateur solo",
                 sub: "TikTok · Reels · Shorts",
-                desc: "Tu filmes seul avec ton téléphone. VerticalClap génère la bible, les scripts et les hooks — structure narrative complète, prête à tourner sans réécriture.",
+                desc: "Tu filmes seul avec ton téléphone. VerticalClap gènère la bible, les scripts et les hooks — structure narrative complète, prête à tourner sans réécriture.",
                 color: RED,
               },
               {
@@ -919,7 +941,6 @@ export default function Landing() {
         <div className="footer-inner" style={{ maxWidth: 1100, margin: "0 auto", padding: "56px 40px 40px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
 
-            {/* Colonne marque */}
             <div>
               <Logo size="sm" />
               <p style={{ color: MUTED, fontSize: 13, lineHeight: 1.75, marginTop: 16, maxWidth: 240 }}>
@@ -927,7 +948,6 @@ export default function Landing() {
               </p>
             </div>
 
-            {/* Colonne produit */}
             <div>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, marginBottom: 16 }}>Produit</p>
               {[
@@ -938,7 +958,6 @@ export default function Landing() {
               ))}
             </div>
 
-            {/* Colonne ressources */}
             <div>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, marginBottom: 16 }}>Ressources</p>
               {[
@@ -951,7 +970,6 @@ export default function Landing() {
               ))}
             </div>
 
-            {/* Colonne légal */}
             <div>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, marginBottom: 16 }}>Légal</p>
               {[
