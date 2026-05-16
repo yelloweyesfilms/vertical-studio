@@ -961,10 +961,12 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
       <div style={{ background: "#0f1a14", padding: "28px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 28, lineHeight: 1 }}>🎬</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ width: 42, height: 42, borderRadius: 10, background: "var(--r)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <span style={{ fontFamily: "var(--serif)", fontSize: 16, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>VC</span>
+              </div>
               <div>
-                <h1 style={{ fontFamily: "var(--serif)", fontSize: 22, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1, margin: 0 }}>VERTICALCLAP</h1>
+                <h1 style={{ fontFamily: "var(--serif)", fontSize: 20, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1, margin: 0 }}>VERTICAL CLAP</h1>
                 <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 3 }}>Micro-dramas · 1 à 2 min · 9:16</p>
               </div>
             </div>
