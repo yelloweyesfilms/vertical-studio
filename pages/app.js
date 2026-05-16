@@ -962,12 +962,12 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 42, height: 42, borderRadius: 10, background: "var(--r)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <span style={{ fontFamily: "var(--serif)", fontSize: 16, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>VC</span>
+              <div style={{ width: 46, height: 46, borderRadius: 12, background: "linear-gradient(135deg, #E85C3A, #c0392b)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 4px 14px rgba(232,92,58,0.45)" }}>
+                <span style={{ fontFamily: "var(--serif)", fontSize: 17, fontWeight: 900, color: "#fff", letterSpacing: -1 }}>VC</span>
               </div>
-              <div>
-                <h1 style={{ fontFamily: "var(--serif)", fontSize: 20, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1, margin: 0 }}>VERTICAL CLAP</h1>
-                <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 3 }}>Micro-dramas · 1 à 2 min · 9:16</p>
+              <div style={{ lineHeight: 1 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 3, fontFamily: "var(--sans)" }}>VERTICAL</div>
+                <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -1, margin: 0, lineHeight: 1 }}>CLAP</h1>
               </div>
             </div>
           </div>
