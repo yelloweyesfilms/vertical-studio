@@ -962,7 +962,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
             <div style={{ display: "flex", alignItems: "stretch", gap: 10 }}>
-              <div style={{ width: 3, borderRadius: 2, background: "var(--r)", flexShrink: 0 }} />
+              <div style={{ width: 3, borderRadius: 2, background: "var(--n)", flexShrink: 0 }} />
               <svg width="18" height="30" viewBox="0 0 18 30" fill="none" style={{ flexShrink: 0, alignSelf: "center" }}>
                 <rect x="1" y="1" width="16" height="28" rx="3" stroke="white" strokeWidth="1.5"/>
                 <circle cx="9" cy="25.5" r="1.2" fill="white" opacity="0.5"/>
