@@ -82,7 +82,7 @@ export default function handler(req) {
                 {label}
               </div>
             ))}
-            <span style={{ fontSize: 14, color: "#475569", marginLeft: 8 }}>· 9€/mois · Sans engagement</span>
+            <span style={{ fontSize: 14, color: "#94a3b8", marginLeft: 8 }}>· Dès 9€/mois · Sans engagement</span>
           </div>
         </div>
 

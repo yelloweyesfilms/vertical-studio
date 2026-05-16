@@ -264,8 +264,8 @@ export default function Landing() {
   return (
     <>
     <Head>
-      <title>VerticalClap — Génère des micro-dramas 9:16 en 5 minutes avec l'IA</title>
-      <meta name="description" content="Génère des micro-dramas verticaux complets avec l'IA : bible, scripts, hooks et cliffhangers. Prêts pour TikTok, Reels, Shorts, DramaBox, ReelShort et toutes les plateformes 9:16. Dès 7,50€/mois." />
+      <title>VerticalClap — Micro-dramas 9:16 générés par l'IA</title>
+      <meta name="description" content="Génère une série complète en 5 minutes : bible, scripts, hooks et cliffhangers prêts à tourner. Pour TikTok, Reels, Shorts et DramaBox." />
       <link rel="canonical" href={SITE} />
       <meta property="og:url" content={SITE} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
