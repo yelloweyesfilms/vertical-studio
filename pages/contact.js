@@ -121,24 +121,6 @@ export default function Contact() {
             </p>
           </div>
 
-          {/* Channels */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16, marginBottom: 64 }}>
-            {CHANNELS.map((c) => (
-              <a
-                key={c.title}
-                href={c.link}
-                style={{ textDecoration: "none", display: "block", background: "#0f0f1a", border: "1px solid #1e1e2e", borderRadius: 16, padding: "24px 22px", transition: "border-color .2s" }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = RED}
-                onMouseLeave={e => e.currentTarget.style.borderColor = "#1e1e2e"}
-              >
-                <div style={{ fontSize: 28, marginBottom: 12 }}>{c.icon}</div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", margin: "0 0 6px" }}>{c.title}</p>
-                <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 14px", lineHeight: 1.6 }}>{c.desc}</p>
-                <span style={{ fontSize: 13, color: RED, fontWeight: 600 }}>{c.label}</span>
-              </a>
-            ))}
-          </div>
-
           {/* Formulaire de contact */}
           <div style={{ background: "#0f0f1a", border: "1px solid #1e1e2e", borderRadius: 20, padding: "36px 32px", marginBottom: 64 }}>
             <h2 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 24, fontWeight: 900, color: "#f1f5f9", margin: "0 0 8px", letterSpacing: -0.5 }}>
