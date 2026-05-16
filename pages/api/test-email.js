@@ -2,7 +2,7 @@ import { sendNewsletterWelcomeEmail } from "../../lib/email";
 
 export default async function handler(req, res) {
   const secret = req.query.secret || req.body?.secret;
-  if (secret !== process.env.ADMIN_SECRET) {
+  if (secret !== process.env.CRON_SECRET) {
     return res.status(401).json({ error: "Non autorisé" });
   }
 
