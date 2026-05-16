@@ -17,9 +17,11 @@ export default function handler(req) {
         position: "relative", overflow: "hidden",
       }}>
         {/* Orange glow bottom right */}
-        <div style={{ position: "absolute", bottom: -80, right: 180, width: 600, height: 600, background: "radial-gradient(circle, rgba(232,92,58,0.28) 0%, transparent 65%)", display: "flex" }} />
-        {/* Subtle left glow */}
-        <div style={{ position: "absolute", top: -100, left: -60, width: 400, height: 400, background: "radial-gradient(circle, rgba(232,92,58,0.08) 0%, transparent 70%)", display: "flex" }} />
+        <div style={{ position: "absolute", bottom: -80, right: 180, width: 600, height: 600, background: "radial-gradient(circle, rgba(232,92,58,0.25) 0%, transparent 65%)", display: "flex" }} />
+        {/* Violet glow top left */}
+        <div style={{ position: "absolute", top: -80, left: -60, width: 500, height: 500, background: "radial-gradient(circle, rgba(168,85,247,0.18) 0%, transparent 65%)", display: "flex" }} />
+        {/* Subtle violet bottom left */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, width: 300, height: 300, background: "radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%)", display: "flex" }} />
 
         {/* Left: content */}
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "60px 0 60px 72px", flex: 1, zIndex: 1 }}>
@@ -43,8 +45,8 @@ export default function handler(req) {
             <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
               <span style={{ fontSize: 110, fontWeight: 900, color: "#ffffff", letterSpacing: -5, lineHeight: 0.85, display: "flex" }}>VERTICAL</span>
               <span style={{ fontSize: 110, fontWeight: 900, color: "#E85C3A", letterSpacing: -5, lineHeight: 0.85, display: "flex" }}>CLAP</span>
-              <div style={{ width: 80, height: 3, background: "#E85C3A", marginTop: 24, marginBottom: 20, display: "flex" }} />
-              <span style={{ fontSize: 26, fontWeight: 700, color: "#E85C3A", letterSpacing: 0, display: "flex" }}>Micro-dramas 9:16 en 5 minutes</span>
+              <div style={{ width: 80, height: 3, background: "linear-gradient(to right, #E85C3A, #a855f7)", marginTop: 24, marginBottom: 20, display: "flex" }} />
+              <span style={{ fontSize: 26, fontWeight: 700, color: "#a855f7", letterSpacing: 0, display: "flex" }}>Micro-dramas 9:16 en 5 minutes</span>
             </div>
           )}
 
@@ -67,21 +69,21 @@ export default function handler(req) {
         {/* Right: phone */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 340, position: "relative", zIndex: 1, flexShrink: 0 }}>
           {/* Glow behind phone */}
-          <div style={{ position: "absolute", inset: -20, background: "radial-gradient(circle, rgba(232,92,58,0.4) 0%, transparent 60%)", display: "flex" }} />
+          <div style={{ position: "absolute", inset: -20, background: "radial-gradient(circle, rgba(168,85,247,0.35) 0%, rgba(232,92,58,0.15) 50%, transparent 70%)", display: "flex" }} />
           {/* Phone shell */}
           <div style={{
             width: 220, height: 480,
             background: "#111",
-            border: "2.5px solid rgba(232,92,58,0.8)",
+            border: "2.5px solid rgba(168,85,247,0.7)",
             borderRadius: 44,
             display: "flex", flexDirection: "column", alignItems: "center",
-            boxShadow: "0 0 100px rgba(232,92,58,0.5), 0 0 40px rgba(232,92,58,0.3), inset 0 0 30px rgba(232,92,58,0.05)",
+            boxShadow: "0 0 80px rgba(168,85,247,0.4), 0 0 40px rgba(232,92,58,0.25), inset 0 0 30px rgba(168,85,247,0.05)",
             position: "relative", overflow: "hidden",
           }}>
             {/* Screen gradient simulating cinematic scene */}
             <div style={{
               position: "absolute", inset: 0,
-              background: "linear-gradient(180deg, #1a0800 0%, #2d0e02 25%, #1a0500 50%, #0a0304 75%, #060108 100%)",
+              background: "linear-gradient(180deg, #0d0520 0%, #1a0800 30%, #1a0500 55%, #0a0318 80%, #060108 100%)",
               display: "flex",
             }} />
             {/* Orange atmosphere */}
@@ -112,7 +114,13 @@ export default function handler(req) {
           {/* V shape behind phone */}
           <div style={{ position: "absolute", zIndex: 0, display: "flex" }}>
             <svg width="300" height="500" viewBox="0 0 300 500" fill="none">
-              <path d="M10 10 L150 490 L290 10" stroke="#E85C3A" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
+              <defs>
+                <linearGradient id="vgrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#a855f7" stopOpacity="0.7"/>
+                  <stop offset="100%" stopColor="#E85C3A" stopOpacity="0.5"/>
+                </linearGradient>
+              </defs>
+              <path d="M10 10 L150 490 L290 10" stroke="url(#vgrad)" strokeWidth="3" strokeLinecap="round"/>
             </svg>
           </div>
         </div>
