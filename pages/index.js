@@ -271,13 +271,13 @@ export default function Landing() {
       <meta property="og:url" content={SITE} />
       <meta property="og:title" content="VerticalClap — Micro-dramas 9:16 générés par l'IA" />
       <meta property="og:description" content="Génère une série complète en 5 minutes : bible, scripts, hooks et cliffhangers prêts à tourner." />
-      <meta property="og:image" content={`${SITE}/api/og`} />
+      <meta property="og:image" content={`${SITE}/api/og?v=2`} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="VerticalClap — Micro-dramas 9:16 générés par l'IA" />
       <meta name="twitter:description" content="Génère une série complète en 5 minutes : bible, scripts, hooks et cliffhangers prêts à tourner." />
-      <meta name="twitter:image" content={`${SITE}/api/og`} />
+      <meta name="twitter:image" content={`${SITE}/api/og?v=2`} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
     </Head>
