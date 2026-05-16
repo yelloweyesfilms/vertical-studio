@@ -961,19 +961,33 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
       <div style={{ background: "#0f1a14", padding: "28px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <div style={{ display: "flex", alignItems: "stretch", gap: 10 }}>
-              <div style={{ width: 3, borderRadius: 2, background: "var(--r)", flexShrink: 0 }} />
-              <svg width="18" height="30" viewBox="0 0 18 30" fill="none" style={{ flexShrink: 0, alignSelf: "center" }}>
-                <rect x="1" y="1" width="16" height="28" rx="3" stroke="white" strokeWidth="1.5"/>
-                <circle cx="9" cy="25.5" r="1.2" fill="white" opacity="0.5"/>
-                <rect x="6" y="3.5" width="6" height="1" rx="0.5" fill="white" opacity="0.4"/>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <svg width="38" height="44" viewBox="0 0 38 44" fill="none" style={{ flexShrink: 0 }}>
+                <defs>
+                  <linearGradient id="screenGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#ff8c42"/>
+                    <stop offset="100%" stopColor="#E85C3A"/>
+                  </linearGradient>
+                </defs>
+                {/* Screen / phone */}
+                <rect x="9" y="10" width="22" height="32" rx="3.5" fill="url(#screenGrad)"/>
+                {/* Shadow layer behind */}
+                <rect x="5" y="13" width="22" height="32" rx="3.5" fill="rgba(232,92,58,0.18)" />
+                {/* Play button */}
+                <polygon points="17,22 17,32 26,27" fill="#1a0a04" opacity="0.75"/>
+                {/* Clap arm */}
+                <rect x="7" y="4" width="20" height="5" rx="1.5" fill="#f5ede0" transform="rotate(-18 7 4)"/>
+                <rect x="7" y="4" width="4.5" height="5" rx="1" fill="#2a1a0e" transform="rotate(-18 7 4)"/>
+                <rect x="13.5" y="2.8" width="4.5" height="5" rx="1" fill="#2a1a0e" transform="rotate(-18 7 4)"/>
+                <rect x="20" y="1.6" width="4.5" height="5" rx="1" fill="#2a1a0e" transform="rotate(-18 7 4)"/>
+                {/* Clap base top */}
+                <rect x="9" y="10" width="22" height="4" rx="0" fill="rgba(0,0,0,0.25)"/>
               </svg>
-              <div>
-                <h1 style={{ fontFamily: "var(--sans)", fontSize: 20, fontWeight: 800, letterSpacing: -0.5, margin: 0, lineHeight: 1.1 }}>
-                  <span style={{ color: "#fff" }}>VERTICAL </span><span style={{ color: "var(--r)" }}>CLAP</span>
-                </h1>
-                <p style={{ fontSize: 11, color: "var(--mt)", marginTop: 4, fontFamily: "var(--sans)", letterSpacing: 0.5 }}>Micro-dramas · 1 à 2 min · 9:16</p>
+              <div style={{ lineHeight: 1 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 2, fontFamily: "var(--sans)" }}>VERTICAL</div>
+                <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -1, margin: 0, lineHeight: 1 }}>CLAP</h1>
               </div>
+            </div>
             </div>
           </div>
           <div className="header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
