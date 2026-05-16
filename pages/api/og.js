@@ -88,27 +88,27 @@ export default function handler(req) {
 
         {/* Right: phone mockup */}
         <div style={{ display: "flex", position: "relative", zIndex: 1, flexShrink: 0 }}>
-          <div style={{ position: "absolute", inset: -36, background: "radial-gradient(circle, rgba(232,92,58,0.16) 0%, transparent 70%)", display: "flex", borderRadius: "50%" }} />
-          <div style={{ width: 210, background: "#0a0a14", border: "2px solid rgba(168,85,247,0.4)", borderRadius: 40, padding: "24px 16px 20px", display: "flex", flexDirection: "column", boxShadow: "0 0 60px rgba(168,85,247,0.18), 0 0 30px rgba(232,92,58,0.12)", position: "relative" }}>
+          <div style={{ position: "absolute", inset: -60, background: "radial-gradient(circle, rgba(232,92,58,0.35) 0%, transparent 65%)", display: "flex", borderRadius: "50%" }} />
+          <div style={{ width: 210, background: "#16101a", border: "2px solid rgba(232,92,58,0.7)", borderRadius: 40, padding: "24px 16px 20px", display: "flex", flexDirection: "column", boxShadow: "0 0 80px rgba(232,92,58,0.45), 0 0 140px rgba(168,85,247,0.25), 0 20px 60px rgba(0,0,0,0.6)", position: "relative" }}>
             {/* Notch */}
-            <div style={{ width: 48, height: 5, background: "rgba(255,255,255,0.07)", borderRadius: 10, alignSelf: "center", marginBottom: 20, display: "flex" }} />
+            <div style={{ width: 48, height: 5, background: "rgba(255,255,255,0.15)", borderRadius: 10, alignSelf: "center", marginBottom: 20, display: "flex" }} />
             {/* Screen area */}
-            <div style={{ background: "linear-gradient(180deg, #1a0805 0%, #0d0404 55%, #09090f 100%)", borderRadius: 16, padding: "14px 12px", marginBottom: 12, display: "flex", flexDirection: "column", gap: 7 }}>
+            <div style={{ background: "linear-gradient(180deg, #2a0c05 0%, #160606 55%, #0d0a14 100%)", borderRadius: 16, padding: "14px 12px", marginBottom: 12, display: "flex", flexDirection: "column", gap: 7 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                 <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#E85C3A", display: "flex" }} />
                 <span style={{ fontSize: 8, fontWeight: 800, color: "#E85C3A", letterSpacing: 2, textTransform: "uppercase" }}>REC · EP.01</span>
               </div>
-              <span style={{ fontSize: 8, fontWeight: 800, color: "#E85C3A", letterSpacing: 1.5, textTransform: "uppercase" }}>⚡ HOOK — 3 SEC</span>
+              <span style={{ fontSize: 8, fontWeight: 800, color: "#ff8c42", letterSpacing: 1.5, textTransform: "uppercase" }}>⚡ HOOK — 3 SEC</span>
               <span style={{ fontSize: 12, fontWeight: 600, color: "#f1f5f9", lineHeight: 1.45 }}>« Si vous regardez ça... c'est que j'ai pas réussi. »</span>
-              <span style={{ fontSize: 9, color: "#64748b", fontStyle: "italic" }}>[9:16] Gros plan, yeux dans l'objectif</span>
-              <div style={{ height: 1, background: "rgba(255,255,255,0.06)", display: "flex" }} />
-              <span style={{ fontSize: 9, fontWeight: 800, color: "#a855f7", letterSpacing: 2 }}>MAYA</span>
+              <span style={{ fontSize: 9, color: "#94a3b8", fontStyle: "italic" }}>[9:16] Gros plan, yeux dans l'objectif</span>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.12)", display: "flex" }} />
+              <span style={{ fontSize: 9, fontWeight: 800, color: "#c084fc", letterSpacing: 2 }}>MAYA</span>
               <span style={{ fontSize: 12, color: "#f1f5f9", lineHeight: 1.45 }}>Tu as réussi. Regarde ce que j'ai trouvé.</span>
-              <span style={{ fontSize: 9, color: "#64748b", fontStyle: "italic" }}>[9:16] Insert téléphone, notif</span>
+              <span style={{ fontSize: 9, color: "#94a3b8", fontStyle: "italic" }}>[9:16] Insert téléphone, notif</span>
             </div>
             {/* Cliffhanger chip */}
-            <div style={{ background: "rgba(232,92,58,0.1)", border: "1px solid rgba(232,92,58,0.28)", borderRadius: 10, padding: "8px 12px", display: "flex" }}>
-              <span style={{ fontSize: 9, fontWeight: 800, color: "#E85C3A", letterSpacing: 1, textTransform: "uppercase" }}>🎬 CLIFFHANGER</span>
+            <div style={{ background: "rgba(232,92,58,0.18)", border: "1px solid rgba(232,92,58,0.6)", borderRadius: 10, padding: "8px 12px", display: "flex" }}>
+              <span style={{ fontSize: 9, fontWeight: 800, color: "#ff8c42", letterSpacing: 1, textTransform: "uppercase" }}>🎬 CLIFFHANGER</span>
             </div>
             {/* 9:16 label */}
             <div style={{ marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
