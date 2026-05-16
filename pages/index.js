@@ -335,7 +335,6 @@ export default function Landing() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <a href="/exemples" style={{ fontSize: 13, color: MUTED, fontWeight: 600, display: "none" }} className="nav-link">Exemples</a>
-            <a href="/blog" style={{ fontSize: 13, color: MUTED, fontWeight: 600 }}>Blog</a>
             <a href="/tarifs" style={{ fontSize: 13, color: MUTED, fontWeight: 600 }}>Tarifs</a>
             <a href="/app" style={{ fontSize: 14, color: TEXT, fontWeight: 700, background: SURFACE, border: `1px solid ${BORDER}`, padding: "8px 16px", borderRadius: 10 }}>Se connecter →</a>
           </div>
