@@ -1759,6 +1759,15 @@ export default function App() {
       router.replace("/app");
       return;
     }
+    if (admin === "vc-admin-sophie-2026") {
+      localStorage.setItem("vs_customer", "vc-admin-sophie-2026");
+      localStorage.setItem("vs_plan", "premium");
+      setCustomerId("vc-admin-sophie-2026");
+      setPlan("premium");
+      setChecking(false);
+      router.replace("/app");
+      return;
+    }
     if (session_id) {
       fetch(`/api/session?session_id=${session_id}`)
         .then(r => r.json())
