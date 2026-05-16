@@ -315,9 +315,9 @@ export default function Exemples() {
               padding: "7px 16px", borderRadius: 100, fontSize: 12, fontWeight: 700,
               background: i === 0 ? `${TEXT}12` : "transparent",
               border: `1px solid ${i === 0 ? TEXT : BORDER}`,
-              color: i === 0 ? TEXT : "rgba(100,116,139,0.4)",
+              color: i === 0 ? TEXT : MUTED,
               cursor: "default", fontFamily: "'Space Grotesk', sans-serif",
-              letterSpacing: 0.3, opacity: i === 0 ? 1 : 0.4,
+              letterSpacing: 0.3,
             }}>
               {label}
             </button>
