@@ -1002,17 +1002,6 @@ export default function Landing() {
               <p style={{ color: MUTED, fontSize: 13, lineHeight: 1.75, marginTop: 16, maxWidth: 240 }}>
                 Le studio IA pour créateurs de micro-dramas verticaux. De l'idée à la série complète en 5 minutes.
               </p>
-              <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
-                {[
-                  { href: "https://tiktok.com/@verticalclap", label: "TikTok" },
-                  { href: "https://instagram.com/verticalclap", label: "Instagram" },
-                ].map(({ href, label }) => (
-                  <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: 12, color: MUTED, fontWeight: 600, background: SURFACE, border: `1px solid ${BORDER}`, padding: "6px 12px", borderRadius: 8 }}>
-                    {label}
-                  </a>
-                ))}
-              </div>
             </div>
 
             {/* Colonne produit */}
