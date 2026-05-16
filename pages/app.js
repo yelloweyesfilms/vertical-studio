@@ -958,14 +958,14 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
 
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
-      <div style={{ background: "var(--tx)", padding: "28px 20px 24px" }}>
+      <div style={{ background: "#0f1a14", padding: "28px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
             <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>VERTICALCLAP</h1>
-            <p style={{ fontSize: 12, color: "#3a5040", marginTop: 2 }}>Micro-dramas · 1 à 2 min · 9:16</p>
+            <p style={{ fontSize: 12, color: "#6a8a70", marginTop: 2 }}>Micro-dramas · 1 à 2 min · 9:16</p>
           </div>
           <div className="header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <button onClick={onShowOnboarding} style={{ background: "#1a2a1e", border: "1px solid #2a3a2e", color: "#3a5040", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
+            <button onClick={onShowOnboarding} style={{ background: "#1a2a1e", border: "1px solid #2a3a2e", color: "#6a8a70", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
             <div style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--r)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ color: "#fff", fontSize: 9, fontWeight: 800, letterSpacing: 0.5 }}>REC</span>
             </div>
@@ -976,7 +976,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
             const locked = k === "premium" && plan === "standard";
             return (
               <button key={k} onClick={() => { if (locked) { onUpsell?.("mode_premium"); } else set(prev => ({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0], lieu: k === "fast" ? OPTS.lieu_fast[0] : OPTS.lieu_prem[0], format: k === "fast" && prev.format > 10 ? 10 : prev.format })); }}
-                style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: locked ? "#3a5040" : state.mode === k ? "#fff" : "#3a5040", transition: "all .2s", cursor: locked ? "not-allowed" : "pointer", opacity: locked ? 0.5 : 1 }}>
+                style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: locked ? "#4a6a50" : state.mode === k ? "#fff" : "#6a8a70", transition: "all .2s", cursor: locked ? "not-allowed" : "pointer", opacity: locked ? 0.5 : 1 }}>
                 {l}{locked && " 🔒"}
               </button>
             );
