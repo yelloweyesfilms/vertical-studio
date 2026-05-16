@@ -1727,6 +1727,9 @@ export default function App() {
   const [customerId, setCustomerId] = useState(null);
   const [plan, setPlan] = useState("standard");
   const [checking, setChecking] = useState(true);
+  const [betaCode, setBetaCode] = useState(null);
+  const [betaInput, setBetaInput] = useState("");
+  const [betaError, setBetaError] = useState(false);
   const [screen, setScreen] = useState("mix");
   const [darkMode, setDarkMode] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
@@ -1750,6 +1753,8 @@ export default function App() {
       if (!localStorage.getItem("vs_onboarded")) setShowOnboarding(true);
       setStats(getStats());
       setLastSerie(loadLastOpen());
+      const storedBeta = localStorage.getItem("vs_beta");
+      if (storedBeta === "ok") setBetaCode("ok");
     } catch {}
   }, []);
 
@@ -2097,6 +2102,48 @@ export default function App() {
       <div style={{ width: 48, height: 48, borderRadius: "50%", background: "#E85C3A", animation: "pulse 1.5s infinite" }} />
     </div>
   );
+
+  if (betaCode !== "ok") {
+    const submitBeta = (e) => {
+      e.preventDefault();
+      if (betaInput.trim().toUpperCase() === "BETA25") {
+        try { localStorage.setItem("vs_beta", "ok"); } catch {}
+        setBetaCode("ok");
+      } else {
+        setBetaError(true);
+        setTimeout(() => setBetaError(false), 2000);
+      }
+    };
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#09090f", fontFamily: "var(--sans)", padding: 24 }}>
+        <div style={{ maxWidth: 400, width: "100%", textAlign: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 40 }}>
+            <div style={{ width: 3, height: 36, borderRadius: 2, background: "linear-gradient(to bottom, #ff8c42, #E85C3A)" }} />
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, color: "rgba(255,255,255,0.4)" }}>VERTICAL</div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: "#E85C3A", letterSpacing: -0.5 }}>CLAP</div>
+            </div>
+          </div>
+          <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#f1f5f9", marginBottom: 10 }}>Accès bêta</h1>
+          <p style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.7, marginBottom: 32 }}>VerticalClap est en accès anticipé.<br/>Entre ton code pour accéder à l'app.</p>
+          <form onSubmit={submitBeta} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <input
+              value={betaInput}
+              onChange={e => setBetaInput(e.target.value)}
+              placeholder="Code d'accès"
+              autoFocus
+              style={{ width: "100%", boxSizing: "border-box", background: "#0f0f1a", border: `1.5px solid ${betaError ? "#E85C3A" : "#1e1e2e"}`, borderRadius: 12, padding: "14px 18px", fontSize: 16, color: "#f1f5f9", textAlign: "center", letterSpacing: 2, fontFamily: "var(--sans)", outline: "none" }}
+            />
+            {betaError && <p style={{ fontSize: 13, color: "#E85C3A", margin: 0 }}>Code incorrect.</p>}
+            <button type="submit" style={{ background: "#E85C3A", color: "#fff", border: "none", padding: "14px", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "var(--sans)" }}>
+              Accéder →
+            </button>
+          </form>
+          <p style={{ fontSize: 12, color: "#475569", marginTop: 24 }}>Pas encore de code ? <a href="/contact" style={{ color: "#94a3b8" }}>Contacte-nous</a></p>
+        </div>
+      </div>
+    );
+  }
 
   if (!customerId) {
     return (
