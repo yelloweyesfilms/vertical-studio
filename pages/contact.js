@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useState } from "react";
 
 const RED = "#E85C3A";
 const VIO = "#a855f7";
@@ -63,6 +64,33 @@ const FAQS = [
 ];
 
 export default function Contact() {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const r = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!r.ok) throw new Error();
+      setStatus("sent");
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const inputStyle = {
+    width: "100%", background: "#0f0f1a", border: "1px solid #1e1e2e",
+    borderRadius: 10, padding: "12px 14px", fontSize: 14, color: "#f1f5f9",
+    fontFamily: "'Space Grotesk',system-ui,sans-serif", outline: "none",
+    boxSizing: "border-box",
+  };
+
   return (
     <>
       <Head>
@@ -109,6 +137,64 @@ export default function Contact() {
                 <span style={{ fontSize: 13, color: RED, fontWeight: 600 }}>{c.label}</span>
               </a>
             ))}
+          </div>
+
+          {/* Formulaire de contact */}
+          <div style={{ background: "#0f0f1a", border: "1px solid #1e1e2e", borderRadius: 20, padding: "36px 32px", marginBottom: 64 }}>
+            <h2 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 24, fontWeight: 900, color: "#f1f5f9", margin: "0 0 8px", letterSpacing: -0.5 }}>
+              Envoie-nous un message
+            </h2>
+            <p style={{ fontSize: 14, color: "#64748b", margin: "0 0 28px" }}>On répond sous 24h en jours ouvrés.</p>
+
+            {status === "sent" ? (
+              <div style={{ background: "rgba(232,92,58,0.08)", border: "1px solid rgba(232,92,58,0.3)", borderRadius: 12, padding: "20px 24px", textAlign: "center" }}>
+                <div style={{ fontSize: 28, marginBottom: 10 }}>✅</div>
+                <p style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: "0 0 6px" }}>Message envoyé !</p>
+                <p style={{ fontSize: 13, color: "#94a3b8", margin: 0 }}>On revient vers toi rapidement.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 6, letterSpacing: 0.5 }}>Nom</label>
+                    <input
+                      required value={form.name}
+                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      placeholder="Sophie"
+                      style={inputStyle}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 6, letterSpacing: 0.5 }}>Email</label>
+                    <input
+                      required type="email" value={form.email}
+                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      placeholder="sophie@email.com"
+                      style={inputStyle}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 6, letterSpacing: 0.5 }}>Message</label>
+                  <textarea
+                    required value={form.message}
+                    onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                    placeholder="Ta question ou remarque…"
+                    rows={5}
+                    style={{ ...inputStyle, resize: "vertical", minHeight: 120 }}
+                  />
+                </div>
+                {status === "error" && (
+                  <p style={{ fontSize: 13, color: RED, margin: 0 }}>Une erreur s'est produite. Réessaie ou écris directement à hello@verticalclap.app.</p>
+                )}
+                <button
+                  type="submit" disabled={status === "sending"}
+                  style={{ background: RED, color: "#fff", border: "none", padding: "14px 28px", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: status === "sending" ? "not-allowed" : "pointer", opacity: status === "sending" ? 0.7 : 1, alignSelf: "flex-start", fontFamily: "'Space Grotesk',system-ui,sans-serif" }}
+                >
+                  {status === "sending" ? "Envoi…" : "Envoyer →"}
+                </button>
+              </form>
+            )}
           </div>
 
           {/* Divider */}
