@@ -962,7 +962,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
             <div style={{ display: "flex", alignItems: "stretch", gap: 10 }}>
-              <div style={{ width: 3, borderRadius: 2, background: "var(--n)", flexShrink: 0 }} />
+              <div style={{ width: 3, borderRadius: 2, background: "linear-gradient(to bottom, #ff8c42, #E85C3A)", flexShrink: 0 }} />
               <svg width="18" height="30" viewBox="0 0 18 30" fill="none" style={{ flexShrink: 0, alignSelf: "center" }}>
                 <rect x="1" y="1" width="16" height="28" rx="3" stroke="white" strokeWidth="1.5"/>
                 <circle cx="9" cy="25.5" r="1.2" fill="white" opacity="0.5"/>
@@ -970,7 +970,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
               </svg>
               <div style={{ alignSelf: "center" }}>
                 <h1 style={{ fontFamily: "var(--sans)", fontSize: 20, fontWeight: 800, letterSpacing: -0.5, margin: 0, lineHeight: 1.1 }}>
-                  <span style={{ color: "#fff" }}>VERTICAL </span><span style={{ color: "var(--r)" }}>CLAP</span>
+                  <span style={{ color: "#fff" }}>VERTICAL </span><span style={{ background: "linear-gradient(135deg, #ff8c42, #E85C3A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>CLAP</span>
                 </h1>
                 <p style={{ fontSize: 11, color: "var(--mt)", marginTop: 3, fontFamily: "var(--sans)", letterSpacing: 0.5 }}>Micro-dramas · 1 à 2 min · 9:16</p>
               </div>
