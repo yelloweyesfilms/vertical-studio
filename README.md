@@ -31,7 +31,7 @@ git push -u origin main
 ### 3. Déployer sur Vercel
 
 1. Va sur [vercel.com](https://vercel.com) → **New Project**
-2. **Import** ton repo GitHub `vertical-studio`
+2. **Import** ton repo GitHub `vertical-app`
 3. Clique **Deploy** (ça marche sans config)
 4. Note ton URL : `https://vertical-studio-xxx.vercel.app`
 
@@ -41,7 +41,7 @@ git push -u origin main
 
 1. Va sur [dashboard.stripe.com](https://dashboard.stripe.com)
 2. **Products** → **Add Product**
-   - Nom : `Vertical Studio Pro`
+   - Nom : `Vertical App Pro`
    - Prix : `9.00 EUR` / mois (récurrent)
    - Copie le **Price ID** (commence par `price_`)
 3. **Developers** → **API Keys** → copie `Publishable key` et `Secret key`
