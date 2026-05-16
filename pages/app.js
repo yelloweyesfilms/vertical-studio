@@ -961,10 +961,13 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
       <div style={{ background: "#0f1a14", padding: "28px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <h1 style={{ fontFamily: "var(--serif)", fontWeight: 900, letterSpacing: -0.5, lineHeight: 1, margin: 0 }}>
-              <span style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.55)", letterSpacing: 3, fontWeight: 700 }}>VERTICAL</span>
-              <span style={{ display: "block", fontSize: 30, color: "var(--r)" }}>CLAP</span>
-            </h1>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 12 }}>
+              <div style={{ width: 3, borderRadius: 2, background: "var(--r)", flexShrink: 0 }} />
+              <div>
+                <h1 style={{ fontFamily: "var(--sans)", fontSize: 20, fontWeight: 800, color: "#fff", letterSpacing: -0.5, margin: 0, lineHeight: 1.1 }}>VERTICAL CLAP</h1>
+                <p style={{ fontSize: 11, color: "var(--mt)", marginTop: 4, fontFamily: "var(--sans)", letterSpacing: 0.5 }}>Micro-dramas · 1 à 2 min · 9:16</p>
+              </div>
+            </div>
           </div>
           <div className="header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <button onClick={onShowOnboarding} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "var(--mt)", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
