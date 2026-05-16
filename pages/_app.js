@@ -4,8 +4,8 @@ import Script from "next/script";
 
 const SITE = "https://verticalclap.app";
 const TITLE = "VerticalClap — Micro-dramas 9:16 en 5 minutes avec l'IA";
-const DESC = "Génère des micro-dramas verticaux complets : bible, scripts, hooks et cliffhangers. Prêts à tourner sur TikTok, Reels et Shorts.";
-const OG_IMAGE = `${SITE}/api/og`;
+const DESC = "Génère des micro-dramas verticaux complets : bible, scripts, hooks et cliffhangers. Prêts à tourner sur TikTok, Reels et Shorts.";
+const OG_IMAGE = `${SITE}/api/og?v=2`;
 
 export default function App({ Component, pageProps }) {
   return (
