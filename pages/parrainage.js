@@ -12,28 +12,16 @@ const GREEN = "#4ade80";
 const SITE = "https://verticalclap.app";
 
 const Logo = () => (
-  <div style={{ display: "flex", alignItems: "center", gap: 10, userSelect: "none" }}>
-    <svg width="26" height="37" viewBox="0 0 26 37" fill="none">
-      <defs>
-        <linearGradient id="logo-grad" x1="0" y1="0" x2="26" y2="37" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#E85C3A" />
-          <stop offset="100%" stopColor="#a855f7" />
-        </linearGradient>
-        <clipPath id="logo-clip">
-          <rect x="0.5" y="0.5" width="25" height="36" rx="5.5" />
-        </clipPath>
-      </defs>
-      <rect x="0.5" y="0.5" width="25" height="36" rx="5.5" fill="url(#logo-grad)" />
-      <rect x="0.5" y="0.5" width="25" height="36" rx="5.5" stroke="rgba(255,255,255,0.18)" />
-      <rect x="4" y="4" width="18" height="29" rx="3" fill="rgba(0,0,0,0.22)" />
-      <polygon points="10,13 10,24 20,18.5" fill="white" />
-      <rect x="4" y="31" width="6" height="1.5" rx="0.75" fill="rgba(255,255,255,0.4)" />
-      <rect x="12" y="31" width="10" height="1.5" rx="0.75" fill="rgba(255,255,255,0.2)" />
-      <polygon points="0.5,0.5 25.5,0.5 25.5,12 0.5,20" fill="rgba(255,255,255,0.13)" clipPath="url(#logo-clip)" />
+  <div style={{ display: "flex", alignItems: "stretch", gap: 10, userSelect: "none" }}>
+    <div style={{ width: 3, borderRadius: 2, background: "linear-gradient(to bottom, #ff8c42, #E85C3A)", flexShrink: 0 }} />
+    <svg width="17" height="28" viewBox="0 0 17 28" fill="none" style={{ flexShrink: 0, alignSelf: "center" }}>
+      <rect x="1" y="1" width="15" height="26" rx="3" stroke="white" strokeWidth="1.5"/>
+      <circle cx="8.5" cy="23.5" r="1.1" fill="white" opacity="0.5"/>
+      <rect x="5.5" y="3.5" width="6" height="1" rx="0.5" fill="white" opacity="0.4"/>
     </svg>
-    <div style={{ lineHeight: 1 }}>
-      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 2 }}>Vertical</div>
-      <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 18, fontWeight: 900, letterSpacing: -0.5, color: TEXT, lineHeight: 1 }}>Clap</div>
+    <div style={{ alignSelf: "center", lineHeight: 1 }}>
+      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.5)", marginBottom: 2 }}>VERTICAL</div>
+      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 800, letterSpacing: -0.5, background: "linear-gradient(135deg, #ff8c42, #E85C3A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>CLAP</div>
     </div>
   </div>
 );

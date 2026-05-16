@@ -5,17 +5,18 @@ const VIO = "#a855f7";
 const DARK = "#09090f";
 
 const Logo = () => (
-  <svg width="120" height="28" viewBox="0 0 120 28" fill="none">
-    <defs>
-      <linearGradient id="lg-contact" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-        <stop offset="0%" stopColor={RED} />
-        <stop offset="100%" stopColor={VIO} />
-      </linearGradient>
-    </defs>
-    <rect width="28" height="28" rx="7" fill="url(#lg-contact)" />
-    <text x="14" y="20" textAnchor="middle" fontFamily="Georgia,serif" fontSize="15" fontWeight="900" fill="#fff">▶</text>
-    <text x="38" y="20" fontFamily="Georgia,serif" fontSize="17" fontWeight="900" fill="#f1f5f9" letterSpacing="-0.5">Clap</text>
-  </svg>
+  <div style={{ display: "flex", alignItems: "stretch", gap: 10, userSelect: "none" }}>
+    <div style={{ width: 3, borderRadius: 2, background: "linear-gradient(to bottom, #ff8c42, #E85C3A)", flexShrink: 0 }} />
+    <svg width="17" height="28" viewBox="0 0 17 28" fill="none" style={{ flexShrink: 0, alignSelf: "center" }}>
+      <rect x="1" y="1" width="15" height="26" rx="3" stroke="white" strokeWidth="1.5"/>
+      <circle cx="8.5" cy="23.5" r="1.1" fill="white" opacity="0.5"/>
+      <rect x="5.5" y="3.5" width="6" height="1" rx="0.5" fill="white" opacity="0.4"/>
+    </svg>
+    <div style={{ alignSelf: "center", lineHeight: 1 }}>
+      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.5)", marginBottom: 2 }}>VERTICAL</div>
+      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 800, letterSpacing: -0.5, background: "linear-gradient(135deg, #ff8c42, #E85C3A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>CLAP</div>
+    </div>
+  </div>
 );
 
 const CHANNELS = [
