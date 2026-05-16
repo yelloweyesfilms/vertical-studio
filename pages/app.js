@@ -397,9 +397,9 @@ function ParrainageView({ customerId, onBack }) {
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
       <div style={{ background: "var(--tx)", padding: "28px 20px 24px" }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", color: "#3a5040", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "var(--mt)", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
         <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>Parrainage</h1>
-        <p style={{ fontSize: 12, color: "#3a5040", marginTop: 4 }}>Gagne 1 mois offert par ami parrainé</p>
+        <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 4 }}>Gagne 1 mois offert par ami parrainé</p>
       </div>
 
       <div style={{ padding: "24px 20px", maxWidth: 520, margin: "0 auto" }}>
@@ -425,7 +425,7 @@ function ParrainageView({ customerId, onBack }) {
         <div style={{ background: "var(--tx)", borderRadius: 16, padding: 24, marginBottom: 20, textAlign: "center" }}>
           <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", marginBottom: 12 }}>Ton code de parrainage</p>
           {loading ? (
-            <p style={{ color: "#3a5040", fontSize: 14 }}>Chargement…</p>
+            <p style={{ color: "var(--mt)", fontSize: 14 }}>Chargement…</p>
           ) : code ? (
             <>
               <div style={{ fontFamily: "var(--serif)", fontSize: 36, fontWeight: 900, color: "#fff", letterSpacing: 4, marginBottom: 16 }}>{code}</div>
@@ -513,11 +513,11 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
       <div style={{ background: "var(--tx)", padding: "28px 20px 24px" }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", color: "#3a5040", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "var(--mt)", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
         <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>
-          Mes Séries {!loadingCloud && <span style={{ fontSize: 16, fontWeight: 400, color: "#3a5040" }}>({total})</span>}
+          Mes Séries {!loadingCloud && <span style={{ fontSize: 16, fontWeight: 400, color: "var(--mt)" }}>({total})</span>}
         </h1>
-        <p style={{ fontSize: 12, color: "#3a5040", marginTop: 6 }}>
+        <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 6 }}>
           {loadingCloud ? "Chargement du cloud…" : `${cloud.length} cloud · ${localOnly.length} local`}
         </p>
       </div>
@@ -962,21 +962,21 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
             <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>VERTICALCLAP</h1>
-            <p style={{ fontSize: 12, color: "#6a8a70", marginTop: 2 }}>Micro-dramas · 1 à 2 min · 9:16</p>
+            <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 2 }}>Micro-dramas · 1 à 2 min · 9:16</p>
           </div>
           <div className="header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <button onClick={onShowOnboarding} style={{ background: "#1a2a1e", border: "1px solid #2a3a2e", color: "#6a8a70", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
+            <button onClick={onShowOnboarding} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "var(--mt)", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
             <div style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--r)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ color: "#fff", fontSize: 9, fontWeight: 800, letterSpacing: 0.5 }}>REC</span>
             </div>
           </div>
         </div>
-        <div style={{ display: "flex", background: "#1a2a1e", borderRadius: 12, padding: 4 }}>
+        <div style={{ display: "flex", background: "rgba(255,255,255,0.08)", borderRadius: 12, padding: 4 }}>
           {[{ k: "fast", l: "⚡ Fast Drama" }, { k: "premium", l: "🎭 Premium Suspense" }].map(({ k, l }) => {
             const locked = k === "premium" && plan === "standard";
             return (
               <button key={k} onClick={() => { if (locked) { onUpsell?.("mode_premium"); } else set(prev => ({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0], lieu: k === "fast" ? OPTS.lieu_fast[0] : OPTS.lieu_prem[0], format: k === "fast" && prev.format > 10 ? 10 : prev.format })); }}
-                style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: locked ? "#4a6a50" : state.mode === k ? "#fff" : "#6a8a70", transition: "all .2s", cursor: locked ? "not-allowed" : "pointer", opacity: locked ? 0.5 : 1 }}>
+                style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: locked ? "var(--mt)" : state.mode === k ? "#fff" : "var(--mt)", transition: "all .2s", cursor: locked ? "not-allowed" : "pointer", opacity: locked ? 0.5 : 1 }}>
                 {l}{locked && " 🔒"}
               </button>
             );
@@ -1248,7 +1248,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
               : () => setTab(k);
             return (
               <button key={k} onClick={onClick}
-                style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: locked ? "not-allowed" : "pointer", fontSize: 12, fontWeight: 700, color: locked ? "var(--bo)" : tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k && !locked ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}
+                style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: locked ? "not-allowed" : "pointer", fontSize: 12, fontWeight: 700, color: locked ? "var(--mt)" : tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k && !locked ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}
               </button>
             );
           })}
@@ -1315,7 +1315,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
               {/* Checklist plateau */}
               <div style={{ background: "var(--tx)", borderRadius: 12, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", margin: 0 }}>✅ Checklist plateau</p>
-                <p style={{ fontSize: 11, color: "#3a5040", margin: 0 }}>{Object.values(checked).filter(Boolean).length}/{(prod.decors||[]).length + (prod.costumes||[]).length + (prod.lieux||[]).length} préparés</p>
+                <p style={{ fontSize: 11, color: "var(--mt)", margin: 0 }}>{Object.values(checked).filter(Boolean).length}/{(prod.decors||[]).length + (prod.costumes||[]).length + (prod.lieux||[]).length} préparés</p>
               </div>
 
               {/* Décors */}
