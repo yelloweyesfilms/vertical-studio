@@ -1279,9 +1279,9 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
                 <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5 }}>🔒 {p.secret}</p>
               </div>
             ))}
-            <div style={{ background: "var(--tx)", borderRadius: 12, padding: 16, marginBottom: 20, marginTop: 4 }}>
+            <div style={{ background: "rgba(232,92,58,0.08)", border: "1.5px solid rgba(232,92,58,0.25)", borderRadius: 12, padding: 16, marginBottom: 20, marginTop: 4 }}>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", marginBottom: 8 }}>Question centrale</p>
-              <p style={{ fontFamily: "var(--serif)", fontSize: 15, fontStyle: "italic", color: "#fff", lineHeight: 1.5 }}>« {bible.tension_centrale} »</p>
+              <p style={{ fontFamily: "var(--serif)", fontSize: 15, fontStyle: "italic", color: "var(--tx)", lineHeight: 1.5 }}>« {bible.tension_centrale} »</p>
             </div>
             <button onClick={() => setTab("seq")} style={{ background: "var(--r)", color: "#fff", border: "none", padding: 18, borderRadius: 14, width: "100%", fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 10 }}>
               Voir les {episodes.length} épisodes →
