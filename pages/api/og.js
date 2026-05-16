@@ -37,13 +37,16 @@ export default function handler(req) {
         {/* Left: text */}
         <div style={{ display: "flex", flexDirection: "column", maxWidth: 620, zIndex: 1 }}>
           {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 44 }}>
-            <div style={{ width: 34, height: 48, background: "#E85C3A", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ width: 0, height: 0, borderTop: "8px solid transparent", borderBottom: "8px solid transparent", borderLeft: "14px solid white", marginLeft: 3, display: "flex" }} />
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: 4, textTransform: "uppercase" }}>Vertical</span>
-              <span style={{ fontSize: 24, fontWeight: 900, color: "#f1f5f9", letterSpacing: -1 }}>Clap</span>
+          <div style={{ display: "flex", alignItems: "stretch", gap: 14, marginBottom: 44 }}>
+            <div style={{ width: 4, borderRadius: 2, background: "linear-gradient(to bottom, #ff8c42, #E85C3A)", display: "flex" }} />
+            <svg width="22" height="36" viewBox="0 0 17 28" fill="none" style={{ alignSelf: "center", display: "flex" }}>
+              <rect x="1" y="1" width="15" height="26" rx="3" stroke="white" strokeWidth="1.5"/>
+              <circle cx="8.5" cy="23.5" r="1.1" fill="white" opacity="0.5"/>
+              <rect x="5.5" y="3.5" width="6" height="1" rx="0.5" fill="white" opacity="0.4"/>
+            </svg>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, alignSelf: "center" }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 4, textTransform: "uppercase" }}>VERTICAL</span>
+              <span style={{ fontSize: 26, fontWeight: 900, letterSpacing: -1, background: "linear-gradient(135deg, #ff8c42, #E85C3A)", backgroundClip: "text", color: "transparent" }}>CLAP</span>
             </div>
           </div>
 
@@ -64,7 +67,7 @@ export default function handler(req) {
                 <span style={{ fontSize: 80, fontWeight: 900, letterSpacing: -4, background: "linear-gradient(135deg, #E85C3A 30%, #a855f7)", backgroundClip: "text", color: "transparent" }}>série complète</span>
                 <span style={{ fontSize: 80, fontWeight: 900, color: "#f1f5f9", letterSpacing: -4 }}>.</span>
               </div>
-              <span style={{ fontSize: 80, fontWeight: 900, color: "#3a3a50", letterSpacing: -4, lineHeight: 0.88, marginTop: 4, display: "flex" }}>En 5 minutes.</span>
+              <span style={{ fontSize: 80, fontWeight: 900, color: "#94a3b8", letterSpacing: -4, lineHeight: 0.88, marginTop: 4, display: "flex" }}>En 5 minutes.</span>
             </div>
           )}
 
