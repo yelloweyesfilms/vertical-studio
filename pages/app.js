@@ -961,12 +961,19 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
       <div style={{ background: "#0f1a14", padding: "28px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <div>
-              <h1 style={{ fontFamily: "var(--serif)", fontWeight: 900, letterSpacing: -0.5, margin: 0, lineHeight: 1 }}>
-                <span style={{ display: "block", fontSize: 22, color: "#fff" }}>VERTICAL</span>
-                <span style={{ display: "block", height: 1, background: "rgba(255,255,255,0.25)", margin: "5px 0" }} />
-                <span style={{ display: "block", fontSize: 22, color: "#fff" }}>CLAP</span>
-              </h1>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 10 }}>
+              <div style={{ width: 3, borderRadius: 2, background: "var(--r)", flexShrink: 0 }} />
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ flexShrink: 0, alignSelf: "center" }}>
+                <rect x="2" y="10" width="24" height="16" rx="2" fill="none" stroke="white" strokeWidth="1.5"/>
+                <rect x="2" y="4" width="24" height="7" rx="2" fill="var(--r)"/>
+                <line x1="9" y1="4" x2="7" y2="11" stroke="white" strokeWidth="1.2"/>
+                <line x1="16" y1="4" x2="14" y2="11" stroke="white" strokeWidth="1.2"/>
+                <line x1="23" y1="4" x2="21" y2="11" stroke="white" strokeWidth="1.2"/>
+              </svg>
+              <div>
+                <h1 style={{ fontFamily: "var(--sans)", fontSize: 20, fontWeight: 800, color: "#fff", letterSpacing: -0.5, margin: 0, lineHeight: 1.1 }}>VERTICAL CLAP</h1>
+                <p style={{ fontSize: 11, color: "var(--mt)", marginTop: 4, fontFamily: "var(--sans)", letterSpacing: 0.5 }}>Micro-dramas · 1 à 2 min · 9:16</p>
+              </div>
             </div>
           </div>
           <div className="header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
