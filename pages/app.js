@@ -834,11 +834,10 @@ function AfficheView({ bible, episodes, mode, onBack, customerId }) {
         }
       </div>
 
-      {/* Tab switcher */}
+      {/* Tab switcher — AI tab hidden (OPENAI_API_KEY not configured) */}
       <div style={{ display: "flex", gap: 0, padding: "16px 20px 0", maxWidth: 630, margin: "0 auto" }}>
         {[
           { key: "canvas", label: "📝 Typographique" },
-          { key: "ai", label: "🎨 Affiche IA" },
         ].map(({ key, label }) => (
           <button key={key} onClick={() => setTab(key)} style={{
             flex: 1, padding: "10px 0", border: "none", cursor: "pointer",
@@ -1289,8 +1288,9 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
             <button onClick={exportSerie} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)", marginBottom: 10 }}>
               ↓ Télécharger la série (.txt)
             </button>
-            <div style={{ position: "relative" }}>
-            </div>
+            <button onClick={onAffiche} style={{ background: "var(--card)", color: "var(--tx)", border: "1.5px solid var(--bo)", padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)" }}>
+              🎬 Générer l'affiche de la série
+            </button>
           </>
         ) : tab === "titres" ? (
           <>
