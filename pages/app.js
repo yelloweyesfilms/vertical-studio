@@ -1290,10 +1290,6 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
               ↓ Télécharger la série (.txt)
             </button>
             <div style={{ position: "relative" }}>
-              <button onClick={onAffiche} style={{ background: tourStep === 1 ? "rgba(232,92,58,0.06)" : "var(--card)", color: "var(--tx)", border: `1.5px solid ${tourStep === 1 ? "var(--r)" : "var(--bo)"}`, padding: 14, borderRadius: 14, width: "100%", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "var(--sans)", transition: "all .2s" }}>
-                🎨 Générer l'affiche IA
-              </button>
-              {tourStep === 1 && <div style={{ position: "absolute", top: 8, right: -8 }}><TourBeacon text="L'IA génère une affiche cinématique 9:16 pour ta série (DALL-E 3)" side="left" onDismiss={() => {}} /></div>}
             </div>
           </>
         ) : tab === "titres" ? (
