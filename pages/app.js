@@ -742,6 +742,13 @@ function drawPoster(canvas, bible, episodes, mode, genre) {
 
   y += 44;
 
+  // ── GENRE ─────────────────────────────────────────────────
+  const genreText = (genre || (mode === "fast" ? "Fast Drama" : "Premium Suspense")).toUpperCase();
+  ctx.font = "700 10px sans-serif";
+  ctx.fillStyle = ORANGE;
+  ctx.fillText(genreText, PAD, y);
+  y += 22;
+
   // ── TITRE ─────────────────────────────────────────────────
   const titleSize = bible.titre.length > 16 ? 66 : 80;
   y += wrap(bible.titre.toUpperCase(), PAD, y, W - PAD * 2, titleSize * 1.08, `900 ${titleSize}px Georgia, serif`, WHITE);
