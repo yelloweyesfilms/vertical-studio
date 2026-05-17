@@ -561,7 +561,7 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
                   )}
                   <p style={{ fontSize: 12, color: "var(--mt)", lineHeight: 1.5, marginBottom: 8, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{logline}</p>
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                    <span style={{ fontSize: 11, background: mode === "fast" ? "#fff0ec" : "#e8edf2", color: mode === "fast" ? "var(--r)" : "var(--n)", padding: "2px 8px", borderRadius: 4, fontWeight: 700 }}>
+                    <span style={{ fontSize: 11, background: mode === "fast" ? "rgba(232,92,58,0.12)" : "rgba(109,40,217,0.12)", color: mode === "fast" ? "var(--r)" : "var(--n)", padding: "2px 8px", borderRadius: 4, fontWeight: 700 }}>
                       {mode === "fast" ? "⚡ Fast" : "🎭 Premium"}
                     </span>
                     <span style={{ fontSize: 11, background: "var(--bo)", padding: "2px 8px", borderRadius: 4, color: "var(--mt)" }}>{epCount} ép.</span>
@@ -1055,7 +1055,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
             const locked = k === "premium" && plan === "standard";
             return (
               <button key={k} onClick={() => { if (locked) { onUpsell?.("mode_premium"); } else set(prev => ({ mode: k, univers: k === "fast" ? OPTS.univers_fast[0] : OPTS.univers_prem[0], secret: k === "fast" ? OPTS.secret_fast[0] : OPTS.secret_prem[0], lieu: k === "fast" ? OPTS.lieu_fast[0] : OPTS.lieu_prem[0], format: k === "fast" && prev.format > 10 ? 10 : prev.format })); }}
-                style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: locked ? "#3a5040" : state.mode === k ? "#fff" : "#3a5040", transition: "all .2s", cursor: locked ? "not-allowed" : "pointer", opacity: locked ? 0.5 : 1 }}>
+                style={{ flex: 1, padding: "10px 12px", borderRadius: 9, border: "none", fontFamily: "var(--sans)", fontSize: 13, fontWeight: 700, background: state.mode === k ? (k === "fast" ? "var(--r)" : "var(--n)") : "transparent", color: locked ? "var(--mt)" : state.mode === k ? "#fff" : "var(--mt)", transition: "all .2s", cursor: locked ? "not-allowed" : "pointer", opacity: locked ? 0.5 : 1 }}>
                 {l}{locked && " 🔒"}
               </button>
             );
@@ -1282,10 +1282,10 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
       <div style={{ padding: "16px 20px 0", maxWidth: 520, margin: "0 auto" }}>
         <button onClick={onBack} style={{ background: "none", border: "none", fontSize: 14, color: "var(--mt)", marginBottom: 14, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: 6 }}>← Mixeur</button>
         <div style={{ marginBottom: 10 }}>
-          <span style={{ display: "inline-block", padding: "4px 10px", borderRadius: 6, background: mode === "fast" ? "#fff0ec" : "#e8edf2", color: mode === "fast" ? "var(--r)" : "var(--n)", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginRight: 6 }}>
+          <span style={{ display: "inline-block", padding: "4px 10px", borderRadius: 6, background: mode === "fast" ? "rgba(232,92,58,0.12)" : "rgba(109,40,217,0.12)", color: mode === "fast" ? "var(--r)" : "var(--n)", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginRight: 6 }}>
             {mode === "fast" ? "⚡ Fast Drama" : "🎭 Premium Suspense"}
           </span>
-          <span style={{ display: "inline-block", padding: "4px 10px", borderRadius: 6, background: "#e8edf2", color: "var(--n)", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>
+          <span style={{ display: "inline-block", padding: "4px 10px", borderRadius: 6, background: "rgba(109,40,217,0.12)", color: "var(--n)", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>
             ⏱ {DUR_LABEL[duree]}/ép.
           </span>
         </div>
@@ -1354,7 +1354,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
               {/* Checklist plateau */}
               <div style={{ background: "var(--card)", border: "1.5px solid var(--bo)", borderRadius: 12, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", margin: 0 }}>✅ Checklist plateau</p>
-                <p style={{ fontSize: 11, color: "#3a5040", margin: 0 }}>{Object.values(checked).filter(Boolean).length}/{(prod.decors||[]).length + (prod.costumes||[]).length + (prod.lieux||[]).length} préparés</p>
+                <p style={{ fontSize: 11, color: "var(--mt)", margin: 0 }}>{Object.values(checked).filter(Boolean).length}/{(prod.decors||[]).length + (prod.costumes||[]).length + (prod.lieux||[]).length} préparés</p>
               </div>
 
               {/* Décors */}
@@ -1520,9 +1520,9 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
               {tradLoading && <p style={{ fontSize: 12, color: "var(--mt)", marginTop: 6 }}>Traduction en cours…</p>}
             </div>
 
-            <div style={{ background: "#fff5f2", border: "2px solid var(--r)", borderRadius: 14, padding: 16, marginBottom: 16 }}>
+            <div style={{ background: "rgba(232,92,58,0.1)", border: "2px solid var(--r)", borderRadius: 14, padding: 16, marginBottom: 16 }}>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", marginBottom: 8 }}>⚡ Hook — 3 premières secondes</p>
-              <p style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.4, marginBottom: 8 }}>{displayScript.hook_scene?.texte}</p>
+              <p style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.4, marginBottom: 8, color: "var(--tx)" }}>{displayScript.hook_scene?.texte}</p>
               <p style={{ fontSize: 12, color: "var(--r)", fontStyle: "italic" }}>[9:16] {displayScript.hook_scene?.visuel_916}</p>
             </div>
             <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--mt)", marginBottom: 10 }}>
@@ -1532,7 +1532,7 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
               <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: 14, borderLeft: "3px solid var(--bo)", marginBottom: 10 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                   <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--n)" }}>{s.perso}</p>
-                  {s.jeu && <span style={{ fontSize: 10, background: "#f0f4f0", color: "var(--n)", padding: "2px 8px", borderRadius: 20, fontStyle: "italic" }}>{s.jeu}</span>}
+                  {s.jeu && <span style={{ fontSize: 10, background: "rgba(109,40,217,0.12)", color: "var(--n)", padding: "2px 8px", borderRadius: 20, fontStyle: "italic", border: "1px solid rgba(109,40,217,0.2)" }}>{s.jeu}</span>}
                 </div>
                 <p style={{ fontSize: 14, lineHeight: 1.55, marginBottom: 6, fontWeight: 500 }}>{s.dialogue}</p>
                 <p style={{ fontSize: 12, color: "var(--mt)", fontStyle: "italic" }}>[9:16] {s.visuel_916}</p>
@@ -1591,7 +1591,7 @@ function VariationsView({ variations, loading, ep, onSelect, onBack }) {
                 Choisir →
               </button>
             </div>
-            <div style={{ background: "#fff5f2", borderRadius: 10, padding: 12, marginBottom: 10 }}>
+            <div style={{ background: "rgba(232,92,58,0.1)", border: "1.5px solid rgba(232,92,58,0.25)", borderRadius: 10, padding: 12, marginBottom: 10 }}>
               <p style={{ fontSize: 10, fontWeight: 700, color: "var(--r)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6 }}>⚡ Hook</p>
               <p style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4 }}>{v.hook_scene?.texte}</p>
             </div>
