@@ -297,12 +297,6 @@ const UPSELL_CONTENT = {
     desc: "Tension psychologique, sous-texte, silences lourds. Des dialogues au niveau des meilleures séries Netflix — pour une audience qui veut plus que du divertissement.",
     feature: "Mode de génération Premium",
   },
-  titres: {
-    icon: "🔥",
-    title: "Titres viraux",
-    desc: "5 titres alternatifs avec score de viralité, accroche émotionnelle et analyse psychologique de l'impact. Choisis celui qui cartonne.",
-    feature: "Générateur de titres viraux",
-  },
   variations: {
     icon: "🎲",
     title: "4 variations du script",
@@ -330,7 +324,7 @@ function UpsellModal({ feature, onUpgrade, onClose }) {
         <div style={{ background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.18)", borderRadius: 14, padding: "16px 18px", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <div>
             <p style={{ fontSize: 13, fontWeight: 700, color: "var(--tx)", marginBottom: 2 }}>Plan Premium</p>
-            <p style={{ fontSize: 12, color: "var(--mt)" }}>Fast Drama + Premium Suspense, 90 épisodes, 4 variations, titres viraux</p>
+            <p style={{ fontSize: 12, color: "var(--mt)" }}>Fast Drama + Premium Suspense, 90 épisodes, 4 variations, fiche prod</p>
           </div>
           <div style={{ textAlign: "right", flexShrink: 0 }}>
             <p style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "var(--tx)", lineHeight: 1 }}>19€</p>
@@ -989,7 +983,7 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
           <div style={{ background: "var(--n)", borderRadius: 14, padding: "14px 16px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 2 }}>🎭 Passer à Premium</p>
-              <p style={{ fontSize: 12, color: "#8a9a8e", lineHeight: 1.4 }}>90 ép., 4 variations, titres viraux</p>
+              <p style={{ fontSize: 12, color: "#8a9a8e", lineHeight: 1.4 }}>90 ép., 4 variations, fiche prod</p>
             </div>
             <button onClick={onUpgrade} style={{ background: "var(--r)", color: "#fff", border: "none", padding: "10px 16px", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "var(--sans)", flexShrink: 0 }}>
               Upgrade →
@@ -1125,8 +1119,6 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
 
 function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, customerId, plan, onUpsell, tourStep, onTourDismiss }) {
   const [tab, setTab] = useState("bible");
-  const [titres, setTitres] = useState(null);
-  const [loadingTitres, setLoadingTitres] = useState(false);
   const [prod, setProd] = useState(null);
   const [loadingProd, setLoadingProd] = useState(false);
   const [checked, setChecked] = useState({});
@@ -1186,19 +1178,6 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
     URL.revokeObjectURL(url);
   };
 
-  const genTitres = async () => {
-    setTab("titres");
-    setLoadingTitres(true);
-    try {
-      const r = await gen("titres", { titre: bible.titre, logline: bible.logline, pitch: bible.pitch, mode }, customerId);
-      setTitres(r.titres || []);
-    } catch (e) {
-      console.error(e);
-      setTitres([]);
-    }
-    setLoadingTitres(false);
-  };
-
   const genProd = async () => {
     setTab("prod");
     if (prod) return;
@@ -1241,21 +1220,12 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
           {[
             { k: "bible", l: "Bible" },
             { k: "seq", l: `${episodes.length} ép.` },
-            { k: "titres", l: plan === "standard" ? "🔒 Titres" : "🔥 Titres" },
             { k: "prod", l: "🎬 Prod" },
-          ].map(({ k, l }) => {
-            const locked = k === "titres" && plan === "standard";
-            const onClick = locked
-              ? () => onUpsell?.("titres")
-              : k === "titres" ? (titres ? () => setTab("titres") : genTitres)
-              : k === "prod" ? genProd
-              : () => setTab(k);
-            return (
-              <button key={k} onClick={onClick}
-                style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: locked ? "not-allowed" : "pointer", fontSize: 12, fontWeight: 700, color: locked ? "var(--bo)" : tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k && !locked ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}
-              </button>
-            );
-          })}
+          ].map(({ k, l }) => (
+            <button key={k} onClick={k === "prod" ? genProd : () => setTab(k)}
+              style={{ flex: 1, padding: "12px 0", border: "none", background: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, color: tab === k ? "var(--r)" : "var(--mt)", borderBottom: `2px solid ${tab === k ? "var(--r)" : "transparent"}`, marginBottom: -2, fontFamily: "var(--sans)" }}>{l}
+            </button>
+          ))}
         </div>
       </div>
       <div style={{ padding: "20px", maxWidth: 520, margin: "0 auto" }}>
@@ -1288,26 +1258,6 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
               {tourStep === 1 && <div style={{ position: "absolute", top: 8, right: -8 }}><TourBeacon text="L'IA génère une affiche cinématique 9:16 pour ta série (DALL-E 3)" side="left" onDismiss={() => {}} /></div>}
             </div>
           </>
-        ) : tab === "titres" ? (
-          <>
-            {loadingTitres ? (
-              <div style={{ textAlign: "center", padding: "40px 0", color: "var(--mt)" }}>
-                <div style={{ fontSize: 28, marginBottom: 12, animation: "pulse 1.2s infinite" }}>🔥</div>
-                <p>Analyse de la viralité…</p>
-              </div>
-            ) : (titres || []).map((t, i) => (
-              <div key={i} style={{ background: "var(--card)", borderRadius: 14, padding: 16, marginBottom: 12, border: "1.5px solid var(--bo)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <h3 style={{ fontFamily: "var(--serif)", fontSize: 17, fontWeight: 800, flex: 1 }}>{t.titre}</h3>
-                  <div style={{ background: t.score >= 90 ? "var(--r)" : t.score >= 80 ? "#f59e0b" : "var(--n)", color: "#fff", borderRadius: 8, padding: "4px 10px", fontSize: 13, fontWeight: 800, marginLeft: 10, flexShrink: 0 }}>
-                    {t.score}
-                  </div>
-                </div>
-                <p style={{ fontSize: 13, fontWeight: 600, color: "var(--tx)", marginBottom: 4 }}>« {t.accroche} »</p>
-                <p style={{ fontSize: 12, color: "var(--mt)", lineHeight: 1.5 }}>{t.pourquoi}</p>
-              </div>
-            ))}
-          </>
         ) : tab === "prod" ? (
           loadingProd ? (
             <div style={{ textAlign: "center", padding: "40px 0", color: "var(--mt)" }}>
@@ -1317,7 +1267,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
           ) : prod ? (
             <>
               {/* Checklist plateau */}
-              <div style={{ background: "var(--tx)", borderRadius: 12, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ background: "var(--card)", border: "1.5px solid var(--bo)", borderRadius: 12, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", margin: 0 }}>✅ Checklist plateau</p>
                 <p style={{ fontSize: 11, color: "#3a5040", margin: 0 }}>{Object.values(checked).filter(Boolean).length}/{(prod.decors||[]).length + (prod.costumes||[]).length + (prod.lieux||[]).length} préparés</p>
               </div>
@@ -1413,7 +1363,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
   );
 }
 
-function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onBack, onExport, onVariations, plan, customerId, onUpsell, tourStep, onTourDismiss }) {
+function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onBack, onExport, onVariations, plan, customerId, onUpsell, tourStep, onTourDismiss, epIdx, episodesTotal, onPrevEp, onNextEp }) {
   const [showTrad, setShowTrad] = useState(false);
   const [tradLoading, setTradLoading] = useState(false);
   const [tradScript, setTradScript] = useState(null);
@@ -1444,7 +1394,13 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
       <div style={{ padding: "16px 20px 0", maxWidth: 520, margin: "0 auto" }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", fontSize: 14, color: "var(--mt)", marginBottom: 14, cursor: "pointer", padding: 0 }}>← {bible?.titre}</button>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <button onClick={onBack} style={{ background: "none", border: "none", fontSize: 14, color: "var(--mt)", cursor: "pointer", padding: 0 }}>← {bible?.titre}</button>
+          <div style={{ display: "flex", gap: 6 }}>
+            <button onClick={onPrevEp} disabled={epIdx <= 0 || loading} style={{ background: "var(--card)", border: "1.5px solid var(--bo)", color: epIdx <= 0 ? "var(--bo)" : "var(--mt)", borderRadius: 8, padding: "6px 12px", fontSize: 13, fontWeight: 600, cursor: epIdx <= 0 ? "default" : "pointer", fontFamily: "var(--sans)", opacity: epIdx <= 0 ? 0.4 : 1 }}>← Préc.</button>
+            <button onClick={onNextEp} disabled={epIdx >= episodesTotal - 1 || loading} style={{ background: "var(--card)", border: "1.5px solid var(--bo)", color: epIdx >= episodesTotal - 1 ? "var(--bo)" : "var(--mt)", borderRadius: 8, padding: "6px 12px", fontSize: 13, fontWeight: 600, cursor: epIdx >= episodesTotal - 1 ? "default" : "pointer", fontFamily: "var(--sans)", opacity: epIdx >= episodesTotal - 1 ? 0.4 : 1 }}>Suiv. →</button>
+          </div>
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
           <span style={{ background: "var(--r)", color: "#fff", borderRadius: 6, padding: "4px 10px", fontSize: 11, fontWeight: 700 }}>ÉP. {ep?.numero}</span>
           <span style={{ background: "var(--n)", color: "#fff", borderRadius: 6, padding: "4px 10px", fontSize: 11, fontWeight: 700 }}>⏱ {DUR_LABEL[duree]}</span>
@@ -1497,9 +1453,9 @@ function StudioView({ bible, ep, script, loading, duree, onEdit, onTournage, onB
                 <p style={{ fontSize: 12, color: "var(--mt)", fontStyle: "italic" }}>[9:16] {s.visuel_916}</p>
               </div>
             ))}
-            <div style={{ background: "var(--tx)", borderRadius: 14, padding: 16, marginBottom: 20 }}>
+            <div style={{ background: "#0f0f1a", borderRadius: 14, padding: 16, marginBottom: 20 }}>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", marginBottom: 8 }}>🎬 Cliffhanger</p>
-              <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 8, lineHeight: 1.4 }}>{displayScript.cliffhanger_scene?.texte}</p>
+              <p style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 8, lineHeight: 1.4 }}>{displayScript.cliffhanger_scene?.texte}</p>
               <p style={{ fontSize: 12, color: "var(--r)", fontStyle: "italic", marginBottom: displayScript.cliffhanger_scene?.label ? 10 : 0 }}>[9:16] {displayScript.cliffhanger_scene?.visuel_916}</p>
               {displayScript.cliffhanger_scene?.label && (
                 <span style={{ display: "inline-block", background: "var(--r)", borderRadius: 6, padding: "6px 12px", fontSize: 12, fontWeight: 800, color: "#fff", letterSpacing: 1, textTransform: "uppercase" }}>{displayScript.cliffhanger_scene.label}</span>
@@ -2125,7 +2081,7 @@ export default function App() {
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={(idx) => { setTourStep(t => t === 1 ? 2 : t); openEp(idx); }} onBack={() => setScreen("mix")} onAffiche={() => setScreen("affiche")} customerId={customerId} plan={plan} onUpsell={setUpsell} tourStep={tourStep} onTourDismiss={() => setTourStep(0)} />}
       {screen === "affiche" && bible && <AfficheView bible={bible} episodes={episodes} mode={state.mode} onBack={() => setScreen("bible")} customerId={customerId} />}
-      {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => { setTourStep(t => t === 3 ? 4 : t); try { localStorage.setItem("vs_tour_done","1"); } catch {} setScreen("tour"); }} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} customerId={customerId} onUpsell={setUpsell} tourStep={tourStep} onTourDismiss={() => setTourStep(0)} />}
+      {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => { setTourStep(t => t === 3 ? 4 : t); try { localStorage.setItem("vs_tour_done","1"); } catch {} setScreen("tour"); }} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} customerId={customerId} onUpsell={setUpsell} tourStep={tourStep} onTourDismiss={() => setTourStep(0)} epIdx={epIdx} episodesTotal={episodes.length} onPrevEp={() => openEp(epIdx - 1)} onNextEp={() => openEp(epIdx + 1)} />}
       {screen === "variations" && <VariationsView variations={variations} loading={loadingVariations} ep={episodes[epIdx]} onSelect={selectVariation} onBack={() => setScreen("studio")} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
 
