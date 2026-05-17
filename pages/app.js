@@ -390,10 +390,10 @@ function ParrainageView({ customerId, onBack }) {
 
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
-      <div style={{ background: "var(--tx)", padding: "28px 20px 24px" }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", color: "#3a5040", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
+      <div style={{ background: "#0f0f1a", padding: "28px 20px 24px" }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.45)", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
         <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>Parrainage</h1>
-        <p style={{ fontSize: 12, color: "#3a5040", marginTop: 4 }}>Gagne 1 mois offert par ami parrainé</p>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>Gagne 1 mois offert par ami parrainé</p>
       </div>
 
       <div style={{ padding: "24px 20px", maxWidth: 520, margin: "0 auto" }}>
@@ -416,10 +416,10 @@ function ParrainageView({ customerId, onBack }) {
         </div>
 
         {/* Ton code */}
-        <div style={{ background: "var(--tx)", borderRadius: 16, padding: 24, marginBottom: 20, textAlign: "center" }}>
+        <div style={{ background: "#0f0f1a", borderRadius: 16, padding: 24, marginBottom: 20, textAlign: "center" }}>
           <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", marginBottom: 12 }}>Ton code de parrainage</p>
           {loading ? (
-            <p style={{ color: "#3a5040", fontSize: 14 }}>Chargement…</p>
+            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 14 }}>Chargement…</p>
           ) : code ? (
             <>
               <div style={{ fontFamily: "var(--serif)", fontSize: 36, fontWeight: 900, color: "#fff", letterSpacing: 4, marginBottom: 16 }}>{code}</div>
@@ -506,12 +506,12 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
 
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
-      <div style={{ background: "var(--tx)", padding: "28px 20px 24px" }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", color: "#3a5040", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
+      <div style={{ background: "#0f0f1a", padding: "28px 20px 24px" }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.45)", fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 14 }}>← Retour</button>
         <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>
-          Mes Séries {!loadingCloud && <span style={{ fontSize: 16, fontWeight: 400, color: "#3a5040" }}>({total})</span>}
+          Mes Séries {!loadingCloud && <span style={{ fontSize: 16, fontWeight: 400, color: "rgba(255,255,255,0.45)" }}>({total})</span>}
         </h1>
-        <p style={{ fontSize: 12, color: "#3a5040", marginTop: 6 }}>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 6 }}>
           {loadingCloud ? "Chargement du cloud…" : `${cloud.length} cloud · ${localOnly.length} local`}
         </p>
       </div>
@@ -1037,20 +1037,20 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
 
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
-      <div style={{ background: "var(--tx)", padding: "28px 20px 24px" }}>
+      <div style={{ background: "#0f0f1a", padding: "28px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>VERTICAL STUDIO</h1>
-            <p style={{ fontSize: 12, color: "#3a5040", marginTop: 2 }}>Micro-dramas · 1 à 2 min · 9:16</p>
+            <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>VERTICALCLAP</h1>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>Micro-dramas · 1 à 2 min · 9:16</p>
           </div>
           <div className="header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <button onClick={onShowOnboarding} style={{ background: "#1a2a1e", border: "1px solid #2a3a2e", color: "#3a5040", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
+            <button onClick={onShowOnboarding} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.5)", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
             <div style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--r)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ color: "#fff", fontSize: 9, fontWeight: 800, letterSpacing: 0.5 }}>REC</span>
             </div>
           </div>
         </div>
-        <div style={{ display: "flex", background: "#1a2a1e", borderRadius: 12, padding: 4 }}>
+        <div style={{ display: "flex", background: "rgba(255,255,255,0.06)", borderRadius: 12, padding: 4 }}>
           {[{ k: "fast", l: "⚡ Fast Drama" }, { k: "premium", l: "🎭 Premium Suspense" }].map(({ k, l }) => {
             const locked = k === "premium" && plan === "standard";
             return (
@@ -1212,7 +1212,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
   const exportSerie = () => {
     const lines = [];
     const sep = (c = "─", n = 50) => lines.push(c.repeat(n));
-    lines.push("VERTICAL STUDIO — Export série");
+    lines.push("VERTICALCLAP — Export série");
     lines.push(`Généré le ${new Date().toLocaleDateString("fr-FR")}`);
     sep("═");
     lines.push("");
@@ -1326,7 +1326,7 @@ function BibleView({ bible, episodes, mode, duree, onEp, onBack, onAffiche, cust
                 <p style={{ fontSize: 13, color: "var(--mt)", lineHeight: 1.5 }}>🔒 {p.secret}</p>
               </div>
             ))}
-            <div style={{ background: "var(--tx)", borderRadius: 12, padding: 16, marginBottom: 20, marginTop: 4 }}>
+            <div style={{ background: "#0f0f1a", borderRadius: 12, padding: 16, marginBottom: 20, marginTop: 4 }}>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--r)", marginBottom: 8 }}>Question centrale</p>
               <p style={{ fontFamily: "var(--serif)", fontSize: 15, fontStyle: "italic", color: "#fff", lineHeight: 1.5 }}>« {bible.tension_centrale} »</p>
             </div>
@@ -1602,7 +1602,7 @@ function VariationsView({ variations, loading, ep, onSelect, onBack }) {
               </div>
             ))}
             {(v.scenes || []).length > 2 && <p style={{ fontSize: 12, color: "var(--mt)", fontStyle: "italic" }}>+ {v.scenes.length - 2} réplique(s)…</p>}
-            <div style={{ background: "var(--tx)", borderRadius: 10, padding: 12, marginTop: 10 }}>
+            <div style={{ background: "#0f0f1a", borderRadius: 10, padding: 12, marginTop: 10 }}>
               <p style={{ fontSize: 10, fontWeight: 700, color: "var(--r)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6 }}>🎬 Cliffhanger</p>
               <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", lineHeight: 1.4 }}>{v.cliffhanger_scene?.texte}</p>
             </div>
@@ -2024,7 +2024,7 @@ export default function App() {
         doc.saveGraphicsState();
         doc.setGState(new doc.GState({ opacity: 0.07 }));
         doc.setFontSize(38); doc.setFont("helvetica", "bold"); doc.setTextColor(232, 92, 58);
-        doc.text("VERTICAL STUDIO", W / 2, 148, { align: "center", angle: 45 });
+        doc.text("VERTICALCLAP", W / 2, 148, { align: "center", angle: 45 });
         doc.restoreGraphicsState();
         doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.setTextColor(180, 180, 180);
         doc.text("vertical-studio.app", W / 2, 293, { align: "center" });
@@ -2034,7 +2034,7 @@ export default function App() {
     doc.setFillColor(...RED);
     doc.rect(0, 0, W, 12, "F");
     doc.setFontSize(8); doc.setFont("helvetica", "bold"); doc.setTextColor(255, 255, 255);
-    doc.text("VERTICAL STUDIO", margin, 8);
+    doc.text("VERTICALCLAP", margin, 8);
     doc.text(`${b.titre} — Ép. ${ep.numero}`, W - margin, 8, { align: "right" });
     y = 22;
 
