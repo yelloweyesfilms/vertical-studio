@@ -1041,14 +1041,14 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
 
   return (
     <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
-      <div style={{ background: "linear-gradient(180deg, #0f0f1a 0%, #0a0a16 100%)", padding: "28px 20px 24px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -40, right: -40, width: 160, height: 160, borderRadius: "50%", background: "radial-gradient(circle, rgba(232,92,58,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -20, left: -20, width: 120, height: 120, borderRadius: "50%", background: "radial-gradient(circle, rgba(168,85,247,0.10) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, rgba(232,92,58,0.4), rgba(168,85,247,0.4), transparent)" }} />
+      <div style={{ background: state.mode === "premium" ? "linear-gradient(180deg, #0d0a1a 0%, #0a0814 100%)" : "linear-gradient(180deg, #0f0f1a 0%, #0a0a16 100%)", padding: "28px 20px 24px", position: "relative", overflow: "hidden", transition: "background 0.4s" }}>
+        <div style={{ position: "absolute", top: -40, right: -40, width: 160, height: 160, borderRadius: "50%", background: state.mode === "premium" ? "radial-gradient(circle, rgba(109,40,217,0.18) 0%, transparent 70%)" : "radial-gradient(circle, rgba(232,92,58,0.12) 0%, transparent 70%)", pointerEvents: "none", transition: "background 0.4s" }} />
+        <div style={{ position: "absolute", bottom: -20, left: -20, width: 120, height: 120, borderRadius: "50%", background: state.mode === "premium" ? "radial-gradient(circle, rgba(168,85,247,0.14) 0%, transparent 70%)" : "radial-gradient(circle, rgba(232,92,58,0.08) 0%, transparent 70%)", pointerEvents: "none", transition: "background 0.4s" }} />
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1, background: state.mode === "premium" ? "linear-gradient(90deg, rgba(109,40,217,0.6), rgba(168,85,247,0.4), transparent)" : "linear-gradient(90deg, rgba(232,92,58,0.4), rgba(168,85,247,0.4), transparent)", transition: "background 0.4s" }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, position: "relative" }}>
           <div>
             <h1 style={{ fontFamily: "var(--serif)", fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>VERTICALCLAP</h1>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>Micro-dramas · 1 à 2 min · 9:16</p>
+            <p style={{ fontSize: 12, color: state.mode === "premium" ? "rgba(168,85,247,0.7)" : "rgba(255,255,255,0.45)", marginTop: 2, transition: "color 0.3s" }}>{state.mode === "premium" ? "🎭 Premium Suspense · Tension psychologique" : "⚡ Fast Drama · 1 à 2 min · 9:16"}</p>
           </div>
           <div className="header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <button onClick={onShowOnboarding} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.5)", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--sans)" }}>?</button>
@@ -1072,8 +1072,8 @@ function Mixeur({ state, set, onGen, onMesSeries, hasSeries, plan, onShowOnboard
 
       <div style={{ padding: "24px 20px", maxWidth: 520, margin: "0 auto", position: "relative" }}>
         {/* Subtle gradient blobs for visual depth */}
-        <div style={{ position: "fixed", top: 0, right: 0, width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle, rgba(232,92,58,0.06) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
-        <div style={{ position: "fixed", bottom: 80, left: -60, width: 280, height: 280, borderRadius: "50%", background: "radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
+        <div style={{ position: "fixed", top: 0, right: 0, width: 320, height: 320, borderRadius: "50%", background: state.mode === "premium" ? "radial-gradient(circle, rgba(109,40,217,0.07) 0%, transparent 70%)" : "radial-gradient(circle, rgba(232,92,58,0.06) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0, transition: "background 0.5s" }} />
+        <div style={{ position: "fixed", bottom: 80, left: -60, width: 280, height: 280, borderRadius: "50%", background: state.mode === "premium" ? "radial-gradient(circle, rgba(168,85,247,0.07) 0%, transparent 70%)" : "radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0, transition: "background 0.5s" }} />
         {plan === "standard" && (
           <div style={{ background: "var(--n)", borderRadius: 14, padding: "14px 16px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
             <div>
