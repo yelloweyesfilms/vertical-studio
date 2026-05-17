@@ -601,31 +601,77 @@ function MesSeriesView({ onLoad, onBack, customerId }) {
 // ── SCREENS ──────────────────────────────────────────────────
 
 // ── AFFICHE ──────────────────────────────────────────────────
-function drawPoster(canvas, bible, episodes, mode) {
+function drawPhoneIcon(ctx, x, y, size) {
+  const pw = Math.round(size * 26 / 37);
+  const ph = size;
+  const pr = size * 5.5 / 37;
+  const g = ctx.createLinearGradient(x, y, x + pw, y + ph);
+  g.addColorStop(0, "#ff8c42");
+  g.addColorStop(1, "#a855f7");
+  roundRect(ctx, x, y, pw, ph, pr);
+  ctx.fillStyle = g;
+  ctx.fill();
+  roundRect(ctx, x + size * 4 / 37, y + size * 4 / 37, size * 18 / 37, size * 29 / 37, size * 3 / 37);
+  ctx.fillStyle = "rgba(0,0,0,0.28)";
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x + size * 10 / 37, y + size * 13 / 37);
+  ctx.lineTo(x + size * 10 / 37, y + size * 24 / 37);
+  ctx.lineTo(x + size * 20 / 37, y + size * 18.5 / 37);
+  ctx.closePath();
+  ctx.fillStyle = "white";
+  ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  ctx.fillRect(x + size * 4 / 37, y + size * 31 / 37, size * 6 / 37, size * 1.5 / 37);
+  ctx.fillStyle = "rgba(255,255,255,0.22)";
+  ctx.fillRect(x + size * 12 / 37, y + size * 31 / 37, size * 10 / 37, size * 1.5 / 37);
+}
+
+function drawPoster(canvas, bible, episodes, mode, genre) {
   const ctx = canvas.getContext("2d");
   const W = canvas.width, H = canvas.height;
-  const PAD = 52, RED = "#E85C3A", DARK = "#0F1A12", WHITE = "#fff", GRAY = "#6a7a6e", LGRAY = "#9aaa9e";
+  const PAD = 52;
+  const RED = "#E85C3A", ORANGE = "#ff8c42", VIO = "#a855f7";
+  const WHITE = "#f1f5f9", MUTED = "#94a3b8", DIM = "rgba(255,255,255,0.35)";
 
   // Fond
-  ctx.fillStyle = DARK;
+  ctx.fillStyle = "#09090f";
   ctx.fillRect(0, 0, W, H);
 
-  // Grain de texture subtil
-  for (let i = 0; i < 8000; i++) {
-    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.018})`;
+  // Glow orange haut-gauche
+  const gO = ctx.createRadialGradient(PAD, 80, 0, PAD, 80, 320);
+  gO.addColorStop(0, "rgba(232,92,58,0.18)");
+  gO.addColorStop(1, "rgba(232,92,58,0)");
+  ctx.fillStyle = gO;
+  ctx.fillRect(0, 0, W, H);
+
+  // Glow violet bas-droite
+  const gV = ctx.createRadialGradient(W - PAD, H - 200, 0, W - PAD, H - 200, 360);
+  gV.addColorStop(0, "rgba(168,85,247,0.18)");
+  gV.addColorStop(1, "rgba(168,85,247,0)");
+  ctx.fillStyle = gV;
+  ctx.fillRect(0, 0, W, H);
+
+  // Grain subtil
+  for (let i = 0; i < 6000; i++) {
+    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.014})`;
     ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
   }
 
-  // Barre rouge top
-  ctx.fillStyle = RED;
+  // Barre dégradée orange→violet top (7px)
+  const barG = ctx.createLinearGradient(0, 0, W, 0);
+  barG.addColorStop(0, ORANGE);
+  barG.addColorStop(0.5, RED);
+  barG.addColorStop(1, VIO);
+  ctx.fillStyle = barG;
   ctx.fillRect(0, 0, W, 7);
 
-  // Gradient bas
-  const grad = ctx.createLinearGradient(0, H * 0.6, 0, H);
-  grad.addColorStop(0, "rgba(15,26,18,0)");
-  grad.addColorStop(1, "rgba(5,8,6,0.95)");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, H * 0.6, W, H * 0.4);
+  // Fade bas
+  const fadeG = ctx.createLinearGradient(0, H * 0.58, 0, H);
+  fadeG.addColorStop(0, "rgba(9,9,15,0)");
+  fadeG.addColorStop(1, "rgba(9,9,15,0.98)");
+  ctx.fillStyle = fadeG;
+  ctx.fillRect(0, H * 0.58, W, H * 0.42);
 
   const wrap = (text, x, y, maxW, lineH, font, color, align = "left") => {
     ctx.font = font;
@@ -644,99 +690,138 @@ function drawPoster(canvas, bible, episodes, mode) {
     return lines.length * lineH;
   };
 
-  let y = 56;
+  let y = 44;
 
-  // Logo
-  ctx.font = "600 11px sans-serif";
-  ctx.fillStyle = GRAY;
+  // ── LOGO (téléphone + texte) ──────────────────────────────
+  const ICON_H = 32;
+  drawPhoneIcon(ctx, PAD, y, ICON_H);
+  const iconW = Math.round(ICON_H * 26 / 37);
+  ctx.font = "500 9px 'Space Grotesk', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.32)";
   ctx.textAlign = "left";
-  ctx.fillText("STUDIO  VERTICAL", PAD, y);
+  ctx.fillText("STUDIO", PAD + iconW + 8, y + 10);
+  ctx.font = "900 15px Georgia, serif";
+  ctx.fillStyle = "rgba(255,255,255,0.72)";
+  ctx.fillText("Vertical", PAD + iconW + 8, y + 26);
 
-  // Épisodes badge
+  // Épisodes badge top-right
   ctx.font = "700 11px sans-serif";
-  ctx.fillStyle = GRAY;
+  ctx.fillStyle = "rgba(255,255,255,0.22)";
   ctx.textAlign = "right";
-  ctx.fillText(`${episodes.length} ÉP.`, W - PAD, y);
+  ctx.fillText(`${episodes.length} ÉP. · 9:16`, W - PAD, y + 20);
   ctx.textAlign = "left";
 
-  y += 50;
+  y += ICON_H + 36;
 
-  // Mode badge
+  // ── MODE BADGE ────────────────────────────────────────────
   const modeLabel = mode === "fast" ? "⚡ FAST DRAMA" : "🎭 PREMIUM SUSPENSE";
-  const badgeW = ctx.measureText(modeLabel).width + 32;
-  ctx.fillStyle = mode === "fast" ? "#2a1a14" : "#1a2030";
-  roundRect(ctx, PAD, y - 16, badgeW, 28, 6);
+  ctx.font = "700 10px sans-serif";
+  const badgeW = ctx.measureText(modeLabel).width + 28;
+  const badgeBg = ctx.createLinearGradient(PAD, 0, PAD + badgeW, 0);
+  badgeBg.addColorStop(0, mode === "fast" ? "rgba(232,92,58,0.15)" : "rgba(168,85,247,0.15)");
+  badgeBg.addColorStop(1, "rgba(0,0,0,0)");
+  roundRect(ctx, PAD, y - 14, badgeW, 24, 6);
+  ctx.fillStyle = badgeBg;
   ctx.fill();
-  ctx.font = "700 11px sans-serif";
-  ctx.fillStyle = mode === "fast" ? RED : "#7090c0";
-  ctx.fillText(modeLabel, PAD + 16, y + 4);
+  ctx.strokeStyle = mode === "fast" ? "rgba(232,92,58,0.35)" : "rgba(168,85,247,0.35)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = mode === "fast" ? RED : VIO;
+  ctx.fillText(modeLabel, PAD + 14, y + 3);
 
-  y += 52;
+  y += 44;
 
-  // Titre
-  const titleSize = bible.titre.length > 16 ? 68 : 80;
-  y += wrap(bible.titre.toUpperCase(), PAD, y, W - PAD * 2, titleSize * 1.1, `900 ${titleSize}px Georgia, serif`, WHITE);
-  y += 10;
+  // ── GENRE ─────────────────────────────────────────────────
+  const genreText = (genre || "").toUpperCase() || (mode === "fast" ? "FAST DRAMA" : "PREMIUM SUSPENSE");
+  ctx.font = "700 10px sans-serif";
+  ctx.fillStyle = ORANGE;
+  ctx.fillText(genreText, PAD, y);
+  y += 22;
 
-  // Ligne rouge
-  ctx.fillStyle = RED;
-  ctx.fillRect(PAD, y, 60, 4);
+  // ── TITRE ─────────────────────────────────────────────────
+  const titleSize = bible.titre.length > 16 ? 66 : 80;
+  y += wrap(bible.titre.toUpperCase(), PAD, y, W - PAD * 2, titleSize * 1.08, `900 ${titleSize}px Georgia, serif`, WHITE);
+  y += 12;
+
+  // Ligne dégradée orange→violet
+  const lineG = ctx.createLinearGradient(PAD, 0, PAD + 80, 0);
+  lineG.addColorStop(0, ORANGE);
+  lineG.addColorStop(1, VIO);
+  ctx.fillStyle = lineG;
+  ctx.fillRect(PAD, y, 80, 4);
   y += 28;
 
-  // Logline
-  y += wrap(`« ${bible.logline} »`, PAD, y, W - PAD * 2, 30, "italic 19px Georgia, serif", LGRAY);
-  y += 32;
+  // ── LOGLINE ───────────────────────────────────────────────
+  y += wrap(`« ${bible.logline} »`, PAD, y, W - PAD * 2, 30, "italic 19px Georgia, serif", MUTED);
+  y += 30;
 
   // Séparateur
-  ctx.fillStyle = "#1e2e22";
+  const sepG = ctx.createLinearGradient(PAD, 0, W - PAD, 0);
+  sepG.addColorStop(0, "rgba(232,92,58,0.25)");
+  sepG.addColorStop(0.5, "rgba(168,85,247,0.2)");
+  sepG.addColorStop(1, "rgba(168,85,247,0.05)");
+  ctx.fillStyle = sepG;
   ctx.fillRect(PAD, y, W - PAD * 2, 1);
-  y += 28;
+  y += 26;
 
-  // Personnages
-  ctx.font = "700 10px sans-serif";
-  ctx.fillStyle = RED;
+  // ── PERSONNAGES ───────────────────────────────────────────
+  ctx.font = "700 9px sans-serif";
+  ctx.fillStyle = ORANGE;
   ctx.fillText("PERSONNAGES", PAD, y);
-  y += 22;
+  y += 20;
 
   for (const p of (bible.personnages || []).slice(0, 3)) {
-    ctx.font = "700 16px Georgia, serif";
+    ctx.font = "700 15px Georgia, serif";
     ctx.fillStyle = WHITE;
     ctx.fillText(p.nom, PAD, y);
-    ctx.font = "400 13px sans-serif";
-    ctx.fillStyle = GRAY;
-    ctx.fillText(`  ${p.role} · ${p.age} ans`, PAD + ctx.measureText(p.nom).width + 4, y);
-    y += 26;
+    ctx.font = "400 12px sans-serif";
+    ctx.fillStyle = DIM;
+    ctx.fillText(`  ${p.role} · ${p.age} ans`, PAD + ctx.measureText(p.nom).width + 3, y);
+    y += 24;
   }
-  y += 16;
+  y += 14;
 
   // Séparateur
-  ctx.fillStyle = "#1e2e22";
+  ctx.fillStyle = sepG;
   ctx.fillRect(PAD, y, W - PAD * 2, 1);
-  y += 28;
+  y += 24;
 
-  // Tension centrale
-  ctx.font = "700 10px sans-serif";
-  ctx.fillStyle = RED;
+  // ── QUESTION CENTRALE ─────────────────────────────────────
+  ctx.font = "700 9px sans-serif";
+  ctx.fillStyle = VIO;
   ctx.fillText("QUESTION CENTRALE", PAD, y);
-  y += 22;
-  y += wrap(bible.tension_centrale || "", PAD, y, W - PAD * 2, 26, "italic 17px Georgia, serif", LGRAY);
-  y += 28;
+  y += 20;
+  y += wrap(bible.tension_centrale || "", PAD, y, W - PAD * 2, 26, "italic 16px Georgia, serif", MUTED);
+  y += 24;
 
-  // Accroche TikTok (grande, en bas)
-  const aY = H - 100;
-  ctx.fillStyle = "#1e2e22";
-  ctx.fillRect(PAD, aY - 20, W - PAD * 2, 1);
-  ctx.font = "700 10px sans-serif";
-  ctx.fillStyle = RED;
+  // ── ACCROCHE (zone bas) ───────────────────────────────────
+  const aY = H - 96;
+  ctx.fillStyle = sepG;
+  ctx.fillRect(PAD, aY - 18, W - PAD * 2, 1);
+  ctx.font = "700 9px sans-serif";
+  ctx.fillStyle = ORANGE;
   ctx.textAlign = "left";
-  ctx.fillText("ACCROCHE TIKTOK", PAD, aY);
-  wrap(bible.accroche || "", PAD, aY + 22, W - PAD * 2, 30, "italic bold 20px Georgia, serif", WHITE);
+  ctx.fillText("ACCROCHE", PAD, aY);
+  wrap(bible.accroche || "", PAD, aY + 20, W - PAD * 2, 30, "italic bold 19px Georgia, serif", WHITE);
 
-  // Bas: studiovertical.app
-  ctx.font = "400 11px sans-serif";
-  ctx.fillStyle = "#2a3a2e";
-  ctx.textAlign = "center";
-  ctx.fillText("studiovertical.app", W / 2, H - 22);
+  // ── BRANDING BAS ─────────────────────────────────────────
+  const bY = H - 26;
+  drawPhoneIcon(ctx, PAD, bY - 18, 20);
+  const bIconW = Math.round(20 * 26 / 37);
+  ctx.font = "500 8px sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.18)";
+  ctx.textAlign = "left";
+  ctx.fillText("STUDIO", PAD + bIconW + 6, bY - 8);
+  ctx.font = "900 11px Georgia, serif";
+  ctx.fillStyle = "rgba(255,255,255,0.3)";
+  ctx.fillText("Vertical", PAD + bIconW + 6, bY + 4);
+
+  // Site url droite
+  ctx.font = "400 10px sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.15)";
+  ctx.textAlign = "right";
+  ctx.fillText("verticalclap.app", W - PAD, bY);
+  ctx.textAlign = "left";
 }
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -753,7 +838,7 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function AfficheView({ bible, episodes, mode, onBack, customerId }) {
+function AfficheView({ bible, episodes, mode, genre, onBack, customerId }) {
   const canvasRef = useRef(null);
   const [tab, setTab] = useState("canvas");
   const [aiState, setAiState] = useState("idle"); // idle | loading | done | error
@@ -761,8 +846,8 @@ function AfficheView({ bible, episodes, mode, onBack, customerId }) {
   const [aiError, setAiError] = useState(null);
 
   useEffect(() => {
-    if (canvasRef.current) drawPoster(canvasRef.current, bible, episodes, mode);
-  }, [bible, episodes, mode]);
+    if (canvasRef.current) drawPoster(canvasRef.current, bible, episodes, mode, genre);
+  }, [bible, episodes, mode, genre]);
 
   const downloadCanvas = () => {
     canvasRef.current.toBlob(blob => {
@@ -2080,7 +2165,7 @@ export default function App() {
       {screen === "parrainage" && <ParrainageView customerId={customerId} onBack={() => setScreen("mix")} />}
       {screen === "mes-series" && <MesSeriesView onLoad={loadSerie} onBack={() => setScreen("mix")} customerId={customerId} />}
       {screen === "bible" && bible && <BibleView bible={bible} episodes={episodes} mode={state.mode} duree={state.duree} onEp={(idx) => { setTourStep(t => t === 1 ? 2 : t); openEp(idx); }} onBack={() => setScreen("mix")} onAffiche={() => setScreen("affiche")} customerId={customerId} plan={plan} onUpsell={setUpsell} tourStep={tourStep} onTourDismiss={() => setTourStep(0)} />}
-      {screen === "affiche" && bible && <AfficheView bible={bible} episodes={episodes} mode={state.mode} onBack={() => setScreen("bible")} customerId={customerId} />}
+      {screen === "affiche" && bible && <AfficheView bible={bible} episodes={episodes} mode={state.mode} genre={state.genre} onBack={() => setScreen("bible")} customerId={customerId} />}
       {screen === "studio" && <StudioView bible={bible} ep={episodes[epIdx]} script={script} loading={loading} duree={state.duree} onEdit={editScript} onTournage={() => { setTourStep(t => t === 3 ? 4 : t); try { localStorage.setItem("vs_tour_done","1"); } catch {} setScreen("tour"); }} onBack={() => setScreen("bible")} onExport={exportScript} onVariations={genVariations} plan={plan} customerId={customerId} onUpsell={setUpsell} tourStep={tourStep} onTourDismiss={() => setTourStep(0)} epIdx={epIdx} episodesTotal={episodes.length} onPrevEp={() => openEp(epIdx - 1)} onNextEp={() => openEp(epIdx + 1)} />}
       {screen === "variations" && <VariationsView variations={variations} loading={loadingVariations} ep={episodes[epIdx]} onSelect={selectVariation} onBack={() => setScreen("studio")} />}
       {screen === "tour" && <TournageView script={script} ep={episodes[epIdx]} duree={state.duree} onBack={() => setScreen("studio")} />}
