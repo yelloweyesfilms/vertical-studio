@@ -259,9 +259,9 @@ export default function Tarifs() {
                 style={{ width: "100%", background: RED, color: "#fff", border: "none", padding: "15px 0", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 10, fontFamily: "'Space Grotesk', sans-serif", boxShadow: `0 0 24px rgba(232,92,58,0.35)`, transition: "all .2s" }}>
                 {loading ? "Redirection…" : "Commencer Standard →"}
               </button>
-              <button onClick={() => startTrial("standard")} disabled={loading}
+              <button onClick={() => window.location.href = "/exemples"}
                 style={{ width: "100%", background: "none", border: `1px solid ${BORDER}`, color: MUTED, padding: "11px 0", borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif" }}>
-                Essayer 24h gratuitement →
+                Voir les exemples →
               </button>
               <div style={{ height: 1, background: BORDER, margin: "28px 0" }} />
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -300,9 +300,9 @@ export default function Tarifs() {
                 style={{ width: "100%", background: `linear-gradient(135deg, ${RED}, ${VIO})`, color: "#fff", border: "none", padding: "15px 0", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 10, fontFamily: "'Space Grotesk', sans-serif", boxShadow: `0 0 32px rgba(168,85,247,0.3), 0 0 16px rgba(232,92,58,0.2)`, transition: "all .2s" }}>
                 {loading ? "Redirection…" : "Commencer Premium →"}
               </button>
-              <button onClick={() => startTrial("premium")} disabled={loading}
+              <button onClick={() => window.location.href = "/exemples"}
                 style={{ width: "100%", background: "none", border: "1px solid rgba(168,85,247,0.25)", color: VIO, padding: "11px 0", borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif" }}>
-                Essayer 24h gratuitement →
+                Voir les exemples →
               </button>
               <div style={{ height: 1, background: "rgba(168,85,247,0.15)", margin: "28px 0" }} />
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

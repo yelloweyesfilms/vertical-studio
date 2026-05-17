@@ -952,9 +952,9 @@ export default function Landing() {
               <GlowBtn onClick={() => startCheckout("standard", "pricing")} disabled={loading} style={{ width: "100%", fontSize: 15, padding: 16, marginBottom: 10 }}>
                 {loading ? "Redirection…" : "Commencer →"}
               </GlowBtn>
-              <button onClick={() => startCheckout("standard", "pricing_trial", { trial: true })} disabled={loading}
+              <button onClick={() => window.location.href = "/exemples"} disabled={loading}
                 style={{ width: "100%", background: "none", border: `1px solid ${BORDER}`, color: MUTED, padding: "12px 0", borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif" }}>
-                Essayer 24h gratuitement →
+                Voir les exemples →
               </button>
             </div>
 
@@ -981,9 +981,9 @@ export default function Landing() {
               <GlowBtn onClick={() => startCheckout("premium", "pricing")} disabled={loading} gradient style={{ width: "100%", fontSize: 15, padding: 16, marginBottom: 10 }}>
                 {loading ? "Redirection…" : "Commencer Premium →"}
               </GlowBtn>
-              <button onClick={() => startCheckout("premium", "pricing_trial", { trial: true })} disabled={loading}
+              <button onClick={() => window.location.href = "/exemples"}
                 style={{ width: "100%", background: "none", border: `1px solid rgba(168,85,247,0.25)`, color: VIO, padding: "12px 0", borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif" }}>
-                Essayer 24h gratuitement →
+                Voir les exemples →
               </button>
             </div>
           </div>
