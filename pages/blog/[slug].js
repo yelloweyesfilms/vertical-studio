@@ -125,7 +125,7 @@ export default function BlogPost({ post, otherPosts }) {
           <div style={{ background: "rgba(168,85,247,0.05)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 24, padding: "36px", textAlign: "center", margin: "48px 0" }}>
             <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 900, color: TEXT, marginBottom: 12, letterSpacing: -0.5 }}>{post.cta.text}</p>
             <p style={{ color: MUTED, fontSize: 14, marginBottom: 24 }}>{post.cta.sub}</p>
-            <a href="/exemples" style={{ display: "inline-block", background: `linear-gradient(135deg, ${RED}, ${VIO})`, color: "#fff", padding: "14px 28px", borderRadius: 12, fontSize: 15, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", boxShadow: `0 0 24px rgba(168,85,247,0.25)` }}>
+            <a href="/tarifs" style={{ display: "inline-block", background: `linear-gradient(135deg, ${RED}, ${VIO})`, color: "#fff", padding: "14px 28px", borderRadius: 12, fontSize: 15, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", boxShadow: `0 0 24px rgba(168,85,247,0.25)` }}>
               Voir les exemples →
             </a>
           </div>
