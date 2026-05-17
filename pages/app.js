@@ -638,44 +638,51 @@ function drawPoster(canvas, bible, episodes, mode, genre) {
   const RED = "#E85C3A", ORANGE = "#ff8c42", VIO = "#a855f7";
   const WHITE = "#f1f5f9", MUTED = "#94a3b8", DIM = "rgba(255,255,255,0.35)";
 
-  // Fond
+  // ── FOND ──────────────────────────────────────────────────
   ctx.fillStyle = "#09090f";
   ctx.fillRect(0, 0, W, H);
 
-  // Glow orange haut-gauche
-  const gO = ctx.createRadialGradient(PAD, 80, 0, PAD, 80, 320);
-  gO.addColorStop(0, "rgba(232,92,58,0.18)");
+  // Glow orange haut-gauche (plus intense)
+  const gO = ctx.createRadialGradient(PAD, 80, 0, PAD, 80, 400);
+  gO.addColorStop(0, "rgba(232,92,58,0.28)");
   gO.addColorStop(1, "rgba(232,92,58,0)");
   ctx.fillStyle = gO;
   ctx.fillRect(0, 0, W, H);
 
-  // Glow violet bas-droite
-  const gV = ctx.createRadialGradient(W - PAD, H - 200, 0, W - PAD, H - 200, 360);
-  gV.addColorStop(0, "rgba(168,85,247,0.18)");
+  // Glow violet bas-droite (plus intense)
+  const gV = ctx.createRadialGradient(W - PAD, H - 200, 0, W - PAD, H - 200, 420);
+  gV.addColorStop(0, "rgba(168,85,247,0.28)");
   gV.addColorStop(1, "rgba(168,85,247,0)");
   ctx.fillStyle = gV;
   ctx.fillRect(0, 0, W, H);
 
+  // Glow violet centre-bas
+  const gC = ctx.createRadialGradient(W / 2, H, 0, W / 2, H, 300);
+  gC.addColorStop(0, "rgba(109,40,217,0.15)");
+  gC.addColorStop(1, "rgba(109,40,217,0)");
+  ctx.fillStyle = gC;
+  ctx.fillRect(0, 0, W, H);
+
   // Grain subtil
-  for (let i = 0; i < 6000; i++) {
-    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.014})`;
+  for (let i = 0; i < 8000; i++) {
+    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.016})`;
     ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
   }
 
-  // Barre dégradée orange→violet top (7px)
+  // Barre dégradée orange→violet top (8px)
   const barG = ctx.createLinearGradient(0, 0, W, 0);
   barG.addColorStop(0, ORANGE);
   barG.addColorStop(0.5, RED);
   barG.addColorStop(1, VIO);
   ctx.fillStyle = barG;
-  ctx.fillRect(0, 0, W, 7);
+  ctx.fillRect(0, 0, W, 8);
 
   // Fade bas
-  const fadeG = ctx.createLinearGradient(0, H * 0.58, 0, H);
+  const fadeG = ctx.createLinearGradient(0, H * 0.52, 0, H);
   fadeG.addColorStop(0, "rgba(9,9,15,0)");
   fadeG.addColorStop(1, "rgba(9,9,15,0.98)");
   ctx.fillStyle = fadeG;
-  ctx.fillRect(0, H * 0.58, W, H * 0.42);
+  ctx.fillRect(0, H * 0.52, W, H * 0.48);
 
   const wrap = (text, x, y, maxW, lineH, font, color, align = "left") => {
     ctx.font = font;
@@ -700,13 +707,13 @@ function drawPoster(canvas, bible, episodes, mode, genre) {
   const ICON_H = 32;
   drawPhoneIcon(ctx, PAD, y, ICON_H);
   const iconW = Math.round(ICON_H * 26 / 37);
-  ctx.font = "500 9px 'Space Grotesk', sans-serif";
+  ctx.font = "500 9px sans-serif";
   ctx.fillStyle = "rgba(255,255,255,0.32)";
   ctx.textAlign = "left";
-  ctx.fillText("STUDIO", PAD + iconW + 8, y + 10);
+  ctx.fillText("VERTICAL", PAD + iconW + 8, y + 10);
   ctx.font = "900 15px Georgia, serif";
   ctx.fillStyle = "rgba(255,255,255,0.72)";
-  ctx.fillText("Vertical", PAD + iconW + 8, y + 26);
+  ctx.fillText("Clap", PAD + iconW + 8, y + 26);
 
   // Épisodes badge top-right
   ctx.font = "700 11px sans-serif";
@@ -734,13 +741,6 @@ function drawPoster(canvas, bible, episodes, mode, genre) {
   ctx.fillText(modeLabel, PAD + 14, y + 3);
 
   y += 44;
-
-  // ── GENRE ─────────────────────────────────────────────────
-  const genreText = (genre || "").toUpperCase() || (mode === "fast" ? "FAST DRAMA" : "PREMIUM SUSPENSE");
-  ctx.font = "700 10px sans-serif";
-  ctx.fillStyle = ORANGE;
-  ctx.fillText(genreText, PAD, y);
-  y += 22;
 
   // ── TITRE ─────────────────────────────────────────────────
   const titleSize = bible.titre.length > 16 ? 66 : 80;
@@ -815,10 +815,10 @@ function drawPoster(canvas, bible, episodes, mode, genre) {
   ctx.font = "500 8px sans-serif";
   ctx.fillStyle = "rgba(255,255,255,0.18)";
   ctx.textAlign = "left";
-  ctx.fillText("STUDIO", PAD + bIconW + 6, bY - 8);
+  ctx.fillText("VERTICAL", PAD + bIconW + 6, bY - 8);
   ctx.font = "900 11px Georgia, serif";
   ctx.fillStyle = "rgba(255,255,255,0.3)";
-  ctx.fillText("Vertical", PAD + bIconW + 6, bY + 4);
+  ctx.fillText("Clap", PAD + bIconW + 6, bY + 4);
 
   // Site url droite
   ctx.font = "400 10px sans-serif";
