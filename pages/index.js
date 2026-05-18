@@ -403,6 +403,26 @@ export default function Landing() {
   </div>
 </div>
 
+      {/* CLIFFHANGERS */}
+      <div style={{ padding: "60px 40px", textAlign: "center", background: "linear-gradient(180deg, rgba(168,85,247,0.04) 0%, transparent 100%)", borderBottom: `1px solid ${BORDER}` }}>
+        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: VIO, marginBottom: 32, fontFamily: "'Space Grotesk', sans-serif" }}>Des vidéos impossibles à scroller</p>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexDirection: "column", gap: 0 }}>
+          {[
+            { text: "Il ouvre le message. Son nom apparaît.", color: RED },
+            { text: "Ce bébé n'est pas le tien.", color: VIO },
+            { text: "Elle reconnaît la voix.", color: "#60a5fa" },
+            { text: "6 mois plus tard.", color: MUTED },
+            { text: "Elle ment depuis le début.", color: RED },
+          ].map((c, i) => (
+            <div key={i} style={{ padding: "14px 0", borderBottom: i < 4 ? `1px solid ${BORDER}` : "none", display: "flex", alignItems: "center", gap: 20, justifyContent: "center" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.color, flexShrink: 0, boxShadow: `0 0 10px ${c.color}` }} />
+              <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(20px, 3vw, 36px)", fontWeight: 900, color: TEXT, letterSpacing: -0.5, margin: 0, fontStyle: "italic" }}>{c.text}</p>
+            </div>
+          ))}
+        </div>
+        <p style={{ color: MUTED, fontSize: 14, marginTop: 32 }}>Chaque épisode généré se termine par un cliffhanger conçu pour retenir l'audience.</p>
+      </div>
+
       {/* FEATURE STRIP */}
       <div style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, background: "rgba(255,255,255,0.02)" }}>
         <div className="feat-strip" style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "center" }}>
@@ -435,9 +455,9 @@ export default function Landing() {
       </div>
 
       {/* PLATFORMS */}
-      <div className="sec" style={{ padding: "56px 40px", borderBottom: `1px solid ${BORDER}`, textAlign: "center" }}>
-        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: MUTED, marginBottom: 8 }}>Compatible avec toutes les plateformes</p>
-        <p style={{ fontSize: 13, color: MUTED, marginBottom: 40, maxWidth: 520, margin: "8px auto 40px" }}>Réseaux sociaux ou plateformes de micro-drama — le format 9:16 est universel.</p>
+      <div className="sec" style={{ padding: "56px 40px", borderBottom: `1px solid ${BORDER}`, textAlign: "center", background: "linear-gradient(135deg, rgba(168,85,247,0.06) 0%, rgba(232,92,58,0.04) 100%)" }}>
+        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(28px,4vw,48px)", fontWeight: 900, color: TEXT, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 12 }}>Le format 9:16 fonctionne partout.</h2>
+        <p style={{ fontSize: 13, color: MUTED, marginBottom: 40, maxWidth: 520, margin: "12px auto 40px" }}>Le format 9:16 fonctionne partout où ton audience regarde</p>
 
         <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: MUTED, opacity: 0.6, marginBottom: 20 }}>Réseaux sociaux</p>
         <div className="platform-row" style={{ display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap", marginBottom: 44 }}>
@@ -447,8 +467,8 @@ export default function Landing() {
             { Icon: ShortsIcon, name: "YouTube Shorts", color: RED, sub: "Shorts Feed" },
           ].map(({ Icon, name, color, sub }) => (
             <div key={name} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 72, height: 72, borderRadius: 20, background: `${color}12`, border: `1px solid ${color}28`, display: "flex", alignItems: "center", justifyContent: "center", color, animation: "float 4s ease-in-out infinite" }}>
-                <Icon size={30} />
+              <div style={{ width: 80, height: 80, borderRadius: 20, background: `${color}12`, border: `1px solid ${color}28`, display: "flex", alignItems: "center", justifyContent: "center", color, animation: "float 4s ease-in-out infinite" }}>
+                <Icon size={34} />
               </div>
               <div>
                 <p style={{ fontSize: 14, fontWeight: 700, color: TEXT, marginBottom: 2 }}>{name}</p>
@@ -523,6 +543,67 @@ export default function Landing() {
             <div style={{ width: 20, height: 1, background: RED }} />
             <span style={{ fontSize: 10, fontWeight: 800, color: RED, letterSpacing: 2 }}>9:16</span>
             <div style={{ width: 20, height: 1, background: RED }} />
+          </div>
+        </div>
+      </div>
+
+      {/* VIRAL STATS */}
+      <div className="sec" style={{ padding: "80px 40px", borderTop: `1px solid ${BORDER}`, background: "rgba(255,255,255,0.01)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", gap: 80, alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
+          <div style={{ maxWidth: 340 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: VIO, marginBottom: 16 }}>Conçu pour percer</p>
+            <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(28px, 3vw, 42px)", fontWeight: 900, color: TEXT, letterSpacing: -1.5, lineHeight: 1.15, marginBottom: 20 }}>
+              Écris une série<br /><span style={{ fontStyle: "italic", color: MUTED }}>virale.</span>
+            </h2>
+            <p style={{ color: MUTED, fontSize: 14, lineHeight: 1.75, marginBottom: 24 }}>1 épisode = 1 cliffhanger. Structure narrative conçue pour retenir l'audience jusqu'à la fin — et la faire revenir.</p>
+            {[
+              { label: "Prêt pour TikTok / Reels / Shorts", color: "#69C9D0" },
+              { label: "Soumissible à DramaBox & ReelShort", color: VIO },
+              { label: "80 épisodes générés en 1 heure", color: RED },
+            ].map(({ label, color }) => (
+              <div key={label} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
+                <span style={{ color: TEXT, fontSize: 14, fontWeight: 600 }}>{label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <div style={{ position: "absolute", inset: -40, borderRadius: "50%", background: `radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%)`, pointerEvents: "none" }} />
+            <div style={{ width: 220, background: "#000", borderRadius: 36, border: "2px solid rgba(255,255,255,0.12)", padding: "14px 0 20px", boxShadow: "0 0 60px rgba(168,85,247,0.2), 0 48px 80px rgba(0,0,0,0.8)", overflow: "hidden", position: "relative" }}>
+              <div style={{ background: "linear-gradient(180deg, #1a0510 0%, #0d0020 50%, #000 100%)", height: 340, position: "relative", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "0 14px 16px" }}>
+                <div style={{ position: "absolute", top: 16, right: 14, display: "flex", flexDirection: "column", alignItems: "center", gap: 18 }}>
+                  {[
+                    { icon: "♥", val: "284k", color: RED },
+                    { icon: "💬", val: "4.2k", color: TEXT },
+                    { icon: "↗", val: "Partager", color: TEXT },
+                  ].map(({ icon, val, color }) => (
+                    <div key={val} style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: 22, color }}>{icon}</div>
+                      <div style={{ fontSize: 9, color: "rgba(255,255,255,0.7)", fontWeight: 700, marginTop: 2 }}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 8, padding: "6px 10px", marginBottom: 10, backdropFilter: "blur(10px)" }}>
+                  <p style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", margin: "0 0 3px", fontWeight: 600 }}>💬 les_fans_de_drama</p>
+                  <p style={{ fontSize: 10, color: TEXT, margin: 0 }}>NOOOON j'avais pas vu venir 😱</p>
+                </div>
+                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 8, padding: "6px 10px", backdropFilter: "blur(10px)" }}>
+                  <p style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", margin: "0 0 3px", fontWeight: 600 }}>💬 drama_addict_officiel</p>
+                  <p style={{ fontSize: 10, color: TEXT, margin: 0 }}>Épisode 2 MAINTENANT 🔥</p>
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <p style={{ fontSize: 12, fontWeight: 800, color: TEXT, margin: "0 0 2px" }}>@verticalclap_studio</p>
+                  <p style={{ fontSize: 10, color: "rgba(255,255,255,0.6)", margin: 0, fontStyle: "italic" }}>Épisode 3 — « Il savait depuis le début »</p>
+                </div>
+              </div>
+              <div style={{ background: "#000", padding: "10px 14px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 9, fontWeight: 800, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>2.3M VUES</span>
+                <div style={{ background: RED, borderRadius: 4, padding: "3px 8px" }}>
+                  <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: 0.5 }}>SUIVRE</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -716,7 +797,7 @@ export default function Landing() {
           <Label color={RED}>Fonctionnalités</Label>
           <Title>Le pipeline créatif<br /><span style={{ fontStyle: "italic" }}>du concept au tournage.</span></Title>
           <p style={{ textAlign: "center", color: MUTED, marginBottom: 48, fontSize: 15 }}>Tout ce qu'il faut, rien de superflu</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+          <div style={{ display: "flex", gap: 16, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
             {[
               { icon: <BoltIcon size={20} />, iconColor: RED, title: "Le Mixeur", desc: "12 univers, 16 secrets, 4 castings. Ou entre le tien. 12 packs thématiques pour démarrer en 1 clic." },
               { icon: <ClapperIcon size={20} />, iconColor: VIO, title: "Bible complète", desc: "Titre, logline, personnages avec secrets, tension centrale et séquencier. Tout ce qu'il faut pour commencer à tourner." },
@@ -725,10 +806,9 @@ export default function Landing() {
               { icon: <TikTokIcon size={20} />, iconColor: "#69C9D0", title: "Traduction en 8 langues", desc: "Traduis n'importe quel script en Anglais, Espagnol, Allemand, Portugais, Italien, Arabe, Hébreu ou Chinois." },
               { icon: <ReelsIcon size={20} />, iconColor: VIO, title: "Fiche technique Prod", desc: "Décors, costumes, lieux de tournage générés par l'IA pour chaque série. Tourne pro avec un smartphone." },
               { icon: <ShortsIcon size={20} />, iconColor: RED, title: "Mode Tournage", desc: "Téléprompteur auto-scroll, fond clair ou sombre, vitesse réglable, barre de progression. Rien à imprimer." },
-              { icon: <BoltIcon size={20} />, iconColor: RED, title: "Titres viraux", desc: "5 titres alternatifs avec score de viralité, accroche et analyse psychologique. Premium uniquement." },
               { icon: <ClockIcon size={20} />, iconColor: VIO, title: "Sauvegarde cloud", desc: "Tes séries synchronisées sur tous tes appareils automatiquement. Accès depuis n'importe où." },
             ].map((f, i) => (
-              <div key={i} className="glass" style={{ borderRadius: 16, padding: 22, borderLeft: `3px solid ${i % 2 === 0 ? RED : VIO}` }}>
+              <div key={i} className="glass" style={{ minWidth: 260, scrollSnapAlign: "start", borderRadius: 16, padding: 22, borderLeft: `3px solid ${i % 2 === 0 ? RED : VIO}` }}>
                 <div style={{ width: 38, height: 38, borderRadius: 10, background: `${f.iconColor}14`, border: `1px solid ${f.iconColor}22`, display: "flex", alignItems: "center", justifyContent: "center", color: f.iconColor, marginBottom: 14 }}>
                   {f.icon}
                 </div>
@@ -813,7 +893,7 @@ export default function Landing() {
               <p style={{ color: MUTED, fontSize: 13, marginBottom: billing === "annual" ? 6 : 28 }}>/mois</p>
               {billing === "annual" && <p style={{ fontSize: 12, color: "#4ade80", fontWeight: 600, marginBottom: 22 }}>facturé 179€/an</p>}
               <div style={{ marginBottom: 28 }}>
-                {["⚡ Fast Drama + 🎭 Premium Suspense", "Jusqu'à 90 épisodes par série", "Scripts 1 à 2 min", "Mode Tournage + Téléprompteur", "🎲 3 variations par script", "🔥 Générateur de titres viraux", "🌍 Traduction en 8 langues", "🎬 Fiche technique de production", "☁️ Sauvegarde cloud", "📄 Export PDF"].map((item, i) => (
+                {["⚡ Fast Drama + 🎭 Premium Suspense", "Jusqu'à 90 épisodes par série", "Scripts 1 à 2 min", "Mode Tournage + Téléprompteur", "🎲 3 variations par script", "🌍 Traduction en 8 langues", "🎬 Fiche technique de production", "☁️ Sauvegarde cloud", "📄 Export PDF"].map((item, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                     <Check color={VIO} />
                     <span style={{ color: MUTED, fontSize: 14 }}>{item}</span>
